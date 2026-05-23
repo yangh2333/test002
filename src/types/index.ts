@@ -1,3 +1,11 @@
+export type UserRole = 
+  | 'product_manager' 
+  | 'design_engineer' 
+  | 'application_engineer' 
+  | 'qa_engineer' 
+  | 'sales' 
+  | 'admin';
+
 export interface Product {
   id: string;
   name: string;
@@ -95,8 +103,27 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: UserRole;
   avatar?: string;
+  department?: string;
+  phone?: string;
+  createdAt: string;
+  isActive: boolean;
+}
+
+export interface RolePermission {
+  role: UserRole;
+  name: string;
+  description: string;
+  permissions: {
+    dashboard: boolean;
+    strategy: boolean;
+    execution: boolean;
+    sales: boolean;
+    quality: boolean;
+    team: boolean;
+    userManagement: boolean;
+  };
 }
 
 export interface KPI {

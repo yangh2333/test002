@@ -1,15 +1,165 @@
 import { 
   Product, Project, MarketData, Competitor, 
-  Customer, QualityIssue, Document, User 
+  Customer, QualityIssue, Document, User, UserRole, RolePermission 
 } from '../types';
 
-export const mockUser: User = {
-  id: '1',
-  name: '张明',
-  email: 'zhangming@chiptech.com',
-  role: '产品线经理',
-  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
-};
+export const rolePermissions: RolePermission[] = [
+  {
+    role: 'product_manager',
+    name: '产品线经理',
+    description: '负责产品全生命周期管理',
+    permissions: {
+      dashboard: true,
+      strategy: true,
+      execution: true,
+      sales: true,
+      quality: true,
+      team: true,
+      userManagement: true,
+    }
+  },
+  {
+    role: 'design_engineer',
+    name: '设计工程师',
+    description: '负责芯片设计和IP开发',
+    permissions: {
+      dashboard: true,
+      strategy: false,
+      execution: true,
+      sales: false,
+      quality: true,
+      team: true,
+      userManagement: false,
+    }
+  },
+  {
+    role: 'application_engineer',
+    name: '应用工程师',
+    description: '负责产品应用和客户支持',
+    permissions: {
+      dashboard: true,
+      strategy: true,
+      execution: true,
+      sales: true,
+      quality: true,
+      team: true,
+      userManagement: false,
+    }
+  },
+  {
+    role: 'qa_engineer',
+    name: '质量工程师',
+    description: '负责产品质量和可靠性验证',
+    permissions: {
+      dashboard: true,
+      strategy: false,
+      execution: true,
+      sales: false,
+      quality: true,
+      team: true,
+      userManagement: false,
+    }
+  },
+  {
+    role: 'sales',
+    name: '销售',
+    description: '负责产品销售和客户关系管理',
+    permissions: {
+      dashboard: true,
+      strategy: true,
+      execution: false,
+      sales: true,
+      quality: false,
+      team: true,
+      userManagement: false,
+    }
+  },
+  {
+    role: 'admin',
+    name: '管理员',
+    description: '系统管理员，拥有全部权限',
+    permissions: {
+      dashboard: true,
+      strategy: true,
+      execution: true,
+      sales: true,
+      quality: true,
+      team: true,
+      userManagement: true,
+    }
+  }
+];
+
+export const mockUsers: User[] = [
+  {
+    id: '1',
+    name: '张明',
+    email: 'zhangming@chiptech.com',
+    role: 'product_manager',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+    department: '产品部',
+    phone: '13800138001',
+    createdAt: '2023-01-01',
+    isActive: true
+  },
+  {
+    id: '2',
+    name: '李工',
+    email: 'ligong@chiptech.com',
+    role: 'design_engineer',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
+    department: '研发部',
+    phone: '13800138002',
+    createdAt: '2023-02-15',
+    isActive: true
+  },
+  {
+    id: '3',
+    name: '王工',
+    email: 'wanggong@chiptech.com',
+    role: 'application_engineer',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lilly',
+    department: '应用部',
+    phone: '13800138003',
+    createdAt: '2023-03-20',
+    isActive: true
+  },
+  {
+    id: '4',
+    name: '赵工',
+    email: 'zhaogong@chiptech.com',
+    role: 'qa_engineer',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bella',
+    department: '质量部',
+    phone: '13800138004',
+    createdAt: '2023-04-10',
+    isActive: true
+  },
+  {
+    id: '5',
+    name: '陈经理',
+    email: 'chenjingli@chiptech.com',
+    role: 'sales',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
+    department: '销售部',
+    phone: '13800138005',
+    createdAt: '2023-05-05',
+    isActive: true
+  },
+  {
+    id: '6',
+    name: '系统管理员',
+    email: 'admin@chiptech.com',
+    role: 'admin',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin',
+    department: 'IT部',
+    phone: '13800138000',
+    createdAt: '2022-12-01',
+    isActive: true
+  }
+];
+
+export const mockCurrentUser: User = mockUsers[0];
 
 export const mockProducts: Product[] = [
   {
