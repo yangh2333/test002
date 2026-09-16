@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>产品管理项目工作汇报 · Project Aurora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F2ECE0;
+    --paper-deep: #E8DFCE;
+    --ink: #181612;
+    --ink-soft: #4A453E;
+    --ink-mute: #8A8275;
+    --rule: #C9BFA9;
+    --accent: #B8410E;
+    --accent-deep: #7A2A07;
+    --accent-soft: #E8A074;
+    --moss: #4F5D3A;
+    --gold: #B8923A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.6;
+    font-weight: 400;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Paper grain texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0 0.07 0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* Top meta bar */
+  .meta-bar {
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Archivo', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(8px);
+  }
+  .meta-bar .left { display: flex; gap: 32px; align-items: center; }
+  .meta-bar .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; display: inline-block; margin-right: 8px; vertical-align: middle; }
+  .meta-bar .stamp {
+    border: 1px solid var(--ink);
+    padding: 3px 10px;
+    transform: rotate(-1.5deg);
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Container */
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  /* Cover / Hero */
+  .cover {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .cover-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: end;
+  }
+  .cover-left .eyebrow {
+    font-family: 'Archivo', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .cover-left .eyebrow::before {
+    content: '';
+    width: 48px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .cover-left h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 8vw, 112px);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+    margin-bottom: 32px;
+  }
+  .cover-left h1 .em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent-deep);
+    font-variation-settings: "opsz" 144, "SOFT" 100;
+  }
+  .cover-left .lede {
+    font-family: 'Newsreader', serif;
+    font-size: 21px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 520px;
+    font-weight: 300;
+  }
+  .cover-left .lede::first-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4em;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .cover-right {
+    border-left: 1px solid var(--rule);
+    padding-left: 48px;
+    font-family: 'Archivo', sans-serif;
+  }
+  .cover-right dl {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .cover-right dt {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 6px;
+  }
+  .cover-right dd {
+    font-family: 'Newsreader', serif;
+    font-size: 18px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .cover-right dd .mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .cover-right .vol {
+    margin-top: 12px;
+    padding-top: 22px;
+    border-top: 1px dashed var(--rule);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-mute);
+  }
+
+  /* Section base */
+  section.report {
+    padding: 96px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-head {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 48px;
+    margin-bottom: 56px;
+    align-items: baseline;
+  }
+  .section-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 88px;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .section-head .title-block .kicker {
+    font-family: 'Archivo', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .section-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(36px, 4.5vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 760px;
+  }
+  .section-head h2 em {
+    font-style: italic;
+    color: var(--accent-deep);
+    font-weight: 400;
+  }
+
+  /* Executive summary */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .summary-narrative {
+    font-family: 'Newsreader', serif;
+    font-size: 20px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+  .summary-narrative p { margin-bottom: 22px; }
+  .summary-narrative p:first-child::first-letter {
+    font-family: 'Fraunces', serif;
+    float: left;
+    font-size: 84px;
+    line-height: 0.85;
+    padding: 6px 14px 0 0;
+    font-weight: 400;
+    color: var(--accent);
+    font-style: italic;
+  }
+  .summary-narrative strong {
+    color: var(--ink);
+    font-weight: 600;
+    font-family: 'Fraunces', serif;
+    background: linear-gradient(180deg, transparent 62%, rgba(184,65,14,0.18) 62%);
+    padding: 0 2px;
+  }
+
+  .summary-aside {
+    border: 1px solid var(--ink);
+    padding: 32px;
+    background: var(--paper-deep);
+    position: relative;
+  }
+  .summary-aside::before {
+    content: '';
+    position: absolute;
+    top: -8px; left: -8px;
+    width: 24px; height: 24px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .summary-aside .label {
+    font-family: 'Archivo', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 18px;
+  }
+  .summary-aside h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.3;
+    margin-bottom: 18px;
+  }
+  .summary-aside ul { list-style: none; }
+  .summary-aside li {
+    font-family: 'Newsreader', serif;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 14px 0;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-soft);
+    display: flex;
+    gap: 14px;
+  }
+  .summary-aside li::before {
+    content: '→';
+    color: var(--accent);
+    font-family: 'Archivo', sans-serif;
+    flex-shrink: 0;
+  }
+
+  /* Metrics dashboard */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .metric {
+    padding: 40px 28px;
+    border-right: 1px solid var(--rule);
+    position: relative;
+    background: transparent;
+    transition: background 0.4s ease;
+  }
+  .metric:last-child { border-right: none; }
+  .metric:hover { background: var(--paper-deep); }
+  .metric .m-label {
+    font-family: 'Archivo', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 18px;
+  }
+  .metric .m-value {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    font-variation-settings: "opsz" 144;
+    margin-bottom: 8px;
+  }
+  .metric .m-value .unit {
+    font-size: 22px;
+    color: var(--ink-mute);
+    margin-left: 4px;
+    font-weight: 300;
+  }
+  .metric .m-value .sign {
+    color: var(--accent);
+    font-style: italic;
+  }
+  .metric .m-delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--moss);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .metric .m-delta.down { color: var(--accent); }
+  .metric .m-note {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-mute);
+    margin-top: 10px;
+    line-height: 1.4;
+  }
+
+  /* Chart row */
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 64px;
+    margin-top: 64px;
+  }
+  .chart-block {
+    border: 1px solid var(--rule);
+    padding: 32px;
+    background: rgba(255,255,255,0.3);
+  }
+  .chart-block .c-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .chart-block .c-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .chart-block .c-meta {
+    font-family: 'Archivo', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* Bar chart */
+  .bars {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 18px;
+    align-items: end;
+    height: 240px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .bars::before, .bars::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    border-top: 1px dashed var(--rule);
+  }
+  .bars::before { top: 33%; }
+  .bars::after { top: 66%; }
+  .bar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .bar {
+    width: 100%;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-deep) 100%);
+    position: relative;
+    transition: height 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    height: 0;
+  }
+  .bar.alt { background: linear-gradient(180deg, var(--gold) 0%, #8a6c20 100%); }
+  .bar::after {
+    content: attr(data-val);
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .bar-label {
+    font-family: 'Archivo', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+
+  /* Donut / progress ring */
+  .rings {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .ring-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .ring {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    background: conic-gradient(var(--accent) var(--p, 0%), var(--paper-deep) 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 1.4s ease;
+  }
+  .ring::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    background: var(--paper);
+    border-radius: 50%;
+  }
+  .ring span {
+    position: relative;
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    z-index: 1;
+  }
+  .ring-row .r-info { flex: 1; }
+  .ring-row .r-name {
+    font-family: 'Newsreader', serif;
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .ring-row .r-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+  }
+
+  /* Timeline / milestones */
+  .timeline {
+    position: relative;
+    margin-top: 32px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--rule);
+  }
+  .phase {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr;
+    gap: 40px;
+    padding: 32px 0 32px 48px;
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+  }
+  .phase:last-child { border-bottom: none; }
+  .phase::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 42px;
+    width: 11px;
+    height: 11px;
+    background: var(--paper);
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    z-index: 2;
+  }
+  .phase.done::before { background: var(--accent); }
+  .phase.active::before {
+    background: var(--accent);
+    box-shadow: 0 0 0 6px rgba(184,65,14,0.18);
+  }
+  .phase .p-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    padding-top: 4px;
+  }
+  .phase .p-date .p-q {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--accent);
+    margin-bottom: 4px;
+    font-weight: 400;
+  }
+  .phase .p-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .phase .p-title .status {
+    font-family: 'Archivo', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid var(--ink);
+    margin-left: 10px;
+    vertical-align: middle;
+    font-weight: 600;
+  }
+  .phase .p-title .status.done { background: var(--ink); color: var(--paper); }
+  .phase .p-title .status.active { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+  .phase .p-title .status.plan { color: var(--ink-mute); border-color: var(--rule); }
+  .phase .p-desc {
+    font-family: 'Newsreader', serif;
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .phase .p-deliv {
+    font-family: 'Archivo', sans-serif;
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+  .phase .p-deliv span {
+    display: inline-block;
+    margin-right: 14px;
+  }
+  .phase .p-deliv span::before {
+    content: '◆';
+    color: var(--accent);
+    margin-right: 5px;
+    font-size: 8px;
+    vertical-align: middle;
+  }
+
+  /* Work breakdown grid */
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--rule);
+  }
+  .work-cell {
+    padding: 36px 32px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    transition: background 0.3s ease;
+  }
+  .work-cell:hover { background: var(--paper-deep); }
+  .work-cell .w-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .work-cell h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 14px;
+    line-height: 1.25;
+  }
+  .work-cell p {
+    font-family: 'Newsreader', serif;
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  .work-cell .w-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .work-cell .w-tag {
+    font-family: 'Archivo', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+  }
+
+  /* Challenges & solutions */
+  .duo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 2px solid var(--ink);
+  }
+  .duo-col { padding: 40px 36px; border-right: 1px solid var(--rule); }
+  .duo-col:last-child { border-right: none; }
+  .duo-col .d-head {
+    font-family: 'Archivo', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+  }
+  .duo-col .d-head .count {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-mute);
+    font-size: 14px;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .duo-item {
+    padding: 22px 0;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .duo-item:last-child { border-bottom: none; }
+  .duo-item .d-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .duo-item .d-title .n {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .duo-item p {
+    font-family: 'Newsreader', serif;
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    padding-left: 28px;
+  }
+  .duo-col.solutions { background: rgba(79,93,58,0.06); }
+  .duo-col.solutions .d-head { color: var(--moss); }
+
+  /* Team */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .member {
+    border: 1px solid var(--rule);
+    padding: 28px 24px;
+    background: rgba(255,255,255,0.25);
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .member:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+  }
+  .member .av {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+  .member:nth-child(2n) .av { background: var(--moss); }
+  .member:nth-child(3n) .av { background: var(--gold); }
+  .member:nth-child(4n) .av { background: var(--ink); }
+  .member .name {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .member .role {
+    font-family: 'Archivo', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .member .contrib {
+    font-family: 'Newsreader', serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    padding-top: 14px;
+    border-top: 1px dashed var(--rule);
+  }
+
+  /* Roadmap / next steps */
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .road-col {
+    padding: 40px 32px;
+    border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .road-col:last-child { border-right: none; }
+  .road-col .r-period {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+  .road-col .r-theme {
+    font-family: 'Archivo', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .road-col ul { list-style: none; }
+  .road-col li {
+    font-family: 'Newsreader', serif;
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--rule);
+    display: flex;
+    gap: 12px;
+  }
+  .road-col li:last-child { border-bottom: none; }
+  .road-col li::before {
+    content: counter(li, decimal-leading-zero);
+    counter-increment: li;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+  .road-col ul { counter-reset: li; }
+
+  /* Footer */
+  footer {
+    padding: 64px 0 48px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  footer .wrap {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 48px;
+    align-items: end;
+  }
+  footer .sign {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1.3;
+    color: var(--paper);
+  }
+  footer .sign .accent { color: var(--accent-soft); font-style: normal; font-weight: 400; }
+  footer .meta-foot {
+    font-family: 'Archivo', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    text-align: right;
+    line-height: 2;
+  }
+  footer .meta-foot .end {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--accent-soft);
+    margin-top: 12px;
+    display: block;
+  }
+
+  /* Reveal animation */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Pull quote */
+  .pullquote {
+    margin: 64px 0;
+    padding: 48px 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    text-align: center;
+  }
+  .pullquote blockquote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1.25;
+    color: var(--ink);
+    max-width: 880px;
+    margin: 0 auto;
+    letter-spacing: -0.01em;
+  }
+  .pullquote blockquote .hl {
+    background: var(--accent);
+    color: var(--paper);
+    padding: 0 8px;
+    font-style: normal;
+    font-weight: 500;
+  }
+  .pullquote cite {
+    display: block;
+    margin-top: 24px;
+    font-family: 'Archivo', sans-serif;
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* Responsive */
+  @media (max-width: 980px) {
+    .cover-grid, .summary-grid, .chart-row, .duo-grid, footer .wrap { grid-template-columns: 1fr; gap: 40px; }
+    .cover-right { border-left: none; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 32px; }
+    .metrics, .work-grid, .team-grid, .roadmap { grid-template-columns: repeat(2, 1fr); }
+    .metric, .work-cell { border-right: 1px solid var(--rule); }
+    .section-head { grid-template-columns: 1fr; gap: 16px; }
+    .phase { grid-template-columns: 1fr; gap: 14px; }
+    .duo-col { border-right: none; border-bottom: 1px solid var(--rule); }
+    .wrap { padding: 0 24px; }
+    .meta-bar { padding: 12px 24px; flex-wrap: wrap; gap: 12px; }
+    .meta-bar .left { gap: 16px; flex-wrap: wrap; }
+  }
+  @media (max-width: 600px) {
+    .metrics, .work-grid, .team-grid, .roadmap { grid-template-columns: 1fr; }
+    .bars { grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .bar::after { font-size: 9px; }
+    section.report { padding: 64px 0; }
+    .cover { padding: 48px 0 40px; }
+  }
+
+  @media print {
+    body::before { display: none; }
+    .meta-bar { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top meta bar -->
+<div class="meta-bar">
+  <div class="left">
+    <span><span class="dot"></span>CONFIDENTIAL · INTERNAL</span>
+    <span>Vol. 04 / Issue 12</span>
+    <span class="stamp">DRAFT FOR REVIEW</span>
+  </div>
+  <div class="right">
+    <span>FY2026 · Q3 REVIEW</span>
+  </div>
+</div>
+
+<!-- Cover -->
+<header class="cover">
+  <div class="wrap">
+    <div class="cover-grid">
+      <div class="cover-left reveal">
+        <div class="eyebrow">产品管理项目工作汇报 · Project Aurora</div>
+        <h1>以数据驱动<br><span class="em">重塑</span>产品价值链</h1>
+        <p class="lede">本报告系统梳理「极光计划」第三季度在产品规划、需求治理、上线交付与价值度量四个维度的工作进展，并对齐下一阶段战略路径。</p>
+      </div>
+      <aside class="cover-right reveal">
+        <dl>
+          <div>
+            <dt>报告主题</dt>
+            <dd>产品管理体系年度阶段性复盘</dd>
+          </div>
+          <div>
+            <dt>汇报周期</dt>
+            <dd>2026.07.01 — 2026.09.15 <span class="mono">/ 11 周</span></dd>
+          </div>
+          <div>
+            <dt>项目负责人</dt>
+            <dd>林清越 · 产品总监</dd>
+          </div>
+          <div>
+            <dt>汇报对象</dt>
+            <dd>战略委员会与各业务线负责人</dd>
+          </div>
+          <div>
+            <dt>项目代号</dt>
+            <dd><span class="mono">PRJ-AURORA-26Q3</span></dd>
+          </div>
+          <div class="vol">第 04 卷 · 总第 12 期 · 内部传阅</div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</header>
+
+<!-- Section 01 — Executive Summary -->
+<section class="report" id="summary">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">01</div>
+      <div class="title-block">
+        <div class="kicker">Executive Summary · 执行摘要</div>
+        <h2>从需求洪流中<em>提炼</em>真正可被度量的产品价值</h2>
+      </div>
+    </div>
+    <div class="summary-grid">
+      <div class="summary-narrative reveal">
+        <p>本季度「极光计划」聚焦于将原本分散在五个业务线的产品需求治理流程收敛为<strong>统一的产品价值链</strong>。我们以价值度量模型为锚点，重构了从需求入库、评审、排期到上线复盘的全链路机制。</p>
+        <p>核心成果方面，<strong>需求交付周期由 21 天压缩至 11 天</strong>，高优先级需求准点率提升至 92%，并完成 3 项跨业务线核心模块的标准化封装，使研发资源复用率提升 38%。</p>
+        <p>与此同时，我们在价值度量维度构建了北极星指标看板，首次实现产品决策<strong>从经验驱动转向数据驱动</strong>。本季度共完成 47 项需求上线，其中 6 项进入 A/B 实验并产出可验证结论。</p>
+      </div>
+      <aside class="summary-aside reveal">
+        <div class="label">本季度三大关键判断</div>
+        <h3>从「做得多」转向「做得对」</h3>
+        <ul>
+          <li>需求治理体系已具备规模化复制条件，下季度推全量业务线</li>
+          <li>价值度量模型初版完成，但反向归因机制仍需 1 个季度打磨</li>
+          <li>跨团队模块复用红利显现，建议成立独立中台小组承接</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Pull quote -->
+<div class="wrap">
+  <div class="pullquote reveal">
+    <blockquote>"产品管理的本质，是把<span class="hl">不确定性</span>转化为可以被反复验证的假设。"</blockquote>
+    <cite>— 摘自本季度产品策略复盘会 · 09.12</cite>
+  </div>
+</div>
+
+<!-- Section 02 — Key Metrics -->
+<section class="report" id="metrics">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">02</div>
+      <div class="title-block">
+        <div class="kicker">Key Metrics · 关键指标</div>
+        <h2>四项<em>北极星</em>指标，定义本季度的真实坐标</h2>
+      </div>
+    </div>
+
+    <div class="metrics reveal">
+      <div class="metric">
+        <div class="m-label">需求交付周期</div>
+        <div class="m-value" data-target="11"><span class="sign">↓</span>11<span class="unit">天</span></div>
+        <div class="m-delta">较上季度 −47.6%</div>
+        <div class="m-note">由 21 天压缩至 11 天，评审与排期环节重构贡献最大</div>
+      </div>
+      <div class="metric">
+        <div class="m-label">高优需求准点率</div>
+        <div class="m-value" data-target="92">92<span class="unit">%</span></div>
+        <div class="m-delta">较上季度 +18 pp</div>
+        <div class="m-note">P0/P1 需求按承诺节点交付的比例</div>
+      </div>
+      <div class="metric">
+        <div class="m-label">研发资源复用率</div>
+        <div class="m-value" data-target="38">38<span class="unit">%</span></div>
+        <div class="m-delta">较上季度 +24 pp</div>
+        <div class="m-note">跨业务线标准化模块调用占比</div>
+      </div>
+      <div class="metric">
+        <div class="m-label">已上线需求数</div>
+        <div class="m-value" data-target="47">47<span class="unit">项</span></div>
+        <div class="m-delta">含 6 项 A/B 实验</div>
+        <div class="m-note">本季度完成验收并进入生产环境的需求总量</div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-block reveal">
+        <div class="c-head">
+          <div class="c-title">月度需求吞吐与上线走势</div>
+          <div class="c-meta">单位 · 需求数</div>
+        </div>
+        <div class="bars">
+          <div class="bar-wrap">
+            <div class="bar" data-val="14" data-h="58%"></div>
+            <div class="bar-label">4月</div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar" data-val="18" data-h="75%"></div>
+            <div class="bar-label">5月</div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar" data-val="12" data-h="50%"></div>
+            <div class="bar-label">6月</div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar alt" data-val="16" data-h="66%"></div>
+            <div class="bar-label">7月</div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar alt" data-val="19" data-h="79%"></div>
+            <div class="bar-label">8月</div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar alt" data-val="12" data-h="50%"></div>
+            <div class="bar-label">9月*</div>
+          </div>
+        </div>
+        <p style="margin-top:16px;font-family:'Newsreader',serif;font-style:italic;font-size:13px;color:var(--ink-mute);">* 9月数据截至 09.15，深色为本季度。趋势显示需求治理体系上线后单月吞吐趋于稳态。</p>
+      </div>
+
+      <div class="chart-block reveal">
+        <div class="c-head">
+          <div class="c-title">价值链四环节完成度</div>
+          <div class="c-meta">目标 · 100%</div>
+        </div>
+        <div class="rings">
+          <div class="ring-row">
+            <div class="ring" style="--p:96%"><span>96%</span></div>
+            <div class="r-info">
+              <div class="r-name">需求入库与分类</div>
+              <div class="r-sub">543 项已治理 / 目标 565</div>
+            </div>
+          </div>
+          <div class="ring-row">
+            <div class="ring" style="--p:88%"><span>88%</span></div>
+            <div class="r-info">
+              <div class="r-name">评审与排期机制</div>
+              <div class="r-sub">双周节奏稳定运转 11 轮</div>
+            </div>
+          </div>
+          <div class="ring-row">
+            <div class="ring" style="--p:74%"><span>74%</span></div>
+            <div class="r-info">
+              <div class="r-name">上线与交付闭环</div>
+              <div class="r-sub">47 项上线 / 实验复盘 6 项</div>
+            </div>
+          </div>
+          <div class="ring-row">
+            <div class="ring" style="--p:52%"><span>52%</span></div>
+            <div class="r-info">
+              <div class="r-name">价值度量与归因</div>
+              <div class="r-sub">模型初版完成 · 反向归因待补</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 03 — Milestones -->
+<section class="report" id="timeline">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">03</div>
+      <div class="title-block">
+        <div class="kicker">Milestones · 里程碑</div>
+        <h2>四个阶段，<em>由治到量</em>的价值链演化路径</h2>
+      </div>
+    </div>
+
+    <div class="timeline reveal">
+      <article class="phase done">
+        <div class="p-date"><span class="p-q">P1</span>07.01 — 07.18</div>
+        <div>
+          <div class="p-title">需求治理体系奠基<span class="status done">已完成</span></div>
+          <p class="p-desc">完成需求分类法 v1.0、入库模板与评审准入规则；建立 P0–P3 优先级模型，关闭历史遗留无效需求 142 项。</p>
+        </div>
+        <div class="p-deliv">
+          <span>分类法 v1.0</span>
+          <span>评审 SOP</span>
+          <span>需求看板</span>
+        </div>
+      </article>
+
+      <article class="phase done">
+        <div class="p-date"><span class="p-q">P2</span>07.19 — 08.15</div>
+        <div>
+          <div class="p-title">双周评审节奏运转<span class="status done">已完成</span></div>
+          <p class="p-desc">推动五条业务线接入统一评审节奏，累计完成 11 轮双周评审；首次引入「价值评分卡」量化每项需求的预期收益与实现成本。</p>
+        </div>
+        <div class="p-deliv">
+          <span>评分卡模板</span>
+          <span>评审纪要 11 份</span>
+          <span>排期看板</span>
+        </div>
+      </article>
+
+      <article class="phase active">
+        <div class="p-date"><span class="p-q">P3</span>08.16 — 09.30</div>
+        <div>
+          <div class="p-title">价值度量看板与 A/B 实验闭环<span class="status active">进行中</span></div>
+          <p class="p-desc">上线北极星指标看板 v1，覆盖 4 项一级指标与 12 项二级指标；推进 6 项 A/B 实验，其中 4 项已产出可验证结论，2 项待数据回收。</p>
+        </div>
+        <div class="p-deliv">
+          <span>北极星看板</span>
+          <span>实验报告 4 份</span>
+          <span>归因模型初版</span>
+        </div>
+      </article>
+
+      <article class="phase">
+        <div class="p-date"><span class="p-q">P4</span>10.01 — 12.31</div>
+        <div>
+          <div class="p-title">全量推广与中台化沉淀<span class="status plan">规划中</span></div>
+          <p class="p-desc">将治理体系推广至全量业务线，同步启动跨团队复用模块的中台化沉淀；构建反向归因机制，使每项上线需求可追溯至原始价值假设。</p>
+        </div>
+        <div class="p-deliv">
+          <span>推广方案</span>
+          <span>中台立项</span>
+          <span>归因 v1.1</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Section 04 — Work breakdown -->
+<section class="report" id="work">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">04</div>
+      <div class="title-block">
+        <div class="kicker">Work Breakdown · 工作分解</div>
+        <h2>六个模块<em>协同</em>推进，构成完整工作面</h2>
+      </div>
+    </div>
+
+    <div class="work-grid reveal">
+      <div class="work-cell">
+        <div class="w-num">/ 01</div>
+        <h4>产品规划与路线图</h4>
+        <p>完成年度路线图 v2 修订，明确三个战略主题与对应的季度可交付里程碑；与战略委员会对齐 OKR 季度拆解。</p>
+        <div class="w-tags"><span class="w-tag">路线图</span><span class="w-tag">OKR</span><span class="w-tag">战略对齐</span></div>
+      </div>
+      <div class="work-cell">
+        <div class="w-num">/ 02</div>
+        <h4>需求治理与评审</h4>
+        <p>重构需求入库流程，建立分类法与价值评分卡；累计治理需求 543 项，关闭无效需求 142 项，评审准点率 92%。</p>
+        <div class="w-tags"><span class="w-tag">需求治理</span><span class="w-tag">评分卡</span><span class="w-tag">SOP</span></div>
+      </div>
+      <div class="work-cell">
+        <div class="w-num">/ 03</div>
+        <h4>研发协同与排期</h4>
+        <p>推行双周排期节奏，与研发体系打通需求-任务映射；研发资源复用率提升至 38%，跨业务线模块标准化 3 项。</p>
+        <div class="w-tags"><span class="w-tag">双周节奏</span><span class="w-tag">资源复用</span><span class="w-tag">标准化</span></div>
+      </div>
+      <div class="work-cell">
+        <div class="w-num">/ 04</div>
+        <h4>上线交付与质量</h4>
+        <p>本季度完成 47 项需求上线验收，建立上线 checklist 与回滚预案；P0 需求零事故，线上问题平均响应 1.4 小时。</p>
+        <div class="w-tags"><span class="w-tag">验收</span><span class="w-tag">回滚预案</span><span class="w-tag">零事故</span></div>
+      </div>
+      <div class="work-cell">
+        <div class="w-num">/ 05</div>
+        <h4>价值度量与实验</h4>
+        <p>搭建北极星指标看板，覆盖 4 项一级 / 12 项二级指标；推进 6 项 A/B 实验，4 项已产出可验证结论。</p>
+        <div class="w-tags"><span class="w-tag">北极星</span><span class="w-tag">A/B 实验</span><span class="w-tag">数据驱动</span></div>
+      </div>
+      <div class="work-cell">
+        <div class="w-num">/ 06</div>
+        <h4>跨团队机制沉淀</h4>
+        <p>输出治理体系 SOP、评审模板与价值评分卡文档共 9 份；组织 3 场跨团队培训，覆盖产品、研发、设计 86 人次。</p>
+        <div class="w-tags"><span class="w-tag">SOP 沉淀</span><span class="w-tag">培训</span><span class="w-tag">复用</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 05 — Challenges & Solutions -->
+<section class="report" id="challenges">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">05</div>
+      <div class="title-block">
+        <div class="kicker">Challenges & Solutions · 挑战与应对</div>
+        <h2>每一项<em>阻力</em>，都对应一次机制上的进化</h2>
+      </div>
+    </div>
+
+    <div class="duo-grid reveal">
+      <div class="duo-col challenges">
+        <div class="d-head"><span>识别的挑战</span><span class="count">04 项</span></div>
+
+        <div class="duo-item">
+          <div class="d-title"><span class="n">C01</span>需求洪流下的优先级失焦</div>
+          <p>五条业务线需求并行入库，单周新增 60+ 项，价值评分主观且不一致，导致 P0 需求识别失真。</p>
+        </div>
+        <div class="duo-item">
+          <div class="d-title"><span class="n">C02</span>跨团队模块重复造轮子</div>
+          <p>三个业务线独立实现相似能力，研发资源浪费约 22%，且造成体验不一致与维护成本堆积。</p>
+        </div>
+        <div class="duo-item">
+          <div class="d-title"><span class="n">C03</span>上线后价值反向归因缺失</div>
+          <p>需求上线后缺乏系统化回收机制，难以判断是否达成原始价值假设，影响后续决策置信度。</p>
+        </div>
+        <div class="duo-item">
+          <div class="d-title"><span class="n">C04</span>评审节奏与研发迭代耦合不畅</div>
+          <p>评审周期与研发双周迭代存在相位差，导致排期频繁调整，准点率一度跌至 74%。</p>
+        </div>
+      </div>
+
+      <div class="duo-col solutions">
+        <div class="d-head"><span>落地的应对</span><span class="count">04 项</span></div>
+
+        <div class="duo-item">
+          <div class="d-title"><span class="n">S01</span>价值评分卡 + 分类法收敛</div>
+          <p>引入结构化评分卡（预期收益 × 置信度 × 实现成本），并配套分类法 v1.0 收敛口径，P0 识别一致性提升至 91%。</p>
+        </div>
+        <div class="duo-item">
+          <div class="d-title"><span class="n">S02</span>跨团队模块标准化封装</div>
+          <p>识别 3 项高频复用模块完成标准化封装并接入复用看板，研发资源复用率由 14% 提升至 38%。</p>
+        </div>
+        <div class="duo-item">
+          <div class="d-title"><span class="n">S03</span>北极星看板与实验闭环</div>
+          <p>搭建指标看板与 A/B 实验流程，建立「假设—上线—回收—归因」闭环，已对 6 项需求完成价值回收。</p>
+        </div>
+        <div class="duo-item">
+          <div class="d-title"><span class="n">S04</span>评审节奏与迭代相位对齐</div>
+          <p>将评审节奏前移 2 天，与研发迭代相位对齐；准点率由 74% 回升至 92%，排期变更下降 63%。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 06 — Team -->
+<section class="report" id="team">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">06</div>
+      <div class="title-block">
+        <div class="kicker">Team & Contributions · 团队贡献</div>
+        <h2>八位核心成员，<em>各自</em>承担价值链的一段</h2>
+      </div>
+    </div>
+
+    <div class="team-grid reveal">
+      <div class="member">
+        <div class="av">林</div>
+        <div class="name">林清越</div>
+        <div class="role">产品总监 · 总体负责</div>
+        <div class="contrib">主导路线图修订、价值度量模型设计与跨团队机制对齐。</div>
+      </div>
+      <div class="member">
+        <div class="av">沈</div>
+        <div class="name">沈知行</div>
+        <div class="role">高级产品经理 · 需求治理</div>
+        <div class="contrib">推动分类法与评分卡落地，累计治理需求 543 项。</div>
+      </div>
+      <div class="member">
+        <div class="av">苏</div>
+        <div class="name">苏怀玉</div>
+        <div class="role">产品经理 · 评审与排期</div>
+        <div class="contrib">运转 11 轮双周评审，准点率提升至 92%。</div>
+      </div>
+      <div class="member">
+        <div class="av">周</div>
+        <div class="name">周砚之</div>
+        <div class="role">数据产品 · 度量看板</div>
+        <div class="contrib">搭建北极星看板，覆盖 4 项一级 / 12 项二级指标。</div>
+      </div>
+      <div class="member">
+        <div class="av">陆</div>
+        <div class="name">陆景明</div>
+        <div class="role">产品经理 · 上线交付</div>
+        <div class="contrib">完成 47 项需求上线验收，P0 零事故。</div>
+      </div>
+      <div class="member">
+        <div class="av">叶</div>
+        <div class="name">叶南舟</div>
+        <div class="role">实验产品 · A/B 闭环</div>
+        <div class="contrib">推进 6 项 A/B 实验，4 项产出可验证结论。</div>
+      </div>
+      <div class="member">
+        <div class="av">秦</div>
+        <div class="name">秦若笙</div>
+        <div class="role">产品经理 · 中台沉淀</div>
+        <div class="contrib">标准化 3 项跨团队模块，复用率提升至 38%。</div>
+      </div>
+      <div class="member">
+        <div class="av">顾</div>
+        <div class="name">顾长青</div>
+        <div class="role">研发代表 · 协同接口</div>
+        <div class="contrib">打通需求-任务映射，资源复用机制落地。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 07 — Roadmap -->
+<section class="report" id="roadmap">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-num">07</div>
+      <div class="title-block">
+        <div class="kicker">Roadmap · 下一阶段</div>
+        <h2>由<em>治到量</em>，由量到归因，三步走完价值闭环</h2>
+      </div>
+    </div>
+
+    <div class="roadmap reveal">
+      <div class="road-col">
+        <div class="r-period">Q4 · 短期</div>
+        <div class="r-theme">推广与对齐</div>
+        <ul>
+          <li>治理体系推广至全量 8 条业务线，培训覆盖 200+ 人</li>
+          <li>价值评分卡 v1.1 修订，引入置信度校准机制</li>
+          <li>完成反向归因机制 v1，覆盖已上线 47 项需求回收</li>
+          <li>北极星看板接入实时数据流，T+1 降为 T+0</li>
+        </ul>
+      </div>
+      <div class="road-col">
+        <div class="r-period">H1 · 中期</div>
+        <div class="r-theme">中台化沉淀</div>
+        <ul>
+          <li>成立独立产品中台小组，承接跨团队复用模块</li>
+          <li>标准化模块扩充至 8 项，复用率目标 55%</li>
+          <li>实验平台能力升级，支持多变量与互斥实验</li>
+          <li>构建产品决策知识库，沉淀历史假设与结论</li>
+        </ul>
+      </div>
+      <div class="road-col">
+        <div class="r-period">FY · 长期</div>
+        <div class="r-theme">价值闭环</div>
+        <ul>
+          <li>实现「假设—上线—归因—迭代」全自动闭环</li>
+          <li>价值度量模型对接经营分析，输出投入产出比</li>
+          <li>建立产品健康度评分，量化每条业务线产品资产</li>
+          <li>探索 AI 辅助需求评审与价值预测，提升决策效率</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="wrap">
+    <div class="sign">
+      "重塑产品价值链，<br>
+      不是一次<em class="accent">革命</em>，<br>
+      而是一次次被反复验证的<span class="accent">假设</span>。"
+    </div>
+    <div class="meta-foot">
+      <div>极光计划 · PRJ-AURORA-26Q3</div>
+      <div>汇报人 · 林清越</div>
+      <div>2026.09.16 · 内部传阅</div>
+      <span class="end">— 全文完 —</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        const delay = parseInt(e.target.dataset.delay || 0);
+        setTimeout(() => e.target.classList.add('in'), delay);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach((el, i) => {
+    el.dataset.delay = (i % 4) * 80;
+    io.observe(el);
+  });
+
+  // Animate bar heights when in view
+  const bars = document.querySelectorAll('.bar');
+  const barIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        const h = el.dataset.h;
+        setTimeout(() => { el.style.height = h; }, 200);
+        barIO.unobserve(el);
+      }
+    });
+  }, { threshold: 0.3 });
+  bars.forEach(b => barIO.observe(b));
+
+  // Animate ring progress (re-trigger conic gradient)
+  const rings = document.querySelectorAll('.ring');
+  const ringIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        ringIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  rings.forEach(r => { r.style.opacity = '0.2'; r.style.transition = 'opacity 1s ease, background 1.4s ease'; ringIO.observe(r); });
+</script>
+
+</body>
+</html>
