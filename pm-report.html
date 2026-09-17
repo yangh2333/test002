@@ -825,74 +825,172 @@
   .ms-chart-legend .msl-swatch.delayed  { background: linear-gradient(180deg, #F59E0B, #DC2626); }
   .ms-chart-legend .msl-swatch.pending  { background: var(--pending); opacity: 0.55; }
 
-  /* Editable list below the chart */
+  /* Editable horizontal progress bar rows */
   .ms-chart-list {
     margin-top: 18px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 10px;
   }
   .ms-chart-row {
-    display: grid;
-    grid-template-columns: 40px 1fr 110px 90px 110px 100px 100px;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-    align-items: center;
-    padding: 8px 10px;
+    padding: 12px 16px;
     border: 1px solid var(--border-soft);
-    border-left: 3px solid var(--info);
-    border-radius: 8px;
-    font-size: 12px;
+    border-left: 4px solid var(--info);
+    border-radius: 10px;
     background: var(--bg-card);
+    transition: border-color 0.15s;
   }
+  .ms-chart-row:hover { border-color: var(--ink-mute); }
   .ms-chart-row.achieved { border-left-color: var(--achieved); }
   .ms-chart-row.progress { border-left-color: var(--progress); }
   .ms-chart-row.delayed  { border-left-color: var(--delayed); }
   .ms-chart-row.pending  { border-left-color: var(--pending); }
-  .ms-chart-row.head {
-    background: var(--bg-elev);
-    border-left: none;
+  .ms-chart-row.head { display: none; }
+
+  /* Top row: ID + name + status */
+  .ms-chart-row .ms-row-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ms-chart-row .ms-row-id {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
+    color: var(--ink-mute);
+    background: var(--bg-elev);
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .ms-chart-row .ms-name-input {
+    flex: 1;
+    min-width: 200px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .ms-chart-row .ms-name-input:hover { border-color: var(--border-soft); background: var(--bg-input); }
+  .ms-chart-row .ms-name-input:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
+  .ms-chart-row .ms-row-status {
+    flex-shrink: 0;
+  }
+
+  /* Description */
+  .ms-chart-row .ms-desc-input {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ink-soft);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .ms-chart-row .ms-desc-input:hover { border-color: var(--border-soft); background: var(--bg-input); }
+  .ms-chart-row .ms-desc-input:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
+
+  /* The horizontal progress bar - full width */
+  .ms-chart-row .ms-h-bar {
+    position: relative;
+    height: 24px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .ms-chart-row .ms-h-bar > div {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  .ms-chart-row .ms-h-bar > div.achieved { background: linear-gradient(90deg, #059669, #10B981); }
+  .ms-chart-row .ms-h-bar > div.progress { background: linear-gradient(90deg, #2563EB, #0EA5E9); }
+  .ms-chart-row .ms-h-bar > div.delayed  { background: linear-gradient(90deg, #DC2626, #F59E0B); }
+  .ms-chart-row .ms-h-bar > div.pending  { background: var(--pending); }
+  .ms-chart-row .ms-h-bar > div::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 30px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+    animation: shimmer 2s infinite;
+  }
+  .ms-chart-row .ms-h-pct {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    width: 56px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    text-align: right;
+    z-index: 2;
+  }
+  .ms-chart-row .ms-h-pct:focus { outline: none; border-color: var(--info); }
+  .ms-chart-row .ms-h-label {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    z-index: 2;
+    mix-blend-mode: difference;
+    pointer-events: none;
+  }
+
+  /* Meta row below bar */
+  .ms-chart-row .ms-row-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--border-soft);
+    font-size: 11px;
+  }
+  .ms-chart-row .ms-row-meta .mrm-item .mrm-k {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink-mute);
-    border-radius: 8px;
+    margin-bottom: 2px;
   }
-  .ms-chart-row input,
-  .ms-chart-row select {
+  .ms-chart-row .ms-row-meta .mrm-item input,
+  .ms-chart-row .ms-row-meta .mrm-item select {
     width: 100%;
     background: transparent;
     border: 1px solid transparent;
     color: var(--ink);
     font-family: 'Inter Tight', sans-serif;
-    font-size: 13px;
-    padding: 4px 6px;
+    font-size: 12px;
+    padding: 3px 6px;
     border-radius: 4px;
   }
-  .ms-chart-row input:hover,
-  .ms-chart-row select:hover { border-color: var(--border-soft); background: var(--bg-input); }
-  .ms-chart-row input:focus,
-  .ms-chart-row select:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
-  .ms-chart-row input[type="date"] { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
-  .ms-chart-row select { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; cursor: pointer; appearance: none; padding-right: 22px; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23A9B3C0' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>"); background-repeat: no-repeat; background-position: right 8px center; }
-  .ms-chart-row .ms-name-input { font-weight: 500; }
-  .ms-chart-row .ms-prog-cell { display: flex; align-items: center; gap: 6px; }
-  .ms-chart-row .ms-prog-bar {
-    flex: 1;
-    height: 6px;
-    background: var(--bg-elev);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .ms-chart-row .ms-prog-bar > div {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.6s ease;
-  }
-  .ms-chart-row .ms-prog-bar > div.achieved { background: linear-gradient(90deg, #059669, #10B981); }
-  .ms-chart-row .ms-prog-bar > div.progress { background: linear-gradient(90deg, #2563EB, #0EA5E9); }
-  .ms-chart-row .ms-prog-bar > div.delayed  { background: linear-gradient(90deg, #DC2626, #F59E0B); }
-  .ms-chart-row .ms-prog-bar > div.pending  { background: var(--pending); }
+  .ms-chart-row .ms-row-meta .mrm-item input:hover,
+  .ms-chart-row .ms-row-meta .mrm-item select:hover { border-color: var(--border-soft); background: var(--bg-input); }
+  .ms-chart-row .ms-row-meta .mrm-item input:focus,
+  .ms-chart-row .ms-row-meta .mrm-item select:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
+  .ms-chart-row .ms-row-meta .mrm-item input[type="date"] { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .ms-chart-row .ms-row-meta .mrm-item select { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; cursor: pointer; appearance: none; padding-right: 18px; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23A9B3C0' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>"); background-repeat: no-repeat; background-position: right 6px center; }
 
   /* Legacy table styles kept for backward compat but unused */
   .ms-table {
@@ -1333,8 +1431,7 @@
     .cover-nav { grid-template-columns: repeat(2, 1fr); }
     .proj-header { grid-template-columns: 1fr; }
     .action-grid { grid-template-columns: repeat(2, 1fr); }
-    .ms-chart-row { grid-template-columns: 40px 1fr 100px 80px; gap: 6px; font-size: 11px; }
-    .ms-chart-row .col-actual, .ms-chart-row .col-owner, .ms-chart-row .col-status { display: none; }
+    .ms-chart-row .ms-row-meta { grid-template-columns: repeat(2, 1fr); }
     .top-meta { display: none; }
     .nav-tabs { display: none; }
     .wrap { padding: 0 20px; }
@@ -1937,38 +2034,43 @@
         </div>
 
         <div class="ms-chart-list">
-          <div class="ms-chart-row head">
-            <div>ID</div>
-            <div>进度节点</div>
-            <div class="col-plan">计划日期</div>
-            <div class="col-prog">进度</div>
-            <div class="col-actual">实际/预计日期</div>
-            <div class="col-owner">负责人</div>
-            <div class="col-status">状态</div>
-          </div>
           ${items.map((m, idx) => `
             <div class="ms-chart-row ${m.status}" data-idx="${idx}">
-              <div>${m.id}</div>
-              <div>
+              <div class="ms-row-top">
+                <span class="ms-row-id">${m.id}</span>
                 <input type="text" class="ms-name-input" value="${escapeHtml(m.name)}" data-field="name" placeholder="节点名..." />
-                <input type="text" value="${escapeHtml(m.desc)}" data-field="desc" style="font-size: 11px; color: var(--ink-mute); margin-top: 3px; padding: 2px 6px;" />
-              </div>
-              <div class="col-plan"><input type="date" value="${m.planDate}" data-field="planDate" /></div>
-              <div class="col-prog">
-                <div class="ms-prog-cell">
-                  <div class="ms-prog-bar"><div class="${m.status}" style="width:${m.progress}%"></div></div>
-                  <input type="number" min="0" max="100" value="${m.progress}" data-field="progress" style="width: 42px; padding: 2px 4px; font-size: 11px; text-align: right;" />
+                <div class="ms-row-status">
+                  <select class="status-select ${m.status}" data-field="status">
+                    <option value="achieved" ${m.status === 'achieved' ? 'selected' : ''}>● 达成</option>
+                    <option value="progress" ${m.status === 'progress' ? 'selected' : ''}>● 进行中</option>
+                    <option value="delayed"  ${m.status === 'delayed' ? 'selected' : ''}>▲ 延期</option>
+                    <option value="pending"  ${m.status === 'pending' ? 'selected' : ''}>○ 未开始</option>
+                  </select>
                 </div>
               </div>
-              <div class="col-actual"><input type="date" value="${m.actualDate || ''}" data-field="actualDate" /></div>
-              <div class="col-owner"><input type="text" value="${escapeHtml(m.owner)}" data-field="owner" /></div>
-              <div class="col-status">
-                <select class="status-select ${m.status}" data-field="status">
-                  <option value="achieved" ${m.status === 'achieved' ? 'selected' : ''}>● 达成</option>
-                  <option value="progress" ${m.status === 'progress' ? 'selected' : ''}>● 进行中</option>
-                  <option value="delayed"  ${m.status === 'delayed' ? 'selected' : ''}>▲ 延期</option>
-                  <option value="pending"  ${m.status === 'pending' ? 'selected' : ''}>○ 未开始</option>
-                </select>
+              <input type="text" class="ms-desc-input" value="${escapeHtml(m.desc)}" data-field="desc" placeholder="节点描述..." />
+              <div class="ms-h-bar">
+                <div class="${m.status}" style="width:${m.progress}%"></div>
+                <div class="ms-h-label">${m.status === 'achieved' ? '✓ 达成' : m.status === 'delayed' ? '▲ 延期' : m.status === 'progress' ? '● 进行中' : '○ 未开始'}</div>
+                <input type="number" class="ms-h-pct" min="0" max="100" value="${m.progress}" data-field="progress" />
+              </div>
+              <div class="ms-row-meta">
+                <div class="mrm-item">
+                  <div class="mrm-k">计划日期</div>
+                  <input type="date" value="${m.planDate}" data-field="planDate" />
+                </div>
+                <div class="mrm-item">
+                  <div class="mrm-k">实际/预计日期</div>
+                  <input type="date" value="${m.actualDate || ''}" data-field="actualDate" />
+                </div>
+                <div class="mrm-item">
+                  <div class="mrm-k">负责人</div>
+                  <input type="text" value="${escapeHtml(m.owner)}" data-field="owner" />
+                </div>
+                <div class="mrm-item">
+                  <div class="mrm-k">进度</div>
+                  <input type="text" value="${m.progress}%" data-field="progressText" readonly style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-mute);" />
+                </div>
               </div>
             </div>
           `).join('')}
@@ -1980,6 +2082,7 @@
         const idx = parseInt(row.dataset.idx);
         row.querySelectorAll('input, select').forEach(el => {
           const field = el.dataset.field;
+          if (field === 'progressText') return; // read-only mirror
           const ev = (el.tagName === 'SELECT' || el.type === 'number' || el.type === 'date') ? 'change' : 'input';
           el.addEventListener(ev, () => {
             let val = el.value;
@@ -2000,8 +2103,10 @@
               return;
             }
             if (field === 'progress') {
-              const bar = row.querySelector('.ms-prog-bar > div');
+              const bar = row.querySelector('.ms-h-bar > div');
               if (bar) bar.style.width = val + '%';
+              const txt = row.querySelector('input[data-field="progressText"]');
+              if (txt) txt.value = val + '%';
             }
             recalcOverall(proj);
             saveData();
