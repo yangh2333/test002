@@ -312,10 +312,17 @@
     gap: 0;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
-    min-width: 900px;
+    border-left: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .lc-stages-wrap { margin-bottom: 0; }
+  .lc-stages-wrap .lc-label-spacer {
+    background: var(--bg-elev);
+    border-color: var(--border);
   }
   .lc-stage {
-    padding: 16px 12px;
+    padding: 14px 12px;
     border-right: 1px solid var(--border-soft);
     text-align: center;
     font-family: 'JetBrains Mono', monospace;
@@ -324,6 +331,7 @@
     color: var(--ink-mute);
     text-transform: uppercase;
     position: relative;
+    background: var(--bg-elev);
   }
   .lc-stage:last-child { border-right: none; }
   .lc-stage .num {
@@ -434,8 +442,10 @@
     border: 1px solid var(--border);
     border-radius: 10px;
     overflow: hidden;
-    min-width: 0;
+    min-width: 560px;
   }
+  /* Stage header cells: no extra border (the wrapper grid provides it) */
+  .lc-stages-wrap .lc-cells { border: 1px solid var(--border); }
   .lc-row-wrap .lc-cell {
     border-right: 1px solid var(--border-soft);
     min-height: 60px;
@@ -1093,15 +1103,21 @@
         </div>
       </div>
 
-      <!-- Stage header -->
-      <div class="lc-stages">
-        <div class="lc-stage"><span class="num">01</span>概念阶段</div>
-        <div class="lc-stage"><span class="num">02</span>产品立项</div>
-        <div class="lc-stage"><span class="num">03</span>产品研发</div>
-        <div class="lc-stage"><span class="num">04</span>产品验证</div>
-        <div class="lc-stage"><span class="num">05</span>小量试制</div>
-        <div class="lc-stage"><span class="num">06</span>产品量产</div>
-        <div class="lc-stage"><span class="num">07</span>产品退市</div>
+      <!-- Stage header (wrapped to align with rows below) -->
+      <div class="lc-row-wrap lc-stages-wrap">
+        <div class="lc-label lc-label-spacer">
+          <div class="chip-name">阶段</div>
+          <div class="chip-sub">Stage / 序号</div>
+        </div>
+        <div class="lc-cells lc-stages">
+          <div class="lc-stage"><span class="num">01</span>概念阶段</div>
+          <div class="lc-stage"><span class="num">02</span>产品立项</div>
+          <div class="lc-stage"><span class="num">03</span>产品研发</div>
+          <div class="lc-stage"><span class="num">04</span>产品验证</div>
+          <div class="lc-stage"><span class="num">05</span>小量试制</div>
+          <div class="lc-stage"><span class="num">06</span>产品量产</div>
+          <div class="lc-stage"><span class="num">07</span>产品退市</div>
+        </div>
       </div>
 
       <!-- SDC100 -->
