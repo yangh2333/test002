@@ -507,7 +507,7 @@
     font-weight: 700;
   }
 
-  /* Stage header row: editable stage names */
+  /* Stage header row: editable stage names + descriptions */
   .lc-stages-wrap .lc-cell {
     flex-direction: column;
     gap: 4px;
@@ -517,6 +517,7 @@
     font-size: 11px;
     color: var(--ink-mute);
     letter-spacing: 0.04em;
+    position: relative;
   }
   .lc-stages-wrap .lc-cell .stage-num {
     font-weight: 700;
@@ -544,6 +545,76 @@
   .lc-stages-wrap .lc-cell .stage-name:focus {
     background: var(--bg-input);
     box-shadow: 0 0 0 2px var(--info);
+  }
+  .lc-stages-wrap .lc-cell .stage-desc {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 10.5px;
+    line-height: 1.45;
+    color: var(--ink-mute);
+    outline: none;
+    border-radius: 4px;
+    padding: 3px 6px;
+    margin: 0 -6px;
+    cursor: text;
+    text-align: center;
+    transition: background 0.15s, box-shadow 0.15s;
+    min-width: 70px;
+    min-height: 28px;
+  }
+  .lc-stages-wrap .lc-cell .stage-desc:hover {
+    background: var(--bg-input);
+    box-shadow: 0 0 0 1px var(--border-soft);
+  }
+  .lc-stages-wrap .lc-cell .stage-desc:focus {
+    background: var(--bg-input);
+    box-shadow: 0 0 0 2px var(--info);
+  }
+  .lc-stages-wrap .lc-cell .stage-del {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 16px;
+    height: 16px;
+    line-height: 14px;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
+    color: var(--ink-mute);
+    font-size: 11px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s, background 0.15s, color 0.15s;
+    padding: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .lc-stages-wrap .lc-cell:hover .stage-del { opacity: 1; }
+  .lc-stages-wrap .lc-cell .stage-del:hover {
+    background: var(--delayed-bg);
+    color: var(--delayed);
+    border-color: var(--delayed);
+  }
+  .lc-stages-wrap.lc-cells-2 .lc-cell .stage-del { display: none; }
+  .lc-add-stage-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 8px;
+    background: transparent;
+    border: 1px dashed var(--border-soft);
+    border-radius: 8px;
+    margin-left: 8px;
+    cursor: pointer;
+    color: var(--ink-mute);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    transition: all 0.15s;
+    min-width: 80px;
+  }
+  .lc-add-stage-cell:hover {
+    border-color: var(--info);
+    color: var(--info);
+    background: var(--progress-bg);
   }
 
   /* Per-chip detail card */
@@ -1920,7 +1991,7 @@
 
 <script>
   // ── Data store with localStorage persistence ──
-  const STORE_KEY = 'pm-report-data-v5';
+  const STORE_KEY = 'pm-report-data-v6';
 
   // Default data - based on typical chip product milestones
   // NOTE: Since no image was provided, this uses typical milestone structures.
@@ -1929,6 +2000,15 @@
   // 时间标注：原始图中"7/3"等指 2024 年，"2027年1月"等保持原样
   const DEFAULT_DATA = {
     lcStages: ['概念阶段', '产品立项', '产品研发', '产品验证', '小量试制', '产品量产', '产品退市'],
+    lcStageDescs: [
+      '市场调研、可行性分析与产品概念定义',
+      'PRD 评审、立项决策与项目计划制定',
+      '架构设计、RTL 开发、DV 验证与流片准备',
+      '工程样品回片、功能/性能验证与系统联调',
+      '小批量产线试制、良率爬坡与客户认证',
+      '规模化量产交付、产能爬坡与订单履约',
+      '产品 EOL 决策、库存清理与替代切换'
+    ],
     chips: [
       {
         id: 'sdc100',
@@ -2054,6 +2134,14 @@
   let data = loadJSON(STORE_KEY) || JSON.parse(JSON.stringify(DEFAULT_DATA));
   // Backfill lifecycle fields if loading older saved state without them
   if (!data.lcStages) data.lcStages = JSON.parse(JSON.stringify(DEFAULT_DATA.lcStages));
+  if (!Array.isArray(data.lcStageDescs) || data.lcStageDescs.length !== data.lcStages.length) {
+    // Ensure descriptions array matches stages length; pad with empty strings
+    const arr = [];
+    for (let i = 0; i < data.lcStages.length; i++) {
+      arr[i] = (data.lcStageDescs && data.lcStageDescs[i] != null) ? data.lcStageDescs[i] : (DEFAULT_DATA.lcStageDescs[i] || '');
+    }
+    data.lcStageDescs = arr;
+  }
   if (!Array.isArray(data.chips)) data.chips = JSON.parse(JSON.stringify(DEFAULT_DATA.chips));
 
   function loadJSON(key) {
@@ -2472,31 +2560,38 @@
     const container = document.getElementById('lc-container');
     if (!container) return;
     const stages = data.lcStages || ['概念阶段','产品立项','产品研发','产品验证','小量试制','产品量产','产品退市'];
+    const descs = data.lcStageDescs || stages.map(() => '');
     const chips = data.chips || [];
+    const n = stages.length;
+    const gridTpl = `grid-template-columns: repeat(${n}, 1fr);`;
 
-    // 1. Stage header row (editable stage names)
-    let html = `<div class="lc-row-wrap lc-stages-wrap">
+    // 1. Stage header row (editable stage names + descriptions + delete + add)
+    let html = `<div class="lc-row-wrap lc-stages-wrap ${n <= 2 ? 'lc-cells-2' : ''}">
       <div class="lc-label" style="visibility:hidden">spacer</div>
-      <div class="lc-cells">`;
+      <div class="lc-cells" style="${gridTpl}">`;
     stages.forEach((s, i) => {
       html += `<div class="lc-cell">
         <span class="stage-num">${String(i + 1).padStart(2, '0')}</span>
         <span class="stage-name" contenteditable="true" data-stage-idx="${i}" oninput="updateStageName(${i}, this.textContent)">${escapeHtml(s)}</span>
+        <span class="stage-desc" contenteditable="true" data-stage-idx="${i}" oninput="updateStageDesc(${i}, this.textContent)">${escapeHtml(descs[i] || '')}</span>
+        <button class="stage-del" title="删除阶段" onclick="deleteStage(${i})">×</button>
       </div>`;
     });
-    html += `</div></div>`;
+    html += `</div>
+      <button class="lc-add-stage-cell" onclick="addStage()" title="新增阶段">+ 新增阶段</button>
+    </div>`;
 
     // 2. Per-chip row + detail card
     chips.forEach(c => {
-      const cur = Math.max(1, Math.min(stages.length, c.currentStage || 1));
+      const cur = Math.max(1, Math.min(n, c.currentStage || 1));
       // Status row
       html += `<div class="lc-row-wrap">
         <div class="lc-label">
           <div class="chip-name">${escapeHtml(c.name)}</div>
           <div class="chip-sub">${escapeHtml(c.gen || '')}</div>
         </div>
-        <div class="lc-cells">`;
-      for (let i = 1; i <= stages.length; i++) {
+        <div class="lc-cells" style="${gridTpl}">`;
+      for (let i = 1; i <= n; i++) {
         const cls = i < cur ? 'done' : (i === cur ? 'current' : 'future');
         html += `<div class="lc-cell ${cls}"></div>`;
       }
@@ -2541,6 +2636,39 @@
     if (idx < 0 || idx >= data.lcStages.length) return;
     data.lcStages[idx] = value;
     saveData();
+  }
+  function updateStageDesc(idx, value) {
+    if (!data.lcStageDescs) data.lcStageDescs = (data.lcStages || []).map(() => '');
+    if (idx < 0 || idx >= data.lcStageDescs.length) return;
+    data.lcStageDescs[idx] = value;
+    saveData();
+  }
+  function addStage() {
+    if (!data.lcStages) data.lcStages = [];
+    if (!data.lcStageDescs) data.lcStageDescs = data.lcStages.map(() => '');
+    data.lcStages.push('新阶段');
+    data.lcStageDescs.push('点击编辑阶段说明');
+    saveData();
+    renderLifecycle();
+    showToast();
+  }
+  function deleteStage(idx) {
+    if (!data.lcStages || data.lcStages.length <= 2) {
+      alert('至少保留 2 个阶段');
+      return;
+    }
+    if (!confirm('确定删除此阶段？已使用该阶段的芯片会自动迁移到相邻阶段。')) return;
+    data.lcStages.splice(idx, 1);
+    if (Array.isArray(data.lcStageDescs)) data.lcStageDescs.splice(idx, 1);
+    // Re-anchor chips whose currentStage pointed at/after the deleted stage
+    (data.chips || []).forEach(c => {
+      const cs = c.currentStage || 1;
+      if (cs > idx + 1) c.currentStage = cs - 1;
+      else if (cs === idx + 1) c.currentStage = Math.max(1, Math.min(data.lcStages.length, idx));
+    });
+    saveData();
+    renderLifecycle();
+    showToast();
   }
 
   function updateChipField(chipId, field, value) {
