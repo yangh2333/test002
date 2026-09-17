@@ -693,19 +693,26 @@
 
   /* Progress bar cards (replaces milestone table) */
   .ms-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
   }
   .ms-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-left: 4px solid var(--info);
-    border-radius: 12px;
-    padding: 16px 20px;
-    transition: border-color 0.15s;
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    transition: all 0.18s ease;
+    display: flex;
+    flex-direction: column;
   }
-  .ms-card:hover { border-color: var(--ink-mute); }
+  .ms-card:hover {
+    border-color: var(--ink-mute);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
+    transform: translateY(-2px);
+  }
   .ms-card.achieved { border-left-color: var(--achieved); }
   .ms-card.progress { border-left-color: var(--progress); }
   .ms-card.delayed  { border-left-color: var(--delayed); }
@@ -1294,6 +1301,7 @@
     .cover-nav { grid-template-columns: repeat(2, 1fr); }
     .proj-header { grid-template-columns: 1fr; }
     .action-grid { grid-template-columns: repeat(2, 1fr); }
+    .ms-cards { grid-template-columns: 1fr; }
     .ms-card-meta { grid-template-columns: repeat(2, 1fr); }
     .top-meta { display: none; }
     .nav-tabs { display: none; }
@@ -1532,7 +1540,7 @@
         </div>
 
         <!-- Progress bars - editable -->
-        <div class="ms-section-title">进度条</div>
+        <div class="ms-section-title">进度条卡片</div>
         <div class="ms-cards" id="ms-table-ye512"></div>
 
         <div class="action-grid">
@@ -1575,7 +1583,7 @@
           </div>
         </div>
 
-        <div class="ms-section-title">进度条</div>
+        <div class="ms-section-title">进度条卡片</div>
         <div class="ms-cards" id="ms-table-afd"></div>
 
         <div class="action-grid">
