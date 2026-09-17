@@ -691,161 +691,175 @@
     background: var(--border-soft);
   }
 
-  /* Progress bar cards (replaces milestone table) */
-  .ms-cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-  }
-  .ms-card {
+  /* Unified milestone progress chart (replaces individual cards) */
+  .ms-chart {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-left: 4px solid var(--info);
     border-radius: 14px;
-    padding: 16px 18px;
+    padding: 24px 22px 18px;
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
-    transition: all 0.18s ease;
-    display: flex;
-    flex-direction: column;
   }
-  .ms-card:hover {
-    border-color: var(--ink-mute);
-    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
-    transform: translateY(-2px);
-  }
-  .ms-card.achieved { border-left-color: var(--achieved); }
-  .ms-card.progress { border-left-color: var(--progress); }
-  .ms-card.delayed  { border-left-color: var(--delayed); }
-  .ms-card.pending  { border-left-color: var(--pending); }
 
-  .ms-card-top {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
-  }
-  .ms-card-id {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--ink-mute);
-    background: var(--bg-elev);
-    padding: 3px 8px;
-    border-radius: 4px;
-    flex-shrink: 0;
-  }
-  .ms-card-name {
-    flex: 1;
-    min-width: 200px;
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--ink);
-    font-family: 'Fraunces', serif;
-    font-size: 17px;
-    font-weight: 500;
-    padding: 4px 8px;
-    border-radius: 6px;
-  }
-  .ms-card-name:hover { border-color: var(--border-soft); background: var(--bg-input); }
-  .ms-card-name:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
-
-  /* The big progress bar */
-  .ms-bar-wrap {
+  /* The unified timeline bar */
+  .ms-chart-bar {
     position: relative;
-    height: 32px;
+    height: 36px;
     background: var(--bg-elev);
     border: 1px solid var(--border-soft);
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
-    margin: 10px 0 6px;
+    margin: 8px 0 4px;
   }
-  .ms-bar-fill {
-    height: 100%;
-    width: 0;
-    border-radius: 8px;
-    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  .ms-chart-seg {
+    position: absolute;
+    top: 0; bottom: 0;
+    box-shadow: inset -1px 0 0 rgba(255,255,255,0.5);
+    transition: filter 0.15s;
+  }
+  .ms-chart-seg.achieved { background: linear-gradient(180deg, #10B981, #059669); }
+  .ms-chart-seg.progress { background: linear-gradient(180deg, #0EA5E9, #2563EB); }
+  .ms-chart-seg.delayed  { background: linear-gradient(180deg, #F59E0B, #DC2626); }
+  .ms-chart-seg.pending  { background: var(--pending); opacity: 0.55; }
+  .ms-chart-seg:hover { filter: brightness(1.15); }
+
+  /* Milestone markers on top of the bar */
+  .ms-chart-markers {
     position: relative;
+    height: 32px;
+    margin-bottom: 2px;
   }
-  .ms-bar-fill.achieved { background: linear-gradient(90deg, #059669, #10B981); }
-  .ms-bar-fill.progress { background: linear-gradient(90deg, #2563EB, #0EA5E9); }
-  .ms-bar-fill.delayed  { background: linear-gradient(90deg, #DC2626, #F59E0B); }
-  .ms-bar-fill.pending  { background: var(--pending); }
-  .ms-bar-fill::after {
-    content: '';
+  .ms-chart-marker {
     position: absolute;
-    top: 0; right: 0; bottom: 0;
-    width: 40px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35));
-    animation: shimmer 2.2s infinite;
-  }
-  .ms-bar-label {
-    position: absolute;
-    top: 50%;
-    left: 12px;
-    transform: translateY(-50%);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--ink);
+    transform: translateX(-50%);
+    text-align: center;
+    cursor: pointer;
     z-index: 2;
-    mix-blend-mode: difference;
-    pointer-events: none;
   }
-  .ms-bar-pct-input {
-    position: absolute;
-    top: 50%;
-    right: 8px;
-    transform: translateY(-50%);
-    width: 64px;
+  .ms-chart-marker .msm-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
     background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--ink);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 3px 8px;
-    text-align: right;
-    z-index: 3;
+    border: 3px solid var(--ink-mute);
+    margin: 0 auto 4px;
+    transition: all 0.18s ease;
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.04);
   }
-  .ms-bar-pct-input:focus { outline: none; border-color: var(--info); }
-
-  .ms-card-desc {
-    width: 100%;
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--ink-soft);
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 13px;
-    line-height: 1.5;
-    padding: 4px 8px;
-    border-radius: 6px;
-    margin-top: 4px;
-    resize: vertical;
-    min-height: 28px;
-  }
-  .ms-card-desc:hover { border-color: var(--border-soft); background: var(--bg-input); }
-  .ms-card-desc:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
-
-  .ms-card-meta {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    padding-top: 12px;
-    margin-top: 8px;
-    border-top: 1px dashed var(--border-soft);
-    font-size: 12px;
-  }
-  .ms-card-meta .mcm-item .mcm-k {
+  .ms-chart-marker.achieved .msm-dot { border-color: var(--achieved); background: var(--achieved); }
+  .ms-chart-marker.progress .msm-dot { border-color: var(--progress); background: var(--progress); animation: pulse 2s infinite; }
+  .ms-chart-marker.delayed  .msm-dot { border-color: var(--delayed); background: var(--delayed); }
+  .ms-chart-marker.pending  .msm-dot { border-color: var(--pending); background: var(--bg-card); }
+  .ms-chart-marker .msm-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
-    letter-spacing: 0.1em;
+    color: var(--ink-mute);
+    white-space: nowrap;
+  }
+  .ms-chart-marker:hover .msm-dot {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.18);
+  }
+
+  /* Today indicator */
+  .ms-chart-today {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 2px;
+    background: var(--delayed);
+    z-index: 3;
+    pointer-events: none;
+  }
+  .ms-chart-today::after {
+    content: '今天';
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--delayed);
+    background: var(--bg-card);
+    padding: 1px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  /* Date axis */
+  .ms-chart-axis {
+    position: relative;
+    height: 18px;
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+  }
+  .ms-chart-axis-tick {
+    position: absolute;
+    transform: translateX(-50%);
+  }
+
+  /* Legend */
+  .ms-chart-legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border-soft);
+    font-size: 11px;
+    color: var(--ink-mute);
+  }
+  .ms-chart-legend .msl-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ms-chart-legend .msl-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+  }
+  .ms-chart-legend .msl-swatch.achieved { background: linear-gradient(180deg, #10B981, #059669); }
+  .ms-chart-legend .msl-swatch.progress { background: linear-gradient(180deg, #0EA5E9, #2563EB); }
+  .ms-chart-legend .msl-swatch.delayed  { background: linear-gradient(180deg, #F59E0B, #DC2626); }
+  .ms-chart-legend .msl-swatch.pending  { background: var(--pending); opacity: 0.55; }
+
+  /* Editable list below the chart */
+  .ms-chart-list {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ms-chart-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 110px 90px 110px 100px 100px;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    border: 1px solid var(--border-soft);
+    border-left: 3px solid var(--info);
+    border-radius: 8px;
+    font-size: 12px;
+    background: var(--bg-card);
+  }
+  .ms-chart-row.achieved { border-left-color: var(--achieved); }
+  .ms-chart-row.progress { border-left-color: var(--progress); }
+  .ms-chart-row.delayed  { border-left-color: var(--delayed); }
+  .ms-chart-row.pending  { border-left-color: var(--pending); }
+  .ms-chart-row.head {
+    background: var(--bg-elev);
+    border-left: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink-mute);
-    margin-bottom: 4px;
+    border-radius: 8px;
   }
-  .ms-card-meta .mcm-item input,
-  .ms-card-meta .mcm-item select {
+  .ms-chart-row input,
+  .ms-chart-row select {
     width: 100%;
     background: transparent;
     border: 1px solid transparent;
@@ -855,12 +869,30 @@
     padding: 4px 6px;
     border-radius: 4px;
   }
-  .ms-card-meta .mcm-item input:hover,
-  .ms-card-meta .mcm-item select:hover { border-color: var(--border-soft); background: var(--bg-input); }
-  .ms-card-meta .mcm-item input:focus,
-  .ms-card-meta .mcm-item select:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
-  .ms-card-meta .mcm-item input[type="date"] { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
-  .ms-card-meta .mcm-item select { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; cursor: pointer; appearance: none; padding-right: 22px; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23A9B3C0' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>"); background-repeat: no-repeat; background-position: right 8px center; }
+  .ms-chart-row input:hover,
+  .ms-chart-row select:hover { border-color: var(--border-soft); background: var(--bg-input); }
+  .ms-chart-row input:focus,
+  .ms-chart-row select:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
+  .ms-chart-row input[type="date"] { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .ms-chart-row select { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; cursor: pointer; appearance: none; padding-right: 22px; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23A9B3C0' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>"); background-repeat: no-repeat; background-position: right 8px center; }
+  .ms-chart-row .ms-name-input { font-weight: 500; }
+  .ms-chart-row .ms-prog-cell { display: flex; align-items: center; gap: 6px; }
+  .ms-chart-row .ms-prog-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--bg-elev);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .ms-chart-row .ms-prog-bar > div {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+  .ms-chart-row .ms-prog-bar > div.achieved { background: linear-gradient(90deg, #059669, #10B981); }
+  .ms-chart-row .ms-prog-bar > div.progress { background: linear-gradient(90deg, #2563EB, #0EA5E9); }
+  .ms-chart-row .ms-prog-bar > div.delayed  { background: linear-gradient(90deg, #DC2626, #F59E0B); }
+  .ms-chart-row .ms-prog-bar > div.pending  { background: var(--pending); }
 
   /* Legacy table styles kept for backward compat but unused */
   .ms-table {
@@ -1301,8 +1333,8 @@
     .cover-nav { grid-template-columns: repeat(2, 1fr); }
     .proj-header { grid-template-columns: 1fr; }
     .action-grid { grid-template-columns: repeat(2, 1fr); }
-    .ms-cards { grid-template-columns: 1fr; }
-    .ms-card-meta { grid-template-columns: repeat(2, 1fr); }
+    .ms-chart-row { grid-template-columns: 40px 1fr 100px 80px; gap: 6px; font-size: 11px; }
+    .ms-chart-row .col-actual, .ms-chart-row .col-owner, .ms-chart-row .col-status { display: none; }
     .top-meta { display: none; }
     .nav-tabs { display: none; }
     .wrap { padding: 0 20px; }
@@ -1539,9 +1571,9 @@
           </div>
         </div>
 
-        <!-- Progress bars - editable -->
-        <div class="ms-section-title">进度条卡片</div>
-        <div class="ms-cards" id="ms-table-ye512"></div>
+        <!-- Unified milestone progress chart -->
+        <div class="ms-section-title">里程碑进度图</div>
+        <div class="ms-chart" id="ms-table-ye512"></div>
 
         <div class="action-grid">
           <button class="action-btn risk" onclick="goSub('ye512','risk')">
@@ -1583,8 +1615,8 @@
           </div>
         </div>
 
-        <div class="ms-section-title">进度条卡片</div>
-        <div class="ms-cards" id="ms-table-afd"></div>
+        <div class="ms-section-title">里程碑进度图</div>
+        <div class="ms-chart" id="ms-table-afd"></div>
 
         <div class="action-grid">
           <button class="action-btn risk" onclick="goSub('afd','risk')">
@@ -1818,60 +1850,135 @@
     renderItems();
   }
 
-  // ── Render progress bar cards (editable) ──
+  // ── Render unified milestone progress chart (editable) ──
   function renderMilestones() {
     ['ye512', 'afd'].forEach(proj => {
       const container = document.getElementById('ms-table-' + proj);
       container.innerHTML = '';
       const items = data.milestones[proj];
-      items.forEach((m, idx) => {
-        const card = document.createElement('div');
-        card.className = 'ms-card ' + m.status;
-        card.dataset.proj = proj;
-        card.dataset.idx = idx;
-        card.innerHTML = `
-          <div class="ms-card-top">
-            <span class="ms-card-id">${m.id}</span>
-            <input type="text" class="ms-card-name" value="${escapeHtml(m.name)}" data-field="name" placeholder="进度节点名称..." />
-          </div>
-          <textarea class="ms-card-desc" data-field="desc" placeholder="节点描述...">${escapeHtml(m.desc)}</textarea>
-          <div class="ms-bar-wrap">
-            <div class="ms-bar-fill ${m.status}" data-w="${m.progress}"></div>
-            <div class="ms-bar-label">${m.status === 'achieved' ? '✓ 达成' : m.status === 'delayed' ? '▲ 延期' : m.status === 'progress' ? '● 进行中' : '○ 未开始'}</div>
-            <input type="number" class="ms-bar-pct-input" min="0" max="100" value="${m.progress}" data-field="progress" />
-          </div>
-          <div class="ms-card-meta">
-            <div class="mcm-item">
-              <div class="mcm-k">计划日期</div>
-              <input type="date" value="${m.planDate}" data-field="planDate" />
-            </div>
-            <div class="mcm-item">
-              <div class="mcm-k">实际/预计日期</div>
-              <input type="date" value="${m.actualDate || ''}" data-field="actualDate" />
-            </div>
-            <div class="mcm-item">
-              <div class="mcm-k">负责人</div>
-              <input type="text" value="${escapeHtml(m.owner)}" data-field="owner" />
-            </div>
-            <div class="mcm-item">
-              <div class="mcm-k">状态</div>
-              <select class="status-select ${m.status}" data-field="status">
-                <option value="achieved" ${m.status === 'achieved' ? 'selected' : ''}>● 达成</option>
-                <option value="progress" ${m.status === 'progress' ? 'selected' : ''}>● 进行中</option>
-                <option value="delayed"  ${m.status === 'delayed' ? 'selected' : ''}>▲ 延期</option>
-                <option value="pending"  ${m.status === 'pending' ? 'selected' : ''}>○ 未开始</option>
-              </select>
-            </div>
-          </div>
-        `;
-        container.appendChild(card);
+      const n = items.length;
+      if (n === 0) return;
+
+      // Compute date range from plan/actual dates
+      const dates = items.flatMap(m => [m.planDate, m.actualDate].filter(Boolean)).sort();
+      const minDate = dates.length ? new Date(dates[0]) : new Date();
+      const maxDate = dates.length ? new Date(dates[dates.length - 1]) : new Date();
+      // Pad range by ~5% on each side
+      const span = Math.max(maxDate - minDate, 24 * 3600 * 1000);
+      const padMs = span * 0.05;
+      const rangeStart = new Date(minDate.getTime() - padMs);
+      const rangeEnd = new Date(maxDate.getTime() + padMs);
+      const totalRange = rangeEnd - rangeStart;
+
+      function pctForDate(dateStr) {
+        if (!dateStr) return null;
+        const d = new Date(dateStr);
+        if (isNaN(d)) return null;
+        return Math.max(0, Math.min(100, ((d - rangeStart) / totalRange) * 100));
+      }
+
+      // Build segments for the bar based on planDate sequence
+      // Each milestone gets a segment spanning from previous milestone's date to this one's date,
+      // colored by current milestone's status
+      const segs = [];
+      let prevPct = 0;
+      items.forEach((m, i) => {
+        const thisPct = pctForDate(m.planDate || m.actualDate) ?? (i + 1) / n * 100;
+        segs.push({
+          status: m.status,
+          left: prevPct,
+          width: Math.max(2, thisPct - prevPct),
+          item: m,
+          idx: i
+        });
+        prevPct = thisPct;
+      });
+      // Ensure last seg reaches 100
+      if (segs.length) segs[segs.length - 1].width = 100 - segs[segs.length - 1].left;
+
+      // Today indicator
+      const todayPct = pctForDate(new Date().toISOString().slice(0, 10));
+
+      // Build markers
+      const markers = items.map((m, i) => {
+        const pct = pctForDate(m.planDate || m.actualDate) ?? (i + 0.5) / n * 100;
+        return { m, pct, idx: i };
       });
 
+      // Build axis ticks (start, 25%, 50%, 75%, end)
+      const ticks = [0, 25, 50, 75, 100].map(p => {
+        const t = new Date(rangeStart.getTime() + (p / 100) * totalRange);
+        return { pct: p, label: t.toISOString().slice(0, 10).replace(/-/g, '/').slice(5) };
+      });
+
+      container.innerHTML = `
+        <div class="ms-chart-markers">
+          ${markers.map(mk => `
+            <div class="ms-chart-marker ${mk.m.status}" style="left:${mk.pct}%" title="${escapeHtml(mk.m.id + ': ' + mk.m.name)}">
+              <div class="msm-dot"></div>
+              <div class="msm-label">${mk.m.id}</div>
+            </div>
+          `).join('')}
+          ${todayPct !== null ? `<div class="ms-chart-today" style="left:${todayPct}%"></div>` : ''}
+        </div>
+        <div class="ms-chart-bar">
+          ${segs.map(s => `<div class="ms-chart-seg ${s.status}" style="left:${s.left}%; width:${s.width}%" title="${escapeHtml(s.item.id + ': ' + s.item.name + ' (' + s.item.progress + '%)')}"></div>`).join('')}
+          ${todayPct !== null ? `<div class="ms-chart-today" style="left:${todayPct}%"></div>` : ''}
+        </div>
+        <div class="ms-chart-axis">
+          ${ticks.map(t => `<div class="ms-chart-axis-tick" style="left:${t.pct}%">${t.label}</div>`).join('')}
+        </div>
+        <div class="ms-chart-legend">
+          <div class="msl-item"><span class="msl-swatch achieved"></span>达成</div>
+          <div class="msl-item"><span class="msl-swatch progress"></span>进行中</div>
+          <div class="msl-item"><span class="msl-swatch delayed"></span>延期</div>
+          <div class="msl-item"><span class="msl-swatch pending"></span>未开始</div>
+          <div class="msl-item" style="margin-left:auto"><span style="display:inline-block;width:2px;height:14px;background:var(--delayed);vertical-align:middle"></span> 今天</div>
+        </div>
+
+        <div class="ms-chart-list">
+          <div class="ms-chart-row head">
+            <div>ID</div>
+            <div>进度节点</div>
+            <div class="col-plan">计划日期</div>
+            <div class="col-prog">进度</div>
+            <div class="col-actual">实际/预计日期</div>
+            <div class="col-owner">负责人</div>
+            <div class="col-status">状态</div>
+          </div>
+          ${items.map((m, idx) => `
+            <div class="ms-chart-row ${m.status}" data-idx="${idx}">
+              <div>${m.id}</div>
+              <div>
+                <input type="text" class="ms-name-input" value="${escapeHtml(m.name)}" data-field="name" placeholder="节点名..." />
+                <input type="text" value="${escapeHtml(m.desc)}" data-field="desc" style="font-size: 11px; color: var(--ink-mute); margin-top: 3px; padding: 2px 6px;" />
+              </div>
+              <div class="col-plan"><input type="date" value="${m.planDate}" data-field="planDate" /></div>
+              <div class="col-prog">
+                <div class="ms-prog-cell">
+                  <div class="ms-prog-bar"><div class="${m.status}" style="width:${m.progress}%"></div></div>
+                  <input type="number" min="0" max="100" value="${m.progress}" data-field="progress" style="width: 42px; padding: 2px 4px; font-size: 11px; text-align: right;" />
+                </div>
+              </div>
+              <div class="col-actual"><input type="date" value="${m.actualDate || ''}" data-field="actualDate" /></div>
+              <div class="col-owner"><input type="text" value="${escapeHtml(m.owner)}" data-field="owner" /></div>
+              <div class="col-status">
+                <select class="status-select ${m.status}" data-field="status">
+                  <option value="achieved" ${m.status === 'achieved' ? 'selected' : ''}>● 达成</option>
+                  <option value="progress" ${m.status === 'progress' ? 'selected' : ''}>● 进行中</option>
+                  <option value="delayed"  ${m.status === 'delayed' ? 'selected' : ''}>▲ 延期</option>
+                  <option value="pending"  ${m.status === 'pending' ? 'selected' : ''}>○ 未开始</option>
+                </select>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
       // Wire inputs
-      container.querySelectorAll('.ms-card').forEach(card => {
-        const proj = card.dataset.proj;
-        const idx = parseInt(card.dataset.idx);
-        card.querySelectorAll('input, select, textarea').forEach(el => {
+      container.querySelectorAll('.ms-chart-row:not(.head)').forEach(row => {
+        const idx = parseInt(row.dataset.idx);
+        row.querySelectorAll('input, select').forEach(el => {
           const field = el.dataset.field;
           const ev = (el.tagName === 'SELECT' || el.type === 'number' || el.type === 'date') ? 'change' : 'input';
           el.addEventListener(ev, () => {
@@ -1880,18 +1987,21 @@
             data.milestones[proj][idx][field] = val;
             if (field === 'status') {
               el.className = 'status-select ' + val;
-              card.className = 'ms-card ' + val;
-              const fill = card.querySelector('.ms-bar-fill');
-              if (fill) fill.className = 'ms-bar-fill ' + val;
-              const label = card.querySelector('.ms-bar-label');
-              if (label) label.textContent = val === 'achieved' ? '✓ 达成' : val === 'delayed' ? '▲ 延期' : val === 'progress' ? '● 进行中' : '○ 未开始';
+              row.className = 'ms-chart-row ' + val;
+              // re-render chart to update segments & markers
+              saveData();
+              renderMilestones();
+              return;
+            }
+            if (field === 'planDate' || field === 'actualDate') {
+              // re-render to recompute date axis & markers
+              saveData();
+              renderMilestones();
+              return;
             }
             if (field === 'progress') {
-              const fill = card.querySelector('.ms-bar-fill');
-              if (fill) {
-                fill.style.width = val + '%';
-                fill.dataset.w = val;
-              }
+              const bar = row.querySelector('.ms-prog-bar > div');
+              if (bar) bar.style.width = val + '%';
             }
             recalcOverall(proj);
             saveData();
