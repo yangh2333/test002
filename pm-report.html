@@ -1033,8 +1033,8 @@
       <button class="nav-tab" data-view="projects" onclick="go('projects')">重点专项</button>
     </nav>
     <div class="top-meta">
-      <span>2026.09.16</span>
-      <span>· 林清越</span>
+      <span id="top-time">--</span>
+      <span>· 杨浩</span>
     </div>
   </div>
 </header>
@@ -1049,8 +1049,8 @@
       <p class="lede">本汇报系统梳理公司芯片产品全生命周期进度、当前重点专项里程碑达成情况，以及过程中的风险、问题、求助与信息同步事项。</p>
 
       <div class="cover-meta">
-        <span class="cm"><span class="k">汇报周期</span><span class="v">2024 全年</span></span>
-        <span class="cm"><span class="k">汇报人</span><span class="v">林清越</span></span>
+        <span class="cm"><span class="k">汇报时间</span><span class="v" id="cover-time">--</span></span>
+        <span class="cm"><span class="k">汇报人</span><span class="v">杨浩</span></span>
         <span class="cm"><span class="k">产品线</span><span class="v">SDC100 / 200 / 300</span></span>
         <span class="cm"><span class="k">重点专项</span><span class="v">512 卡 / AFD</span></span>
       </div>
@@ -1712,8 +1712,29 @@
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
+  // ── Real-time clock (auto-align to local computer time) ──
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function updateClock() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = pad(now.getMonth() + 1);
+    const d = pad(now.getDate());
+    const hh = pad(now.getHours());
+    const mm = pad(now.getMinutes());
+    const dateStr = `${y}.${m}.${d}`;
+    const fullStr = `${dateStr} ${hh}:${mm}`;
+    const topEl = document.getElementById('top-time');
+    const coverEl = document.getElementById('cover-time');
+    if (topEl) topEl.textContent = dateStr;
+    if (coverEl) coverEl.textContent = fullStr;
+  }
+  updateClock();
+  // Refresh every 1s to keep aligned with computer clock (seconds-level)
+  setInterval(updateClock, 1000);
+
   // ── Init ──
   function init() {
+    updateClock();
     renderMilestones();
     updateCounts();
     // Animate progress bars after a beat
