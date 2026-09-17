@@ -1996,7 +1996,7 @@
             <textarea class="item-desc" data-field="content" placeholder="内容描述...">${escapeHtml(item.content || '')}</textarea>
           </div>
         </div>
-        <div class="item-meta">
+        <div class="item-meta" style="grid-template-columns: repeat(4, 1fr);">
           <div class="im-item">
             <div class="im-k">干系人</div>
             <input type="text" value="${escapeHtml(item.stakeholders || '')}" data-field="stakeholders" placeholder="如 研发/客户/供应商" />
@@ -2008,6 +2008,10 @@
           <div class="im-item">
             <div class="im-k">进展状态</div>
             <input type="text" value="${escapeHtml(item.progress || '')}" data-field="progress" placeholder="如 排查中/已闭环" />
+          </div>
+          <div class="im-item">
+            <div class="im-k">提出时间</div>
+            <input type="date" value="${escapeHtml(item.proposedAt || '')}" data-field="proposedAt" />
           </div>
         </div>
       `;
@@ -2055,7 +2059,8 @@
       stakeholders: '',
       impact: '',
       status: 'open',
-      progress: ''
+      progress: '',
+      proposedAt: new Date().toISOString().slice(0, 10)
     });
     all[key] = list;
     saveLCSItems(all);
