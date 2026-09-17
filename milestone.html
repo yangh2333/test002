@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>产品里程碑汇报 · Aurora Phase III</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E1217;
+    --bg-elev: #161C24;
+    --bg-card: #1B232E;
+    --border: #2A3543;
+    --border-soft: #232E3B;
+    --ink: #E8EDF3;
+    --ink-soft: #A9B3C0;
+    --ink-mute: #6B7686;
+    --achieved: #4ADE80;
+    --achieved-bg: rgba(74, 222, 128, 0.12);
+    --delayed: #F87171;
+    --delayed-bg: rgba(248, 113, 113, 0.14);
+    --progress: #60A5FA;
+    --progress-bg: rgba(96, 165, 250, 0.14);
+    --pending: #6B7686;
+    --pending-bg: rgba(107, 118, 134, 0.14);
+    --warn: #FBBF24;
+    --warn-bg: rgba(251, 191, 36, 0.14);
+    --danger: #F87171;
+    --info: #60A5FA;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(96,165,250,0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(248,113,113,0.05), transparent);
+  }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+  /* ── Header ── */
+  header.top {
+    border-bottom: 1px solid var(--border);
+    background: rgba(14, 18, 23, 0.85);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .top-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+  }
+  .brand .logo {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, #60A5FA, #818CF8);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bg);
+  }
+  .brand .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-left: 4px;
+  }
+  .top-meta {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .live-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--achieved-bg);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    border-radius: 20px;
+    color: var(--achieved);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .live-dot::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--achieved);
+    border-radius: 50%;
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--info);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--info);
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--info);
+    font-weight: 400;
+  }
+  .hero .lede {
+    color: var(--ink-soft);
+    font-size: 17px;
+    max-width: 720px;
+    margin-bottom: 32px;
+  }
+
+  /* Overall progress hero card */
+  .overall {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+  }
+  .overall-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .overall-card.primary {
+    background: linear-gradient(135deg, var(--bg-card) 0%, #1F2937 100%);
+  }
+  .overall-card .o-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .o-big {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 56px;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .o-big .pct { color: var(--ink-mute); font-size: 24px; font-weight: 400; }
+  .o-sub {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-bottom: 22px;
+  }
+  .o-sub .delta-up { color: var(--achieved); font-weight: 500; }
+  .o-sub .delta-down { color: var(--delayed); font-weight: 500; }
+
+  /* Big progress bar */
+  .big-bar {
+    height: 12px;
+    background: var(--bg-elev);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border-soft);
+  }
+  .big-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #60A5FA, #818CF8);
+    border-radius: 20px;
+    width: 0;
+    transition: width 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  .big-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 40px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25));
+    animation: shimmer 2s infinite;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-40px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateX(0); opacity: 0; }
+  }
+
+  /* Stats grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .stat .s-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stat .s-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .stat .s-value {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .stat.achieved .s-dot { background: var(--achieved); }
+  .stat.achieved .s-value { color: var(--achieved); }
+  .stat.delayed .s-dot { background: var(--delayed); }
+  .stat.delayed .s-value { color: var(--delayed); }
+  .stat.progress .s-dot { background: var(--progress); }
+  .stat.progress .s-value { color: var(--progress); }
+  .stat.pending .s-dot { background: var(--pending); }
+  .stat.pending .s-value { color: var(--pending); }
+
+  /* ── Section ── */
+  section.block {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .block-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .block-head .left h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 30px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+  .block-head .left .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .legend {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    flex-wrap: wrap;
+  }
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend i {
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .legend .l-achieved { background: var(--achieved); }
+  .legend .l-progress { background: var(--progress); }
+  .legend .l-delayed { background: var(--delayed); }
+  .legend .l-pending { background: var(--pending); }
+
+  /* ── Milestone cards ── */
+  .ms-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .ms {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .ms:hover { border-color: var(--ink-mute); transform: translateY(-1px); }
+  .ms.delayed { border-left: 4px solid var(--delayed); }
+  .ms.achieved { border-left: 4px solid var(--achieved); }
+  .ms.progress { border-left: 4px solid var(--progress); }
+  .ms.pending { border-left: 4px solid var(--pending); }
+
+  .ms-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .ms-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+  }
+  .ms-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+  .ms-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .ms-badge.achieved { background: var(--achieved-bg); color: var(--achieved); border: 1px solid rgba(74,222,128,0.3); }
+  .ms-badge.progress { background: var(--progress-bg); color: var(--progress); border: 1px solid rgba(96,165,250,0.3); }
+  .ms-badge.delayed { background: var(--delayed-bg); color: var(--delayed); border: 1px solid rgba(248,113,113,0.3); }
+  .ms-badge.pending { background: var(--pending-bg); color: var(--pending); border: 1px solid rgba(107,118,134,0.3); }
+
+  .ms-desc {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin: 10px 0 18px;
+    max-width: 760px;
+  }
+
+  /* Progress row */
+  .ms-prog {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .ms-prog .pbar {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-elev);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+  }
+  .ms-prog .pbar-fill {
+    height: 100%;
+    border-radius: 20px;
+    width: 0;
+    transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ms.achieved .pbar-fill { background: linear-gradient(90deg, #4ADE80, #34D399); }
+  .ms.progress .pbar-fill { background: linear-gradient(90deg, #60A5FA, #818CF8); }
+  .ms.delayed .pbar-fill { background: linear-gradient(90deg, #F87171, #FBBF24); }
+  .ms.pending .pbar-fill { background: var(--pending); }
+  .ms-prog .pval {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 48px;
+    text-align: right;
+  }
+  .ms.achieved .pval { color: var(--achieved); }
+  .ms.progress .pval { color: var(--progress); }
+  .ms.delayed .pval { color: var(--delayed); }
+  .ms.pending .pval { color: var(--pending); }
+
+  /* Meta row */
+  .ms-meta {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 28px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-soft);
+    font-size: 13px;
+  }
+  .ms-meta .m-item .m-k {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+  }
+  .ms-meta .m-item .m-v {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .ms-meta .m-item .m-v.danger { color: var(--delayed); }
+  .ms-meta .m-item .m-v.warn { color: var(--warn); }
+  .ms-meta .m-item .m-v.ok { color: var(--achieved); }
+
+  /* Delay alert */
+  .delay-alert {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--delayed-bg);
+    border: 1px solid rgba(248,113,113,0.25);
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .delay-alert .icon {
+    color: var(--delayed);
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .delay-alert strong { color: var(--delayed); }
+
+  /* Achieved note */
+  .achieved-note {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--achieved-bg);
+    border: 1px solid rgba(74,222,128,0.25);
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .achieved-note .icon {
+    color: var(--achieved);
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .achieved-note strong { color: var(--achieved); }
+
+  /* ── Risk matrix ── */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .risk {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    position: relative;
+  }
+  .risk.high { border-left: 4px solid var(--delayed); }
+  .risk.mid { border-left: 4px solid var(--warn); }
+  .risk.low { border-left: 4px solid var(--info); }
+  .risk-level {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .risk.high .risk-level { background: var(--delayed-bg); color: var(--delayed); }
+  .risk.mid .risk-level { background: var(--warn-bg); color: var(--warn); }
+  .risk.low .risk-level { background: var(--progress-bg); color: var(--info); }
+  .risk-body { flex: 1; }
+  .risk-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+  .risk-desc {
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .risk-mit {
+    font-size: 12px;
+    color: var(--ink-mute);
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-soft);
+    line-height: 1.5;
+  }
+  .risk-mit b { color: var(--info); font-weight: 600; }
+
+  /* ── Issue log ── */
+  .issue-table {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bg-card);
+  }
+  .issue-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 110px 130px 90px;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-soft);
+    align-items: center;
+    font-size: 13px;
+  }
+  .issue-row:last-child { border-bottom: none; }
+  .issue-row.head {
+    background: var(--bg-elev);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .issue-row .i-id {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-mute);
+    font-size: 12px;
+  }
+  .issue-row .i-desc {
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  .issue-row .i-desc small {
+    display: block;
+    color: var(--ink-mute);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .sev-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .sev-pill.high { background: var(--delayed-bg); color: var(--delayed); }
+  .sev-pill.mid { background: var(--warn-bg); color: var(--warn); }
+  .sev-pill.low { background: var(--progress-bg); color: var(--info); }
+  .sev-pill i { width: 6px; height: 6px; border-radius: 50%; }
+  .sev-pill.high i { background: var(--delayed); }
+  .sev-pill.mid i { background: var(--warn); }
+  .sev-pill.low i { background: var(--info); }
+
+  .status-pill {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+  }
+  .status-pill.open { color: var(--delayed); border-color: rgba(248,113,113,0.4); background: var(--delayed-bg); }
+  .status-pill.progress { color: var(--info); border-color: rgba(96,165,250,0.4); background: var(--progress-bg); }
+  .status-pill.resolved { color: var(--achieved); border-color: rgba(74,222,128,0.4); background: var(--achieved-bg); }
+
+  .owner {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Footer ── */
+  footer {
+    padding: 40px 0 32px;
+    text-align: center;
+    color: var(--ink-mute);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    border-top: 1px solid var(--border-soft);
+    margin-top: 40px;
+  }
+  footer .line { margin-bottom: 8px; }
+  footer .end {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-top: 12px;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .overall { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+    .ms-meta { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .risk-grid { grid-template-columns: 1fr; }
+    .issue-row { grid-template-columns: 50px 1fr 90px; gap: 12px; }
+    .issue-row .col-status, .issue-row .col-owner { display: none; }
+    .top-meta { display: none; }
+    .wrap { padding: 0 20px; }
+    .top-inner { padding: 14px 20px; }
+  }
+  @media (max-width: 600px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .ms-meta { grid-template-columns: 1fr; }
+    .ms-top { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="logo">A</div>
+      <span>Aurora Phase III</span>
+      <span class="sub">/ 里程碑追踪</span>
+    </div>
+    <div class="top-meta">
+      <span class="live-dot">实时同步</span>
+      <span>2026.09.16 14:32</span>
+      <span>负责人 · 林清越</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">Milestone Report · 阶段 III</div>
+    <h1>从规划到上线，<em>每一步</em>都在视线之内</h1>
+    <p class="lede">本页追踪「极光计划」第三阶段 6 项关键里程碑的进度、状态与偏差，并实时记录过程中的风险与已识别问题。延期项与未解决问题重点标示。</p>
+
+    <div class="overall">
+      <div class="overall-card primary">
+        <div class="o-label">整体阶段进度</div>
+        <div class="o-big">68<span class="pct">%</span></div>
+        <div class="o-sub">较预期基线 <span class="delta-down">−7 pp</span> · 预期 75% · 阶段剩余 34 天</div>
+        <div class="big-bar"><div class="big-bar-fill" data-w="68"></div></div>
+      </div>
+      <div class="overall-card">
+        <div class="o-label">里程碑达成分布</div>
+        <div class="stats-grid">
+          <div class="stat achieved">
+            <div class="s-label"><span class="s-dot"></span>达成</div>
+            <div class="s-value">3</div>
+          </div>
+          <div class="stat progress">
+            <div class="s-label"><span class="s-dot"></span>进行中</div>
+            <div class="s-value">1</div>
+          </div>
+          <div class="stat delayed">
+            <div class="s-label"><span class="s-dot"></span>延期</div>
+            <div class="s-value">1</div>
+          </div>
+          <div class="stat pending">
+            <div class="s-label"><span class="s-dot"></span>未开始</div>
+            <div class="s-value">1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Milestones -->
+  <section class="block">
+    <div class="block-head">
+      <div class="left">
+        <div class="kicker">01 · Milestones</div>
+        <h2>关键里程碑追踪</h2>
+      </div>
+      <div class="legend">
+        <span><i class="l-achieved"></i>达成</span>
+        <span><i class="l-progress"></i>进行中</span>
+        <span><i class="l-delayed"></i>延期</span>
+        <span><i class="l-pending"></i>未开始</span>
+      </div>
+    </div>
+
+    <div class="ms-grid">
+
+      <!-- M1 -->
+      <article class="ms achieved">
+        <div class="ms-top">
+          <div>
+            <div class="ms-id">M-01 / 阶段起点</div>
+            <div class="ms-title">需求治理体系 v1.0 发布</div>
+          </div>
+          <span class="ms-badge achieved">● 达成</span>
+        </div>
+        <p class="ms-desc">完成需求分类法、入库模板与评审准入规则；关闭历史遗留无效需求 142 项。</p>
+        <div class="ms-prog">
+          <div class="pbar"><div class="pbar-fill" data-w="100"></div></div>
+          <div class="pval">100%</div>
+        </div>
+        <div class="ms-meta">
+          <div class="m-item"><div class="m-k">计划日期</div><div class="m-v">07.18</div></div>
+          <div class="m-item"><div class="m-k">实际日期</div><div class="m-v ok">07.16 ✓</div></div>
+          <div class="m-item"><div class="m-k">负责人</div><div class="m-v">沈知行</div></div>
+          <div class="m-item"><div class="m-k">交付物</div><div class="m-v">分类法 / SOP</div></div>
+        </div>
+        <div class="achieved-note">
+          <span class="icon">✓</span>
+          <div><strong>提前 2 天达成。</strong>需求识别一致性由 62% 提升至 91%，为后续节奏奠定基础。</div>
+        </div>
+      </article>
+
+      <!-- M2 -->
+      <article class="ms achieved">
+        <div class="ms-top">
+          <div>
+            <div class="ms-id">M-02 / 评审节奏</div>
+            <div class="ms-title">双周评审机制稳定运转</div>
+          </div>
+          <span class="ms-badge achieved">● 达成</span>
+        </div>
+        <p class="ms-desc">五条业务线接入统一评审节奏，累计完成 11 轮评审；引入价值评分卡量化预期收益与实现成本。</p>
+        <div class="ms-prog">
+          <div class="pbar"><div class="pbar-fill" data-w="100"></div></div>
+          <div class="pval">100%</div>
+        </div>
+        <div class="ms-meta">
+          <div class="m-item"><div class="m-k">计划日期</div><div class="m-v">08.15</div></div>
+          <div class="m-item"><div class="m-k">实际日期</div><div class="m-v ok">08.15 ✓</div></div>
+          <div class="m-item"><div class="m-k">负责人</div><div class="m-v">苏怀玉</div></div>
+          <div class="m-item"><div class="m-k">交付物</div><div class="m-v">11 份评审纪要</div></div>
+        </div>
+        <div class="achieved-note">
+          <span class="icon">✓</span>
+          <div><strong>按期达成。</strong>评审准点率提升至 92%，排期变更下降 63%。</div>
+        </div>
+      </article>
+
+      <!-- M3 -->
+      <article class="ms achieved">
+        <div class="ms-top">
+          <div>
+            <div class="ms-id">M-03 / 复用沉淀</div>
+            <div class="ms-title">跨团队模块标准化封装</div>
+          </div>
+          <span class="ms-badge achieved">● 达成</span>
+        </div>
+        <p class="ms-desc">识别 3 项高频复用模块完成标准化封装并接入复用看板，研发资源复用率由 14% 提升至 38%。</p>
+        <div class="ms-prog">
+          <div class="pbar"><div class="pbar-fill" data-w="100"></div></div>
+          <div class="pval">100%</div>
+        </div>
+        <div class="ms-meta">
+          <div class="m-item"><div class="m-k">计划日期</div><div class="m-v">08.30</div></div>
+          <div class="m-item"><div class="m-k">实际日期</div><div class="m-v ok">08.29 ✓</div></div>
+          <div class="m-item"><div class="m-k">负责人</div><div class="m-v">秦若笙</div></div>
+          <div class="m-item"><div class="m-k">交付物</div><div class="m-v">3 模块 / 复用看板</div></div>
+        </div>
+        <div class="achieved-note">
+          <span class="icon">✓</span>
+          <div><strong>提前 1 天达成。</strong>跨业务线体验一致性显著提升，下季度中台立项已具备条件。</div>
+        </div>
+      </article>
+
+      <!-- M4 -->
+      <article class="ms progress">
+        <div class="ms-top">
+          <div>
+            <div class="ms-id">M-04 / 度量闭环</div>
+            <div class="ms-title">北极星看板与 A/B 实验闭环</div>
+          </div>
+          <span class="ms-badge progress">● 进行中</span>
+        </div>
+        <p class="ms-desc">上线北极星指标看板 v1，覆盖 4 项一级指标与 12 项二级指标；推进 6 项 A/B 实验，4 项已产出结论。</p>
+        <div class="ms-prog">
+          <div class="pbar"><div class="pbar-fill" data-w="74"></div></div>
+          <div class="pval">74%</div>
+        </div>
+        <div class="ms-meta">
+          <div class="m-item"><div class="m-k">计划日期</div><div class="m-v">09.30</div></div>
+          <div class="m-item"><div class="m-k">预计完成</div><div class="m-v warn">09.30</div></div>
+          <div class="m-item"><div class="m-k">负责人</div><div class="m-v">周砚之 / 叶南舟</div></div>
+          <div class="m-item"><div class="m-k">剩余任务</div><div class="m-v">2 实验 + 归因 v1</div></div>
+        </div>
+      </article>
+
+      <!-- M5 - DELAYED -->
+      <article class="ms delayed">
+        <div class="ms-top">
+          <div>
+            <div class="ms-id">M-05 / 反向归因</div>
+            <div class="ms-title">价值反向归因机制 v1</div>
+          </div>
+          <span class="ms-badge delayed">▲ 延期</span>
+        </div>
+        <p class="ms-desc">为已上线 47 项需求建立「假设—回收—归因」闭环，使每项需求可追溯至原始价值假设。</p>
+        <div class="ms-prog">
+          <div class="pbar"><div class="pbar-fill" data-w="42"></div></div>
+          <div class="pval">42%</div>
+        </div>
+        <div class="ms-meta">
+          <div class="m-item"><div class="m-k">计划日期</div><div class="m-v">09.15</div></div>
+          <div class="m-item"><div class="m-k">预计完成</div><div class="m-v danger">10.20 (+35天)</div></div>
+          <div class="m-item"><div class="m-k">负责人</div><div class="m-v">周砚之</div></div>
+          <div class="m-item"><div class="m-k">延期等级</div><div class="m-v danger">高</div></div>
+        </div>
+        <div class="delay-alert">
+          <span class="icon">!</span>
+          <div><strong>延期原因：</strong>数据中台实时流接入受阻（依赖方排期冲突），归因模型字段口径与经营分析体系未对齐。已升级至战略委员会协调资源，预计 10.20 完成补齐。</div>
+        </div>
+      </article>
+
+      <!-- M6 -->
+      <article class="ms pending">
+        <div class="ms-top">
+          <div>
+            <div class="ms-id">M-06 / 阶段终点</div>
+            <div class="ms-title">阶段复盘与全量推广方案</div>
+          </div>
+          <span class="ms-badge pending">○ 未开始</span>
+        </div>
+        <p class="ms-desc">输出阶段复盘报告、推广方案与中台立项书；启动反向归因 v1.1 与 FY27 路线图修订。</p>
+        <div class="ms-prog">
+          <div class="pbar"><div class="pbar-fill" data-w="0"></div></div>
+          <div class="pval">0%</div>
+        </div>
+        <div class="ms-meta">
+          <div class="m-item"><div class="m-k">计划日期</div><div class="m-v">10.15</div></div>
+          <div class="m-item"><div class="m-k">预计完成</div><div class="m-v">10.15</div></div>
+          <div class="m-item"><div class="m-k">负责人</div><div class="m-v">林清越</div></div>
+          <div class="m-item"><div class="m-k">前置依赖</div><div class="m-v warn">M-05 完成</div></div>
+        </div>
+        <div class="delay-alert" style="background: var(--warn-bg); border-color: rgba(251,191,36,0.25);">
+          <span class="icon" style="color: var(--warn);">⚠</span>
+          <div><strong style="color: var(--warn);">受 M-05 延期影响</strong>，本里程碑启动时间可能后移；已制定并行启动预案以压缩总周期。</div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Risks -->
+  <section class="block">
+    <div class="block-head">
+      <div class="left">
+        <div class="kicker">02 · Process Risks</div>
+        <h2>过程风险登记</h2>
+      </div>
+      <div class="legend">
+        <span><i class="l-delayed"></i>高风险</span>
+        <span><i style="background: var(--warn);"></i>中风险</span>
+        <span><i class="l-progress"></i>低风险</span>
+      </div>
+    </div>
+
+    <div class="risk-grid">
+
+      <div class="risk high">
+        <div class="risk-level">高</div>
+        <div class="risk-body">
+          <div class="risk-title">数据中台实时流接入受阻</div>
+          <div class="risk-desc">归因模型依赖的实时事件流未按期交付，影响 M-05 反向归因闭环。</div>
+          <div class="risk-mit"><b>应对：</b>已升级至战略委员会，协调数据团队 2 名工程师专项支援，10.10 前完成接入。</div>
+        </div>
+      </div>
+
+      <div class="risk high">
+        <div class="risk-level">高</div>
+        <div class="risk-body">
+          <div class="risk-title">跨团队模块复用意愿不足</div>
+          <div class="risk-desc">部分业务线倾向自建以保留灵活性，可能影响中台化目标的规模效应。</div>
+          <div class="risk-mit"><b>应对：</b>将复用率纳入业务线 OKR 考核，下季度试行复用贡献度排行榜。</div>
+        </div>
+      </div>
+
+      <div class="risk mid">
+        <div class="risk-level">中</div>
+        <div class="risk-body">
+          <div class="risk-title">A/B 实验样本量不达预期</div>
+          <div class="risk-desc">2 项实验因灰度策略保守，回收周期延长，结论置信度存在风险。</div>
+          <div class="risk-mit"><b>应对：</b>调整灰度比例至 15%，引入序贯检验降低样本需求，预计 09.28 出结论。</div>
+        </div>
+      </div>
+
+      <div class="risk mid">
+        <div class="risk-level">中</div>
+        <div class="risk-body">
+          <div class="risk-title">评分卡主观偏差仍存</div>
+          <div class="risk-desc">不同评审人对「置信度」维度打分一致性约 78%，低于 90% 目标。</div>
+          <div class="risk-mit"><b>应对：</b>引入校准会议机制，v1.1 评分卡附加量化锚点，10 月试行。</div>
+        </div>
+      </div>
+
+      <div class="risk low">
+        <div class="risk-level">低</div>
+        <div class="risk-body">
+          <div class="risk-title">复盘材料交付节奏</div>
+          <div class="risk-desc">阶段复盘报告需整合多源数据，存在汇总延迟的轻微风险。</div>
+          <div class="risk-mit"><b>应对：</b>已建立数据模板与责任人清单，每周三同步进度。</div>
+        </div>
+      </div>
+
+      <div class="risk low">
+        <div class="risk-level">低</div>
+        <div class="risk-body">
+          <div class="risk-title">培训覆盖度</div>
+          <div class="risk-desc">全量推广培训涉及 200+ 人，排期与业务节奏存在轻度冲突。</div>
+          <div class="risk-mit"><b>应对：</b>采用录播 + 答疑直播混合模式，降低对业务线的占用。</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Issues -->
+  <section class="block">
+    <div class="block-head">
+      <div class="left">
+        <div class="kicker">03 · Open Issues</div>
+        <h2>已识别问题清单</h2>
+      </div>
+      <div class="legend">
+        <span><i class="l-delayed"></i>未解决</span>
+        <span><i class="l-progress"></i>处理中</span>
+        <span><i class="l-achieved"></i>已解决</span>
+      </div>
+    </div>
+
+    <div class="issue-table">
+      <div class="issue-row head">
+        <div>ID</div>
+        <div>问题描述</div>
+        <div>严重度</div>
+        <div class="col-status">状态</div>
+        <div class="col-owner">负责人</div>
+      </div>
+
+      <div class="issue-row">
+        <div class="i-id">#047</div>
+        <div class="i-desc">归因模型字段口径与经营分析体系不一致，导致数据无法对账
+          <small>影响 M-05 进度 · 关联风险 R-01</small>
+        </div>
+        <div><span class="sev-pill high"><i></i>高</span></div>
+        <div class="col-status"><span class="status-pill open">未解决</span></div>
+        <div class="col-owner">周砚之</div>
+      </div>
+
+      <div class="issue-row">
+        <div class="i-id">#046</div>
+        <div class="i-desc">北极星看板 T+1 数据延迟，影响晨会决策时效
+          <small>已立项实时流改造 · 关联风险 R-01</small>
+        </div>
+        <div><span class="sev-pill high"><i></i>高</span></div>
+        <div class="col-status"><span class="status-pill progress">处理中</span></div>
+        <div class="col-owner">周砚之</div>
+      </div>
+
+      <div class="issue-row">
+        <div class="i-id">#045</div>
+        <div class="i-desc">2 项 A/B 实验样本量不足，结论置信度低于阈值
+          <small>已调整灰度比例 · 关联风险 R-03</small>
+        </div>
+        <div><span class="sev-pill mid"><i></i>中</span></div>
+        <div class="col-status"><span class="status-pill progress">处理中</span></div>
+        <div class="col-owner">叶南舟</div>
+      </div>
+
+      <div class="issue-row">
+        <div class="i-id">#044</div>
+        <div class="i-desc">业务线 C 评审参与度低，连续 2 轮缺席价值评分
+          <small>已与业务线负责人 1v1 沟通</small>
+        </div>
+        <div><span class="sev-pill mid"><i></i>中</span></div>
+        <div class="col-status"><span class="status-pill progress">处理中</span></div>
+        <div class="col-owner">苏怀玉</div>
+      </div>
+
+      <div class="issue-row">
+        <div class="i-id">#043</div>
+        <div class="i-desc">复用模块文档版本混乱，新旧版本并存导致接入困惑
+          <small>已下线旧版 · 文档站点统一</small>
+        </div>
+        <div><span class="sev-pill low"><i></i>低</span></div>
+        <div class="col-status"><span class="status-pill resolved">已解决</span></div>
+        <div class="col-owner">秦若笙</div>
+      </div>
+
+      <div class="issue-row">
+        <div class="i-id">#042</div>
+        <div class="i-desc">需求评分卡置信度维度主观偏差较大
+          <small>v1.1 校准机制设计中 · 关联风险 R-04</small>
+        </div>
+        <div><span class="sev-pill low"><i></i>低</span></div>
+        <div class="col-status"><span class="status-pill progress">处理中</span></div>
+        <div class="col-owner">沈知行</div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="line">Aurora Phase III · 里程碑追踪 · 数据截至 2026.09.16 14:32</div>
+  <div class="line">PRJ-AURORA-26Q3 · 内部传阅 · 实时同步</div>
+  <div class="end">— 由产品管理办公室维护 —</div>
+</footer>
+
+<script>
+  // Animate progress bars when in view
+  const bars = document.querySelectorAll('.pbar-fill, .big-bar-fill');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        const w = el.dataset.w;
+        setTimeout(() => { el.style.width = w + '%'; }, 150);
+        io.unobserve(el);
+      }
+    });
+  }, { threshold: 0.3 });
+  bars.forEach(b => io.observe(b));
+</script>
+
+</body>
+</html>
