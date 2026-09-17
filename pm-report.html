@@ -595,6 +595,12 @@
     border-color: var(--delayed);
   }
   .lc-stages-wrap.lc-cells-2 .lc-cell .stage-del { display: none; }
+  .lc-add-stage-row {
+    margin-left: 196px;       /* align with lc-cells: 180 (label) + 16 (gap) */
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: flex-end; /* button hugs the right edge of the cells strip */
+  }
   .lc-add-stage-cell {
     display: flex;
     align-items: center;
@@ -603,13 +609,13 @@
     background: transparent;
     border: 1px dashed var(--border-soft);
     border-radius: 8px;
-    margin-left: 8px;
     cursor: pointer;
     color: var(--ink-mute);
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     transition: all 0.15s;
     min-width: 80px;
+    flex: 0 0 auto;
   }
   .lc-add-stage-cell:hover {
     border-color: var(--info);
@@ -2783,7 +2789,8 @@
     const n = stages.length;
     const gridTpl = `grid-template-columns: repeat(${n}, 1fr);`;
 
-    // 1. Stage header row (editable stage names + descriptions + delete + add)
+    // 1. Stage header row (editable stage names + descriptions + delete)
+    //    Structure matches chip rows exactly (label + cells) so widths auto-align.
     let html = `<div class="lc-row-wrap lc-stages-wrap ${n <= 2 ? 'lc-cells-2' : ''}">
       <div class="lc-label" style="visibility:hidden">spacer</div>
       <div class="lc-cells" style="${gridTpl}">`;
@@ -2796,8 +2803,8 @@
       </div>`;
     });
     html += `</div>
-      <button class="lc-add-stage-cell" onclick="addStage()" title="新增阶段">+ 新增阶段</button>
-    </div>`;
+    </div>
+    <div class="lc-add-stage-row"><button class="lc-add-stage-cell" onclick="addStage()" title="新增阶段">+ 新增阶段</button></div>`;
 
     // 2. Per-chip row + detail card
     chips.forEach(c => {
