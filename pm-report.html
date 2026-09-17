@@ -617,6 +617,25 @@
     background: var(--progress-bg);
   }
 
+  /* Clickable chip status-row cells */
+  .lc-row-wrap .lc-cells.lc-chip-cells .lc-cell.lc-chip-cell {
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .lc-row-wrap .lc-cells.lc-chip-cells .lc-cell.lc-chip-cell:hover {
+    background: var(--progress-bg);
+    border-color: var(--info);
+    transform: scale(1.03);
+    z-index: 2;
+  }
+  .lc-row-wrap .lc-cells.lc-chip-cells .lc-cell.lc-chip-cell.current:hover {
+    background: var(--progress-bg);
+    box-shadow: 0 0 0 2px var(--info);
+  }
+  .lc-row-wrap .lc-cells.lc-chip-cells .lc-cell.lc-chip-cell.done:hover {
+    background: var(--achieved-bg);
+  }
+
   /* Per-chip detail card */
   .chip-card {
     margin-left: 196px;
@@ -1824,7 +1843,7 @@
       <!-- Stage header + chip rows + detail cards injected by JS -->
       <div id="lc-container"></div>
 
-      <div style="display: flex; justify-content: center;"><div class="lc-edit-hint">阶段名与说明均可直接点击编辑，自动保存</div></div>
+      <div style="display: flex; justify-content: center;"><div class="lc-edit-hint">阶段名/说明可直接点击编辑 · 点击每代芯片状态行的任一格可设置当前阶段 · 自动保存</div></div>
     </div>
   </section>
 
@@ -2584,16 +2603,17 @@
     // 2. Per-chip row + detail card
     chips.forEach(c => {
       const cur = Math.max(1, Math.min(n, c.currentStage || 1));
-      // Status row
+      // Status row — each cell clickable to set current stage
       html += `<div class="lc-row-wrap">
         <div class="lc-label">
           <div class="chip-name">${escapeHtml(c.name)}</div>
           <div class="chip-sub">${escapeHtml(c.gen || '')}</div>
         </div>
-        <div class="lc-cells" style="${gridTpl}">`;
+        <div class="lc-cells lc-chip-cells" style="${gridTpl}" title="点击任一格可设置当前阶段">`;
       for (let i = 1; i <= n; i++) {
         const cls = i < cur ? 'done' : (i === cur ? 'current' : 'future');
-        html += `<div class="lc-cell ${cls}"></div>`;
+        const label = i === cur ? '当前阶段' : (i < cur ? '已完成' : '未进入');
+        html += `<div class="lc-cell ${cls} lc-chip-cell" data-chip="${escapeAttr(c.id)}" data-stage="${i}" title="${escapeAttr(label)}：${escapeAttr(stages[i-1] || '')}" onclick="setChipStage('${escapeAttr(c.id)}', ${i})"></div>`;
       }
       html += `</div></div>`;
 
@@ -2676,6 +2696,18 @@
     if (!c) return;
     c[field] = value;
     saveData();
+  }
+  // Set a chip's current stage by clicking a status-row cell
+  function setChipStage(chipId, stageIdx) {
+    const c = (data.chips || []).find(x => x.id === chipId);
+    if (!c) return;
+    const n = (data.lcStages || []).length;
+    if (stageIdx < 1 || stageIdx > n) return;
+    if (c.currentStage === stageIdx) return;
+    c.currentStage = stageIdx;
+    saveData();
+    renderLifecycle();
+    showToast();
   }
 
   // ── New chip modal ──
