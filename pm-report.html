@@ -1046,6 +1046,16 @@
   }
   .ms-gantt-row .msm-name-item .msm-id { flex-shrink: 0; }
   .ms-gantt-row .msm-name-item input { flex: 1; min-width: 0; }
+  .ms-gantt-row .msm-name-item .msm-stage {
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--info);
+    background: var(--progress-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.02em;
+  }
 
   /* Dependency arrows between consecutive bars on the same row */
   .ms-gantt-arrow {
@@ -2017,6 +2027,23 @@
     </div>
   </div>
 
+  <!-- Edit milestones modal (stage + name) -->
+  <div class="modal-overlay" id="modal-editms" onclick="if(event.target===this)closeEditMsModal()">
+    <div class="modal-card" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3>编辑里程碑 · 阶段与名称</h3>
+        <button class="modal-close" onclick="closeEditMsModal()">×</button>
+      </div>
+      <div class="modal-body" style="padding: 0;">
+        <div id="editms-list" style="max-height: 60vh; overflow-y: auto;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeEditMsModal()">取消</button>
+        <button class="btn primary" onclick="saveEditMs()">保存</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ════════════ SUB PAGES ════════════ -->
   <section class="view" id="view-sub">
     <div class="subpage-header">
@@ -2219,11 +2246,12 @@
     data.lcStageDescs = arr;
   }
   if (!Array.isArray(data.chips)) data.chips = JSON.parse(JSON.stringify(DEFAULT_DATA.chips));
-  // Backfill milestone.group field (for multi-segment gantt rows)
+  // Backfill milestone.group field (for multi-segment gantt rows) and stage field
   if (data.milestones && typeof data.milestones === 'object') {
     Object.values(data.milestones).forEach(arr => {
       if (Array.isArray(arr)) arr.forEach((m, i) => {
         if (m.group == null || m.group === '') m.group = i + 1;
+        if (m.stage == null) m.stage = '';
       });
     });
   }
@@ -2464,6 +2492,53 @@
     btn.textContent = showing ? '▾ 收起编辑明细' : '✎ 展开编辑明细';
   }
 
+  // ── Edit milestones modal (stage + name) ──
+  let editMsProj = '';
+  function openEditMsModal(projId) {
+    editMsProj = projId;
+    const items = data.milestones[projId] || [];
+    const listEl = document.getElementById('editms-list');
+    if (items.length === 0) {
+      listEl.innerHTML = '<div style="padding:24px; text-align:center; color:var(--ink-mute);">暂无里程碑</div>';
+    } else {
+      listEl.innerHTML = `
+        <div style="display:grid; grid-template-columns:50px 1fr 1fr; gap:8px; padding:8px 16px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-mute); border-bottom:1px solid var(--border-soft); text-transform:uppercase; letter-spacing:0.05em;">
+          <div>ID</div><div>阶段</div><div>里程碑名称</div>
+        </div>
+        ${items.map((m, idx) => `
+          <div class="editms-row" data-idx="${idx}" style="display:grid; grid-template-columns:50px 1fr 1fr; gap:8px; padding:8px 16px; border-bottom:1px solid var(--border-soft); align-items:center;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-mute);">${m.id}</span>
+            <input type="text" class="em-stage" value="${escapeHtml(m.stage || '')}" placeholder="如：规划/研发/量产..." style="width:100%; border:1px solid var(--border-soft); border-radius:4px; padding:4px 8px; font-size:12px;" />
+            <input type="text" class="em-name" value="${escapeHtml(m.name || '')}" placeholder="里程碑名称..." style="width:100%; border:1px solid var(--border-soft); border-radius:4px; padding:4px 8px; font-size:12px;" />
+          </div>
+        `).join('')}
+      `;
+    }
+    document.getElementById('modal-editms').classList.add('show');
+  }
+  function closeEditMsModal() {
+    document.getElementById('modal-editms').classList.remove('show');
+    editMsProj = '';
+  }
+  function saveEditMs() {
+    if (!editMsProj) { closeEditMsModal(); return; }
+    const items = data.milestones[editMsProj] || [];
+    document.querySelectorAll('#editms-list .editms-row').forEach(row => {
+      const idx = parseInt(row.dataset.idx);
+      const stageInp = row.querySelector('.em-stage');
+      const nameInp = row.querySelector('.em-name');
+      if (items[idx]) {
+        if (stageInp) items[idx].stage = stageInp.value;
+        if (nameInp) items[idx].name = nameInp.value;
+      }
+    });
+    saveData();
+    renderMilestones();
+    recalcOverall(editMsProj);
+    closeEditMsModal();
+    showToast();
+  }
+
   // ── Render unified Gantt-style milestone chart (editable) ──
   function renderMilestones() {
     const projIds = data.projects.map(p => p.id);
@@ -2558,10 +2633,11 @@
         // Sort a copy by startPct to draw arrows in chronological order
         const sorted = [...bars].sort((a, b) => a.startPct - b.startPct);
 
-        // Name column: one id+input per milestone in this group
+        // Name column: one id+stage+input per milestone in this group
         const nameHtml = bars.map(b => `
           <div class="msm-name-item">
             <span class="msm-id">${b.m.id}</span>
+            ${b.m.stage ? `<span class="msm-stage">${escapeHtml(b.m.stage)}</span>` : ''}
             <input type="text" value="${escapeHtml(b.m.name)}" data-idx="${b.idx}" data-field="name" placeholder="节点名..." />
           </div>
         `).join('');
@@ -2615,7 +2691,10 @@
           <div class="msl-item" style="margin-left:auto"><span style="display:inline-block;width:2px;height:14px;background:var(--delayed);vertical-align:middle;margin-right:4px"></span>今天</div>
           <div class="msl-item" style="margin-left:8px"><span style="display:inline-block;width:18px;height:2px;background:var(--ink-mute);vertical-align:middle;margin-right:4px;position:relative"><span style="position:absolute;right:-2px;top:-3px;width:0;height:0;border-left:6px solid var(--ink-mute);border-top:4px solid transparent;border-bottom:4px solid transparent"></span></span>前后依赖</div>
         </div>
-        <button class="ms-gantt-edit-toggle" onclick="toggleGanttEdit(this)">✎ 展开编辑明细</button>
+        <div style="display:flex; gap:8px; margin-top:14px; margin-left:220px;">
+          <button class="ms-gantt-edit-toggle" onclick="toggleGanttEdit(this)" style="margin:0;">✎ 展开编辑明细</button>
+          <button class="ms-gantt-edit-toggle" onclick="openEditMsModal('${proj}')" style="margin:0;">✎ 编辑阶段与名称</button>
+        </div>
         <div class="ms-gantt-edit-hint">提示：把多个里程碑的「行」设为同一数字，即可合并到同一行展示前后依赖箭头。</div>
         <!-- Editable detail inputs (compact). "行" column merges milestones into one row to show front-back dependency. -->
         <div class="ms-gantt-edit">
