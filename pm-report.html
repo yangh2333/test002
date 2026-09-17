@@ -1052,7 +1052,7 @@
         <span class="cm"><span class="k">汇报时间</span><span class="v" id="cover-time">--</span></span>
         <span class="cm"><span class="k">汇报人</span><span class="v">杨浩</span></span>
         <span class="cm"><span class="k">产品线</span><span class="v">SDC100 / 200 / 300</span></span>
-        <span class="cm"><span class="k">重点专项</span><span class="v">512 卡 / AFD</span></span>
+        <span class="cm"><span class="k">重点专项</span><span class="v">仪电512卡 / AFD</span></span>
       </div>
 
       <div class="cover-nav">
@@ -1065,7 +1065,7 @@
         <div class="cn" onclick="go('projects')">
           <div class="num">02</div>
           <div class="t">公司重点产品专项</div>
-          <div class="d">仪电 512 卡交付专项与 AFD 产品化专项的进度里程碑达成情况，支持在线编辑与状态更新。</div>
+          <div class="d">仪电512卡交付专项与 AFD 产品化专项的进度里程碑达成情况，支持在线编辑与状态更新。</div>
           <span class="arrow">→</span>
         </div>
         <div class="cn" onclick="go('projects')">
@@ -1193,7 +1193,7 @@
       </div>
 
       <div class="project-tabs">
-        <button class="ptab active" data-proj="ye512" onclick="switchProj('ye512')">仪电 512 卡交付专项</button>
+        <button class="ptab active" data-proj="ye512" onclick="switchProj('ye512')">仪电512卡交付专项</button>
         <button class="ptab" data-proj="afd" onclick="switchProj('afd')">AFD 产品化专项</button>
       </div>
 
@@ -1201,9 +1201,9 @@
       <div class="project-panel active" id="proj-ye512">
         <div class="proj-header">
           <div class="proj-card">
-            <h3>仪电 512 卡交付专项</h3>
+            <h3>仪电512卡交付专项</h3>
             <div class="code">PRJ-YE512-2024 / 负责人 · 林清越 / 赞助人 · CTO</div>
-            <div class="desc">面向仪电客户的 512 卡（DF1000/DF1000X）规模化交付专项，覆盖 128 卡小批量、512 OAM、12/15 收入确认等关键节点。当前处于 512 OAM 形态量产爬坡阶段，良率与 H3C 单供为主要风险。</div>
+            <div class="desc">面向仪电客户的仪电512卡（DF1000/DF1000X）规模化交付专项，覆盖 128 卡小批量、512 OAM、12/15 收入确认等关键节点。当前处于 512 OAM 形态量产爬坡阶段，良率与 H3C 单供为主要风险。</div>
           </div>
           <div class="overall-prog">
             <div class="op-label">专项总进度</div>
@@ -1319,7 +1319,7 @@
     </div>
 
     <div class="sub-tabs" id="sub-tabs">
-      <button class="sub-tab active" data-proj="ye512" onclick="switchSubProj('ye512')">仪电 512 卡</button>
+      <button class="sub-tab active" data-proj="ye512" onclick="switchSubProj('ye512')">仪电512卡</button>
       <button class="sub-tab" data-proj="afd" onclick="switchSubProj('afd')">AFD 产品化</button>
     </div>
 
@@ -1337,7 +1337,7 @@
 
 <script>
   // ── Data store with localStorage persistence ──
-  const STORE_KEY = 'pm-report-data-v2';
+  const STORE_KEY = 'pm-report-data-v3';
 
   // Default data - based on typical chip product milestones
   // NOTE: Since no image was provided, this uses typical milestone structures.
@@ -1347,17 +1347,17 @@
   const DEFAULT_DATA = {
     milestones: {
       ye512: [
-        { id: 'M1', name: '512 卡启动', desc: '仪电 512 卡项目正式启动，立项决策完成', planDate: '2024-03-10', progress: 100, status: 'achieved', actualDate: '2024-03-10', owner: '林清越' },
+        { id: 'M1', name: '仪电512卡启动', desc: '仪电512卡项目正式启动，立项决策完成', planDate: '2024-03-10', progress: 100, status: 'achieved', actualDate: '2024-03-10', owner: '林清越' },
         { id: 'M2', name: '128 卡发货（50pcs）', desc: '首批 128 卡 50 片发货，小批量验证', planDate: '2024-05-29', progress: 100, status: 'achieved', actualDate: '2024-05-29', owner: '陆景明' },
         { id: 'M3', name: '128 卡发货（200pcs）', desc: '第二批 128 卡 200 片发货', planDate: '2024-06-14', progress: 100, status: 'achieved', actualDate: '2024-06-14', owner: '陆景明' },
         { id: 'M4', name: '128 卡发货（150pcs）', desc: '第三批 128 卡 150 片发货', planDate: '2024-06-16', progress: 100, status: 'achieved', actualDate: '2024-06-16', owner: '陆景明' },
-        { id: 'M5', name: '512 卡首次发货', desc: '首台 512 卡发货（历时 162 天）— 红框风险点', planDate: '2024-07-03', progress: 80, status: 'delayed', actualDate: '2024-07-24', owner: '林清越' },
-        { id: 'M6', name: '关键里程碑评审', desc: '512 卡阶段评审，确认备货与产测流程就绪', planDate: '2024-07-26', progress: 100, status: 'achieved', actualDate: '2024-07-26', owner: '林清越' },
+        { id: 'M5', name: '仪电512卡首次发货', desc: '首台仪电512卡发货（历时 162 天）— 红框风险点', planDate: '2024-07-03', progress: 80, status: 'delayed', actualDate: '2024-07-24', owner: '林清越' },
+        { id: 'M6', name: '关键里程碑评审', desc: '仪电512卡阶段评审，确认备货与产测流程就绪', planDate: '2024-07-26', progress: 100, status: 'achieved', actualDate: '2024-07-26', owner: '林清越' },
         { id: 'M7', name: '128 卡发货（175pcs）', desc: '第四批 128 卡 175 片发货', planDate: '2024-08-14', progress: 100, status: 'achieved', actualDate: '2024-08-14', owner: '陆景明' },
         { id: 'M8', name: '128 卡发货（125pcs）', desc: '第五批 128 卡 125 片发货', planDate: '2024-09-21', progress: 100, status: 'achieved', actualDate: '2024-09-21', owner: '陆景明' },
-        { id: 'M9', name: '512 DF1000 OAM（300pcs）', desc: '512 卡 DF1000 OAM 形态 300 片交付', planDate: '2024-11-05', progress: 45, status: 'progress', actualDate: '2024-11-10', owner: '陆景明' },
-        { id: 'M10', name: '512 卡交付目标（收入确认）', desc: '仪电 512 卡 DF1000X 12/15 前交付，收入确认', planDate: '2024-12-15', progress: 30, status: 'progress', actualDate: '2024-12-15', owner: '林清越' },
-        { id: 'M11', name: '2025 年度交付目标', desc: '2025 年度 512 卡持续交付与扩容计划', planDate: '2025-06-30', progress: 0, status: 'pending', actualDate: '', owner: '林清越' }
+        { id: 'M9', name: '512 DF1000 OAM（300pcs）', desc: '仪电512卡 DF1000 OAM 形态 300 片交付', planDate: '2024-11-05', progress: 45, status: 'progress', actualDate: '2024-11-10', owner: '陆景明' },
+        { id: 'M10', name: '仪电512卡交付目标（收入确认）', desc: '仪电512卡 DF1000X 12/15 前交付，收入确认', planDate: '2024-12-15', progress: 30, status: 'progress', actualDate: '2024-12-15', owner: '林清越' },
+        { id: 'M11', name: '2025 年度交付目标', desc: '2025 年度仪电512卡持续交付与扩容计划', planDate: '2025-06-30', progress: 0, status: 'pending', actualDate: '', owner: '林清越' }
       ],
       afd: [
         { id: 'M1', name: '产品规划', desc: 'AFD 专项产品规划启动，路线图制定', planDate: '2024-05-27', progress: 100, status: 'achieved', actualDate: '2024-05-27', owner: '周砚之' },
@@ -1375,7 +1375,7 @@
     // 子项：按 `${proj}:${type}` 索引；type: risk | issue | help | sync
     items: {
       'ye512:risk': [
-        { id: 'R1', title: '良率偏低（8 成 MFU 23.3%）', desc: '当前 8 成 MFU 仅 23.3%，对 512 卡规模化交付形成阻塞，需立即启动良率恢复专项', level: 'high', status: 'open', owner: '陆景明', due: '2024-11-30', milestone: 'M9' },
+        { id: 'R1', title: '良率偏低（8 成 MFU 23.3%）', desc: '当前 8 成 MFU 仅 23.3%，对仪电512卡规模化交付形成阻塞，需立即启动良率恢复专项', level: 'high', status: 'open', owner: '陆景明', due: '2024-11-30', milestone: 'M9' },
         { id: 'R2', title: 'H3C 单一供应商风险', desc: '目前仅 H3C 可供货，存在单点供应风险；第二客户开发，二供适配预计 9-11 月底完成，备货周期 6 个月', level: 'high', status: 'progress', owner: '林清越', due: '2024-11-30', milestone: 'M10' },
         { id: 'R3', title: '12/15 收入确认不可移动', desc: '12/15 收入确认截止为财务硬约束，所有交付均围绕该时点倒排，缓冲极薄', level: 'high', status: 'open', owner: '林清越', due: '2024-12-15', milestone: 'M10' },
         { id: 'R4', title: 'JYXC 138 机器与人力风险', desc: 'JYXC 138 机器与人力存在缺口，9/10 考试节点影响资源到位', level: 'mid', status: 'progress', owner: '周砚之', due: '2024-09-10', milestone: 'M8' }
@@ -1394,7 +1394,7 @@
         { id: 'H3', title: '12/15 部分交付商务沟通', desc: '若良率无法短期恢复，需销售 VP 与客户协商部分交付方案', level: 'mid', status: 'open', owner: '林清越', due: '2024-11-30', milestone: 'M10' }
       ],
       'ye512:sync': [
-        { id: 'S1', title: '512 卡首次发货延期同步', desc: '512 卡首次发货由 7/3 延至 7/24（延期 21 天），已同步战略委员会', level: 'high', status: 'resolved', owner: '林清越', due: '2024-07-24', milestone: 'M5' },
+        { id: 'S1', title: '仪电512卡首次发货延期同步', desc: '仪电512卡首次发货由 7/3 延至 7/24（延期 21 天），已同步战略委员会', level: 'high', status: 'resolved', owner: '林清越', due: '2024-07-24', milestone: 'M5' },
         { id: 'S2', title: 'PG1 产测复盘', desc: 'PG1 产测延期三周，已完成问题复盘并完善转片与产测流程', level: 'high', status: 'progress', owner: '陆景明', due: '2024-09-05', milestone: 'M3-AFD' },
         { id: 'S3', title: '12/15 收入确认倒排', desc: '12/15 收入确认硬约束已同步所有团队，按此倒排交付节点', level: 'high', status: 'open', owner: '林清越', due: '2024-12-15', milestone: 'M10' }
       ],
