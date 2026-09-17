@@ -1387,6 +1387,108 @@
     border-radius: 14px;
     background: var(--bg-card);
   }
+
+  /* New project button + modal */
+  .ptab-add {
+    background: transparent !important;
+    color: var(--info) !important;
+    border: 1px dashed var(--info) !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding: 8px 14px !important;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ptab-add:hover {
+    background: var(--info) !important;
+    color: #fff !important;
+    border-style: solid !important;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .modal-header h3 {
+    margin: 0;
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    color: var(--ink);
+  }
+  .modal-close {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: var(--ink-mute);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    line-height: 1;
+  }
+  .modal-close:hover { background: var(--bg-input); color: var(--ink); }
+  .modal-body {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .form-row { display: flex; flex-direction: column; gap: 6px; }
+  .form-row.two-col { flex-direction: row; gap: 12px; }
+  .form-row.two-col > div { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .form-row label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+  .form-row .req { color: var(--delayed); }
+  .form-row input,
+  .form-row textarea {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .form-row input:focus,
+  .form-row textarea:focus { outline: none; border-color: var(--info); }
+  .form-row textarea { resize: vertical; min-height: 70px; }
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-soft);
+  }
   .empty-state .es-icon {
     font-family: 'Fraunces', serif;
     font-style: italic;
@@ -1659,99 +1761,57 @@
         </div>
       </div>
 
-      <div class="project-tabs">
-        <button class="ptab active" data-proj="ye512" onclick="switchProj('ye512')">仪电512卡交付专项</button>
-        <button class="ptab" data-proj="afd" onclick="switchProj('afd')">AFD 产品化专项</button>
+      <div class="project-tabs" id="project-tabs">
+        <!-- Tabs injected by JS -->
       </div>
 
-      <!-- Project 1: YE512 -->
-      <div class="project-panel active" id="proj-ye512">
-        <div class="proj-header">
-          <div class="proj-card">
-            <h3>仪电512卡交付专项</h3>
-            <div class="code">PRJ-YE512-2024 / 负责人 · 林清越 / 赞助人 · CTO</div>
-            <div class="desc">面向仪电客户的仪电512卡（DF1000/DF1000X）规模化交付专项，覆盖 128 卡小批量、512 OAM、12/15 收入确认等关键节点。当前处于 512 OAM 形态量产爬坡阶段，良率与 H3C 单供为主要风险。</div>
-          </div>
-          <div class="overall-prog">
-            <div class="op-label">专项总进度</div>
-            <div class="op-val" id="op-ye512">58%</div>
-            <div style="font-size: 12px; color: var(--ink-mute);">12/15 收入确认倒计时</div>
-            <div class="op-bar"><div class="op-bar-fill" data-w="58" data-proj="ye512"></div></div>
-          </div>
-        </div>
-
-        <!-- Unified milestone progress chart -->
-        <div class="ms-section-title">里程碑进度图</div>
-        <div class="ms-chart" id="ms-table-ye512"></div>
-
-        <div class="action-grid">
-          <button class="action-btn risk" onclick="goSub('ye512','risk')">
-            <div class="ab-icon">!</div>
-            <div class="ab-text"><div class="ab-t">过程风险</div><div class="ab-d">当前阶段风险登记</div></div>
-            <div class="ab-count" id="cnt-ye512-risk">0</div>
-          </button>
-          <button class="action-btn issue" onclick="goSub('ye512','issue')">
-            <div class="ab-icon">?</div>
-            <div class="ab-text"><div class="ab-t">过程问题</div><div class="ab-d">已识别问题清单</div></div>
-            <div class="ab-count" id="cnt-ye512-issue">0</div>
-          </button>
-          <button class="action-btn help" onclick="goSub('ye512','help')">
-            <div class="ab-icon">SOS</div>
-            <div class="ab-text"><div class="ab-t">求助项</div><div class="ab-d">需上级协调事项</div></div>
-            <div class="ab-count" id="cnt-ye512-help">0</div>
-          </button>
-          <button class="action-btn sync" onclick="goSub('ye512','sync')">
-            <div class="ab-icon">∞</div>
-            <div class="ab-text"><div class="ab-t">信息同步</div><div class="ab-d">关键决策与同步</div></div>
-            <div class="ab-count" id="cnt-ye512-sync">0</div>
-          </button>
-        </div>
-      </div>
-
-      <!-- Project 2: AFD -->
-      <div class="project-panel" id="proj-afd">
-        <div class="proj-header">
-          <div class="proj-card">
-            <h3>AFD 产品化专项</h3>
-            <div class="code">PRJ-AFD-2024 / 负责人 · 周砚之 / 赞助人 · COO</div>
-            <div class="desc">DF1000P OAM 形态产品化与规模化交付专项，覆盖 PG1 产测、200/400/730 卡密集交付、PCIe 形态量产等节点。PG1 产测延期 3 周已复盘，当前处于 POC 修正与密集交付爬坡阶段，PCIe 量产目标 2027 年 3 月。</div>
-          </div>
-          <div class="overall-prog">
-            <div class="op-label">专项总进度</div>
-            <div class="op-val" id="op-afd">42%</div>
-            <div style="font-size: 12px; color: var(--ink-mute);">PG1 复盘 / 11 月密集交付</div>
-            <div class="op-bar"><div class="op-bar-fill" data-w="42" data-proj="afd"></div></div>
-          </div>
-        </div>
-
-        <div class="ms-section-title">里程碑进度图</div>
-        <div class="ms-chart" id="ms-table-afd"></div>
-
-        <div class="action-grid">
-          <button class="action-btn risk" onclick="goSub('afd','risk')">
-            <div class="ab-icon">!</div>
-            <div class="ab-text"><div class="ab-t">过程风险</div><div class="ab-d">当前阶段风险登记</div></div>
-            <div class="ab-count" id="cnt-afd-risk">0</div>
-          </button>
-          <button class="action-btn issue" onclick="goSub('afd','issue')">
-            <div class="ab-icon">?</div>
-            <div class="ab-text"><div class="ab-t">过程问题</div><div class="ab-d">已识别问题清单</div></div>
-            <div class="ab-count" id="cnt-afd-issue">0</div>
-          </button>
-          <button class="action-btn help" onclick="goSub('afd','help')">
-            <div class="ab-icon">SOS</div>
-            <div class="ab-text"><div class="ab-t">求助项</div><div class="ab-d">需上级协调事项</div></div>
-            <div class="ab-count" id="cnt-afd-help">0</div>
-          </button>
-          <button class="action-btn sync" onclick="goSub('afd','sync')">
-            <div class="ab-icon">∞</div>
-            <div class="ab-text"><div class="ab-t">信息同步</div><div class="ab-d">关键决策与同步</div></div>
-            <div class="ab-count" id="cnt-afd-sync">0</div>
-          </button>
-        </div>
+      <div id="project-panels">
+        <!-- Panels injected by JS -->
       </div>
     </div>
   </section>
+
+  <!-- New project modal -->
+  <div class="modal-overlay" id="modal-newproj" onclick="if(event.target===this)closeNewProjModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>新增专项</h3>
+        <button class="modal-close" onclick="closeNewProjModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label>专项名称 <span class="req">*</span></label>
+          <input type="text" id="np-name" placeholder="如：芯片量产爬坡专项" />
+        </div>
+        <div class="form-row">
+          <label>项目代号</label>
+          <input type="text" id="np-code" placeholder="如：PRJ-XXX-2024" />
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label>负责人</label>
+            <input type="text" id="np-owner" placeholder="如：杨浩" />
+          </div>
+          <div>
+            <label>赞助人</label>
+            <input type="text" id="np-sponsor" placeholder="如：CTO" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>阶段副标题</label>
+          <input type="text" id="np-subtitle" placeholder="如：量产爬坡 / 客户验收" />
+        </div>
+        <div class="form-row">
+          <label>专项描述</label>
+          <textarea id="np-desc" rows="3" placeholder="专项目标、覆盖节点、当前阶段..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeNewProjModal()">取消</button>
+        <button class="btn primary" onclick="confirmNewProj()">创建专项</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ════════════ SUB PAGES ════════════ -->
   <section class="view" id="view-sub">
@@ -1767,8 +1827,7 @@
     </div>
 
     <div class="sub-tabs" id="sub-tabs">
-      <button class="sub-tab active" data-proj="ye512" onclick="switchSubProj('ye512')">仪电512卡</button>
-      <button class="sub-tab" data-proj="afd" onclick="switchSubProj('afd')">AFD 产品化</button>
+      <!-- Tabs injected by JS -->
     </div>
 
     <div class="items-list" id="items-list"></div>
@@ -1807,7 +1866,7 @@
 
 <script>
   // ── Data store with localStorage persistence ──
-  const STORE_KEY = 'pm-report-data-v3';
+  const STORE_KEY = 'pm-report-data-v4';
 
   // Default data - based on typical chip product milestones
   // NOTE: Since no image was provided, this uses typical milestone structures.
@@ -1815,6 +1874,26 @@
   // 数据来源：进度计划.png / 进度计划4.png（DF1000/DF1000P AI 加速芯片交付时间线）
   // 时间标注：原始图中"7/3"等指 2024 年，"2027年1月"等保持原样
   const DEFAULT_DATA = {
+    projects: [
+      {
+        id: 'ye512',
+        name: '仪电512卡交付专项',
+        code: 'PRJ-YE512-2024',
+        owner: '林清越',
+        sponsor: 'CTO',
+        subtitle: '12/15 收入确认倒计时',
+        desc: '面向仪电客户的仪电512卡（DF1000/DF1000X）规模化交付专项，覆盖 128 卡小批量、512 OAM、12/15 收入确认等关键节点。当前处于 512 OAM 形态量产爬坡阶段，良率与 H3C 单供为主要风险。'
+      },
+      {
+        id: 'afd',
+        name: 'AFD 产品化专项',
+        code: 'PRJ-AFD-2024',
+        owner: '周砚之',
+        sponsor: 'COO',
+        subtitle: 'PG1 复盘 / 11 月密集交付',
+        desc: 'DF1000P OAM 形态产品化与规模化交付专项，覆盖 PG1 产测、200/400/730 卡密集交付、PCIe 形态量产等节点。PG1 产测延期 3 周已复盘，当前处于 POC 修正与密集交付爬坡阶段，PCIe 量产目标 2027 年 3 月。'
+      }
+    ],
     milestones: {
       ye512: [
         { id: 'M1', name: '仪电512卡启动', desc: '仪电512卡项目正式启动，立项决策完成', planDate: '2024-03-10', progress: 100, status: 'achieved', actualDate: '2024-03-10', owner: '林清越' },
@@ -1930,8 +2009,158 @@
     currentProj = proj;
     document.querySelectorAll('.ptab').forEach(t => t.classList.toggle('active', t.dataset.proj === proj));
     document.querySelectorAll('.project-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('proj-' + proj).classList.add('active');
+    const panel = document.getElementById('proj-' + proj);
+    if (panel) panel.classList.add('active');
     setTimeout(() => animateProgressBars(), 100);
+  }
+
+  // ── Render projects (tabs + panels) dynamically ──
+  function renderProjects() {
+    const tabsEl = document.getElementById('project-tabs');
+    const panelsEl = document.getElementById('project-panels');
+    if (!tabsEl || !panelsEl) return;
+
+    // Tabs
+    tabsEl.innerHTML = data.projects.map(p => `
+      <button class="ptab ${p.id === currentProj ? 'active' : ''}" data-proj="${p.id}" onclick="switchProj('${p.id}')">${escapeHtml(p.name)}</button>
+    `).join('') + `<button class="ptab-add" onclick="openNewProjModal()">+ 新增专项</button>`;
+
+    // Panels
+    panelsEl.innerHTML = data.projects.map(p => {
+      const items = data.milestones[p.id] || [];
+      const avg = items.length ? Math.round(items.reduce((s, m) => s + (m.progress || 0), 0) / items.length) : 0;
+      return `
+        <div class="project-panel ${p.id === currentProj ? 'active' : ''}" id="proj-${p.id}">
+          <div class="proj-header">
+            <div class="proj-card">
+              <h3 contenteditable="true" oninput="updateProjField('${p.id}','name',this.textContent)">${escapeHtml(p.name)}</h3>
+              <div class="code">${escapeHtml(p.code)} / 负责人 · <span contenteditable="true" oninput="updateProjField('${p.id}','owner',this.textContent)">${escapeHtml(p.owner)}</span> / 赞助人 · <span contenteditable="true" oninput="updateProjField('${p.id}','sponsor',this.textContent)">${escapeHtml(p.sponsor)}</span></div>
+              <div class="desc" contenteditable="true" oninput="updateProjField('${p.id}','desc',this.textContent)">${escapeHtml(p.desc)}</div>
+              <div style="margin-top: 10px; display: flex; gap: 8px;">
+                <button class="btn" style="font-size: 11px; padding: 4px 10px;" onclick="addMilestone('${p.id}')">+ 新增里程碑</button>
+                <button class="btn danger" style="font-size: 11px; padding: 4px 10px;" onclick="deleteProject('${p.id}')">删除专项</button>
+              </div>
+            </div>
+            <div class="overall-prog">
+              <div class="op-label">专项总进度</div>
+              <div class="op-val" id="op-${p.id}">${avg}%</div>
+              <div style="font-size: 12px; color: var(--ink-mute);" contenteditable="true" oninput="updateProjField('${p.id}','subtitle',this.textContent)">${escapeHtml(p.subtitle || '')}</div>
+              <div class="op-bar"><div class="op-bar-fill" data-w="${avg}" data-proj="${p.id}"></div></div>
+            </div>
+          </div>
+          <div class="ms-section-title">里程碑进度图</div>
+          <div class="ms-chart" id="ms-table-${p.id}"></div>
+          <div class="action-grid">
+            <button class="action-btn risk" onclick="goSub('${p.id}','risk')">
+              <div class="ab-icon">!</div>
+              <div class="ab-text"><div class="ab-t">过程风险</div><div class="ab-d">当前阶段风险登记</div></div>
+              <div class="ab-count" id="cnt-${p.id}-risk">0</div>
+            </button>
+            <button class="action-btn issue" onclick="goSub('${p.id}','issue')">
+              <div class="ab-icon">?</div>
+              <div class="ab-text"><div class="ab-t">过程问题</div><div class="ab-d">已识别问题清单</div></div>
+              <div class="ab-count" id="cnt-${p.id}-issue">0</div>
+            </button>
+            <button class="action-btn help" onclick="goSub('${p.id}','help')">
+              <div class="ab-icon">SOS</div>
+              <div class="ab-text"><div class="ab-t">求助项</div><div class="ab-d">需上级协调事项</div></div>
+              <div class="ab-count" id="cnt-${p.id}-help">0</div>
+            </button>
+            <button class="action-btn sync" onclick="goSub('${p.id}','sync')">
+              <div class="ab-icon">∞</div>
+              <div class="ab-text"><div class="ab-t">信息同步</div><div class="ab-d">关键决策与同步</div></div>
+              <div class="ab-count" id="cnt-${p.id}-sync">0</div>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function updateProjField(projId, field, value) {
+    const p = data.projects.find(p => p.id === projId);
+    if (p) {
+      p[field] = value;
+      saveData();
+    }
+  }
+
+  // ── New project modal ──
+  function openNewProjModal() {
+    document.getElementById('modal-newproj').classList.add('show');
+    setTimeout(() => document.getElementById('np-name').focus(), 50);
+  }
+  function closeNewProjModal() {
+    document.getElementById('modal-newproj').classList.remove('show');
+    ['np-name','np-code','np-owner','np-sponsor','np-subtitle','np-desc'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+  }
+  function confirmNewProj() {
+    const name = document.getElementById('np-name').value.trim();
+    if (!name) {
+      alert('请填写专项名称');
+      return;
+    }
+    // Generate unique id from name (pinyin not available; use proj-N)
+    let id = 'proj' + Date.now().toString(36);
+    // ensure uniqueness
+    while (data.projects.some(p => p.id === id)) id += 'x';
+
+    const newProj = {
+      id,
+      name,
+      code: document.getElementById('np-code').value.trim() || `PRJ-${name.slice(0,3).toUpperCase()}-${new Date().getFullYear()}`,
+      owner: document.getElementById('np-owner').value.trim() || '待指派',
+      sponsor: document.getElementById('np-sponsor').value.trim() || '待指派',
+      subtitle: document.getElementById('np-subtitle').value.trim() || '新建专项',
+      desc: document.getElementById('np-desc').value.trim() || '（待补充描述）'
+    };
+    data.projects.push(newProj);
+    data.milestones[id] = []; // empty milestones
+    saveData();
+    currentProj = id;
+    renderProjects();
+    renderMilestones();
+    updateCounts();
+    closeNewProjModal();
+    showToast();
+  }
+
+  function deleteProject(projId) {
+    if (!confirm('确定删除此专项及其所有里程碑、过程数据？此操作不可撤销。')) return;
+    data.projects = data.projects.filter(p => p.id !== projId);
+    delete data.milestones[projId];
+    // also clean sub items
+    ['risk','issue','help','sync'].forEach(type => delete data[`${projId}:${type}`]);
+    saveData();
+    if (currentProj === projId) currentProj = data.projects[0]?.id || '';
+    renderProjects();
+    renderMilestones();
+    updateCounts();
+    showToast();
+  }
+
+  function addMilestone(projId) {
+    if (!data.milestones[projId]) data.milestones[projId] = [];
+    const items = data.milestones[projId];
+    const nums = items.map(i => parseInt((i.id || '').replace(/\D/g, '')) || 0);
+    const nextN = (nums.length ? Math.max(...nums) : 0) + 1;
+    const today = new Date().toISOString().slice(0, 10);
+    items.push({
+      id: 'M' + nextN,
+      name: '新里程碑',
+      desc: '点击编辑描述',
+      planDate: today,
+      progress: 0,
+      status: 'pending',
+      actualDate: '',
+      owner: data.projects.find(p => p.id === projId)?.owner || ''
+    });
+    saveData();
+    renderMilestones();
+    recalcOverall(projId);
+    showToast();
   }
 
   function goSub(proj, type) {
@@ -1948,9 +2177,17 @@
     const m = typeMap[type];
     document.getElementById('sp-eyebrow').textContent = m.eyebrow;
     document.getElementById('sp-title').innerHTML = m.title;
-    // Update sub tabs
-    document.querySelectorAll('.sub-tab').forEach(t => t.classList.toggle('active', t.dataset.proj === proj));
+    // Render dynamic sub tabs
+    renderSubTabs();
     renderItems();
+  }
+
+  function renderSubTabs() {
+    const tabsEl = document.getElementById('sub-tabs');
+    if (!tabsEl) return;
+    tabsEl.innerHTML = data.projects.map(p => `
+      <button class="sub-tab ${p.id === currentSubProj ? 'active' : ''}" data-proj="${p.id}" onclick="switchSubProj('${p.id}')">${escapeHtml(p.name)}</button>
+    `).join('');
   }
 
   function switchSubProj(proj) {
@@ -1969,7 +2206,8 @@
 
   // ── Render unified Gantt-style milestone chart (editable) ──
   function renderMilestones() {
-    ['ye512', 'afd'].forEach(proj => {
+    const projIds = data.projects.map(p => p.id);
+    projIds.forEach(proj => {
       const container = document.getElementById('ms-table-' + proj);
       const items = data.milestones[proj];
       if (!items || items.length === 0) { container.innerHTML = ''; return; }
@@ -2271,10 +2509,10 @@
   }
 
   function updateCounts() {
-    ['ye512', 'afd'].forEach(proj => {
+    data.projects.forEach(p => {
       ['risk', 'issue', 'help', 'sync'].forEach(type => {
-        const el = document.getElementById(`cnt-${proj}-${type}`);
-        if (el) el.textContent = (data.items[`${proj}:${type}`] || []).length;
+        const el = document.getElementById(`cnt-${p.id}-${type}`);
+        if (el) el.textContent = (data.items[`${p.id}:${type}`] || []).length;
       });
     });
   }
@@ -2508,6 +2746,7 @@
   // ── Init ──
   function init() {
     updateClock();
+    renderProjects();
     renderMilestones();
     updateCounts();
     initLCEdits();
