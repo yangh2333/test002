@@ -507,6 +507,63 @@
     font-weight: 700;
   }
 
+  /* Per-chip action buttons in lifecycle page */
+  .lc-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+    margin-left: 196px;
+  }
+  .lc-actions .lc-act {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    border-left: 3px solid var(--info);
+  }
+  .lc-actions .lc-act:hover {
+    transform: translateY(-1px);
+    border-color: var(--info);
+    border-left-color: var(--info);
+  }
+  .lc-actions .lc-act.risk { border-left-color: var(--delayed); }
+  .lc-actions .lc-act.issue { border-left-color: var(--warn); }
+  .lc-actions .lc-act.help { border-left-color: var(--info); }
+  .lc-actions .lc-act.sync { border-left-color: var(--achieved); }
+  .lc-actions .lc-act .la-icon {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    width: 18px;
+    text-align: center;
+  }
+  .lc-actions .lc-act.risk .la-icon { color: var(--delayed); }
+  .lc-actions .lc-act.issue .la-icon { color: var(--warn); }
+  .lc-actions .lc-act.help .la-icon { color: var(--info); }
+  .lc-actions .lc-act.sync .la-icon { color: var(--achieved); }
+  .lc-actions .lc-act .la-t { font-weight: 600; flex: 1; }
+  .lc-actions .lc-act .la-cnt {
+    background: var(--bg-elev);
+    color: var(--ink-mute);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 22px;
+    text-align: center;
+  }
+
   /* ── Page 3: Projects ── */
   .project-tabs {
     display: flex;
@@ -1062,6 +1119,7 @@
     .lc-row-wrap { flex-direction: column; }
     .lc-row-wrap .lc-label { width: 100%; }
     .lc-row-wrap .lc-cells { grid-template-columns: repeat(7, 1fr); }
+    .lc-actions { margin-left: 0; }
   }
 </style>
 </head>
@@ -1173,6 +1231,12 @@
           <div class="lc-cell future"></div>
         </div>
       </div>
+      <div class="lc-actions">
+        <button class="lc-act risk" onclick="goLCSub('sdc100','risk')"><span class="la-icon">!</span><span class="la-t">过程风险</span><span class="la-cnt" id="lcc-sdc100-risk">0</span></button>
+        <button class="lc-act issue" onclick="goLCSub('sdc100','issue')"><span class="la-icon">?</span><span class="la-t">过程问题</span><span class="la-cnt" id="lcc-sdc100-issue">0</span></button>
+        <button class="lc-act help" onclick="goLCSub('sdc100','help')"><span class="la-icon">SOS</span><span class="la-t">求助</span><span class="la-cnt" id="lcc-sdc100-help">0</span></button>
+        <button class="lc-act sync" onclick="goLCSub('sdc100','sync')"><span class="la-icon">∞</span><span class="la-t">信息同步</span><span class="la-cnt" id="lcc-sdc100-sync">0</span></button>
+      </div>
 
       <!-- SDC200 -->
       <div class="lc-row-wrap">
@@ -1190,6 +1254,12 @@
           <div class="lc-cell future"></div>
         </div>
       </div>
+      <div class="lc-actions">
+        <button class="lc-act risk" onclick="goLCSub('sdc200','risk')"><span class="la-icon">!</span><span class="la-t">过程风险</span><span class="la-cnt" id="lcc-sdc200-risk">0</span></button>
+        <button class="lc-act issue" onclick="goLCSub('sdc200','issue')"><span class="la-icon">?</span><span class="la-t">过程问题</span><span class="la-cnt" id="lcc-sdc200-issue">0</span></button>
+        <button class="lc-act help" onclick="goLCSub('sdc200','help')"><span class="la-icon">SOS</span><span class="la-t">求助</span><span class="la-cnt" id="lcc-sdc200-help">0</span></button>
+        <button class="lc-act sync" onclick="goLCSub('sdc200','sync')"><span class="la-icon">∞</span><span class="la-t">信息同步</span><span class="la-cnt" id="lcc-sdc200-sync">0</span></button>
+      </div>
 
       <!-- SDC300 -->
       <div class="lc-row-wrap">
@@ -1206,6 +1276,12 @@
           <div class="lc-cell future"></div>
           <div class="lc-cell future"></div>
         </div>
+      </div>
+      <div class="lc-actions">
+        <button class="lc-act risk" onclick="goLCSub('sdc300','risk')"><span class="la-icon">!</span><span class="la-t">过程风险</span><span class="la-cnt" id="lcc-sdc300-risk">0</span></button>
+        <button class="lc-act issue" onclick="goLCSub('sdc300','issue')"><span class="la-icon">?</span><span class="la-t">过程问题</span><span class="la-cnt" id="lcc-sdc300-issue">0</span></button>
+        <button class="lc-act help" onclick="goLCSub('sdc300','help')"><span class="la-icon">SOS</span><span class="la-t">求助</span><span class="la-cnt" id="lcc-sdc300-help">0</span></button>
+        <button class="lc-act sync" onclick="goLCSub('sdc300','sync')"><span class="la-icon">∞</span><span class="la-t">信息同步</span><span class="la-cnt" id="lcc-sdc300-sync">0</span></button>
       </div>
 
       <!-- Stage detail cards (editable) -->
@@ -1378,6 +1454,28 @@
     </div>
 
     <div class="items-list" id="items-list"></div>
+  </section>
+
+  <!-- ════════════ LC SUB PAGE (生命周期阶段过程管理) ════════════ -->
+  <section class="view" id="view-lcsub">
+    <div class="subpage-header">
+      <div class="sp-left">
+        <div class="sp-eyebrow" id="lcs-eyebrow">Lifecycle Tracking · 阶段过程管理</div>
+        <h2 id="lcs-title">阶段<em>过程风险</em></h2>
+      </div>
+      <div class="sp-right">
+        <button class="btn" onclick="go('lifecycle')">← 返回生命周期</button>
+        <button class="btn primary" onclick="addLCItem()">+ 新增</button>
+      </div>
+    </div>
+
+    <div class="sub-tabs" id="lcs-tabs">
+      <button class="sub-tab active" data-chip="sdc100" onclick="switchLCSChip('sdc100')">SDC100</button>
+      <button class="sub-tab" data-chip="sdc200" onclick="switchLCSChip('sdc200')">SDC200</button>
+      <button class="sub-tab" data-chip="sdc300" onclick="switchLCSChip('sdc300')">SDC300</button>
+    </div>
+
+    <div class="items-list" id="lcs-items-list"></div>
   </section>
 
 </div>
@@ -1818,12 +1916,177 @@
     });
   }
 
+  // ── Lifecycle sub-page: per-chip risk/issue/help/sync ──
+  // Fields: content / stakeholders / impact / status
+  const LCS_STORE_KEY = 'pm-report-lcs-items-v1';
+  let currentLCSChip = 'sdc100';
+  let currentLCSType = 'risk';
+
+  function loadLCSItems() {
+    try { return JSON.parse(localStorage.getItem(LCS_STORE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveLCSItems(obj) {
+    localStorage.setItem(LCS_STORE_KEY, JSON.stringify(obj));
+    showToast();
+  }
+  function getLCSList(chip, type) {
+    const all = loadLCSItems();
+    const key = `${chip}:${type}`;
+    if (!all[key]) all[key] = [];
+    return { all, key, list: all[key] };
+  }
+  function goLCSub(chip, type) {
+    currentLCSChip = chip;
+    currentLCSType = type;
+    go('lcsub');
+    const typeMap = {
+      risk:  { eyebrow: 'Lifecycle Risks · 阶段过程风险', title: '阶段<em>过程风险</em>' },
+      issue: { eyebrow: 'Lifecycle Issues · 阶段过程问题', title: '阶段<em>过程问题</em>' },
+      help:  { eyebrow: 'Lifecycle Help · 阶段求助',     title: '阶段<em>求助</em>' },
+      sync:  { eyebrow: 'Lifecycle Sync · 阶段信息同步', title: '阶段<em>信息同步</em>' }
+    };
+    const m = typeMap[type];
+    document.getElementById('lcs-eyebrow').textContent = m.eyebrow;
+    document.getElementById('lcs-title').innerHTML = m.title;
+    document.querySelectorAll('#lcs-tabs .sub-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.chip === chip);
+    });
+    renderLCSItems();
+  }
+  function switchLCSChip(chip) {
+    currentLCSChip = chip;
+    document.querySelectorAll('#lcs-tabs .sub-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.chip === chip);
+    });
+    renderLCSItems();
+  }
+  function renderLCSItems() {
+    const listEl = document.getElementById('lcs-items-list');
+    listEl.innerHTML = '';
+    const { list } = getLCSList(currentLCSChip, currentLCSType);
+
+    if (list.length === 0) {
+      listEl.innerHTML = `
+        <div class="empty-state">
+          <div class="es-icon">∅</div>
+          <div class="es-t">暂无${getLCSTypeName(currentLCSType)}记录</div>
+          <div class="es-d">点击右上角"+ 新增"添加第一条</div>
+        </div>`;
+      return;
+    }
+
+    list.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'item-card ' + (item.status || 'open') + (item.status === 'resolved' ? ' resolved' : '');
+      card.dataset.idx = idx;
+      card.innerHTML = `
+        <div class="item-top">
+          <div class="item-title-row">
+            <span class="item-id">${item.id}</span>
+          </div>
+          <div class="item-controls">
+            ${lcsStatusSelect(item.status)}
+            <button class="btn danger" onclick="deleteLCSItem(${idx})" style="padding: 6px 10px; font-size: 11px;">删除</button>
+          </div>
+        </div>
+        <div class="item-meta" style="grid-template-columns: 1fr; gap: 10px; padding-top: 8px; border-top: none;">
+          <div class="im-item">
+            <div class="im-k">内容</div>
+            <textarea class="item-desc" data-field="content" placeholder="内容描述...">${escapeHtml(item.content || '')}</textarea>
+          </div>
+        </div>
+        <div class="item-meta">
+          <div class="im-item">
+            <div class="im-k">干系人</div>
+            <input type="text" value="${escapeHtml(item.stakeholders || '')}" data-field="stakeholders" placeholder="如 研发/客户/供应商" />
+          </div>
+          <div class="im-item">
+            <div class="im-k">影响范围</div>
+            <input type="text" value="${escapeHtml(item.impact || '')}" data-field="impact" placeholder="如 排期/成本/质量" />
+          </div>
+          <div class="im-item">
+            <div class="im-k">进展状态</div>
+            <input type="text" value="${escapeHtml(item.progress || '')}" data-field="progress" placeholder="如 排查中/已闭环" />
+          </div>
+        </div>
+      `;
+      listEl.appendChild(card);
+
+      // Wire inputs
+      card.querySelectorAll('input, textarea, select').forEach(el => {
+        const field = el.dataset.field;
+        if (!field) return;
+        const ev = el.tagName === 'SELECT' ? 'change' : 'input';
+        el.addEventListener(ev, () => {
+          const { all, key } = getLCSList(currentLCSChip, currentLCSType);
+          all[key][idx][field] = el.value;
+          if (el.tagName === 'SELECT') {
+            el.className = 'item-select ' + el.value;
+            card.className = 'item-card ' + el.value + (el.value === 'resolved' ? ' resolved' : '');
+          }
+          saveLCSItems(all);
+          updateLCSCounts();
+        });
+      });
+    });
+  }
+  function lcsStatusSelect(val) {
+    const opts = [
+      { v: 'open',      t: '未处理' },
+      { v: 'progress',  t: '处理中' },
+      { v: 'resolved',  t: '已解决' }
+    ];
+    return `<select class="item-select ${val || 'open'}" data-field="status">
+      ${opts.map(o => `<option value="${o.v}" ${val === o.v ? 'selected' : ''}>${o.t}</option>`).join('')}
+    </select>`;
+  }
+  function getLCSTypeName(type) {
+    return { risk: '风险', issue: '问题', help: '求助', sync: '信息同步' }[type] || '';
+  }
+  function addLCItem() {
+    const { all, key, list } = getLCSList(currentLCSChip, currentLCSType);
+    const prefix = { risk: 'R', issue: 'I', help: 'H', sync: 'S' }[currentLCSType];
+    const nums = list.map(i => parseInt((i.id || '').replace(/\D/g, '')) || 0);
+    const nextN = (nums.length ? Math.max(...nums) : 0) + 1;
+    list.push({
+      id: prefix + nextN,
+      content: '',
+      stakeholders: '',
+      impact: '',
+      status: 'open',
+      progress: ''
+    });
+    all[key] = list;
+    saveLCSItems(all);
+    renderLCSItems();
+    updateLCSCounts();
+  }
+  function deleteLCSItem(idx) {
+    const { all, key, list } = getLCSList(currentLCSChip, currentLCSType);
+    list.splice(idx, 1);
+    all[key] = list;
+    saveLCSItems(all);
+    renderLCSItems();
+    updateLCSCounts();
+  }
+  function updateLCSCounts() {
+    const all = loadLCSItems();
+    ['sdc100', 'sdc200', 'sdc300'].forEach(chip => {
+      ['risk', 'issue', 'help', 'sync'].forEach(type => {
+        const el = document.getElementById(`lcc-${chip}-${type}`);
+        if (el) el.textContent = (all[`${chip}:${type}`] || []).length;
+      });
+    });
+  }
+
   // ── Init ──
   function init() {
     updateClock();
     renderMilestones();
     updateCounts();
     initLCEdits();
+    updateLCSCounts();
     // Animate progress bars after a beat
     setTimeout(animateProgressBars, 200);
   }
