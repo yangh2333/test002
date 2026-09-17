@@ -507,7 +507,120 @@
     font-weight: 700;
   }
 
-  /* Per-chip action buttons in lifecycle page */
+  /* Stage header row: editable stage names */
+  .lc-stages-wrap .lc-cell {
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 8px;
+    background: var(--bg-elev);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+  .lc-stages-wrap .lc-cell .stage-num {
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .lc-stages-wrap .lc-cell .stage-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ink);
+    letter-spacing: 0;
+    outline: none;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin: -2px -6px;
+    cursor: text;
+    min-width: 60px;
+    text-align: center;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  .lc-stages-wrap .lc-cell .stage-name:hover {
+    background: var(--bg-input);
+    box-shadow: 0 0 0 1px var(--border-soft);
+  }
+  .lc-stages-wrap .lc-cell .stage-name:focus {
+    background: var(--bg-input);
+    box-shadow: 0 0 0 2px var(--info);
+  }
+
+  /* Per-chip detail card */
+  .chip-card {
+    margin-left: 196px;
+    margin-bottom: 24px;
+    padding: 18px 22px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .chip-card .cc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .chip-card .cc-head h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: -0.005em;
+  }
+  .chip-card .cc-head .cc-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-left: 8px;
+    letter-spacing: 0.04em;
+  }
+  .chip-card .cc-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--progress);
+    margin-bottom: 6px;
+    outline: none;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-left: -6px;
+    cursor: text;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  .chip-card .cc-title:hover,
+  .chip-card .cc-desc:hover {
+    background: var(--bg-input);
+    box-shadow: 0 0 0 1px var(--border-soft);
+  }
+  .chip-card .cc-title:focus,
+  .chip-card .cc-desc:focus {
+    background: var(--bg-input);
+    box-shadow: 0 0 0 2px var(--info);
+  }
+  .chip-card .cc-desc {
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    line-height: 1.65;
+    outline: none;
+    border-radius: 4px;
+    padding: 4px 6px;
+    margin-left: -6px;
+    cursor: text;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  .chip-card .cc-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .lc-add-chip-row {
+    text-align: center;
+    margin-top: 24px;
+  }
+
+  /* Per-chip action buttons in lifecycle page (legacy selector kept) */
   .lc-actions {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1637,113 +1750,56 @@
         </div>
       </div>
 
-      <!-- Stage header (wrapped to align with rows below) -->
-      <div class="lc-row-wrap lc-stages-wrap">
-        <div class="lc-label lc-label-spacer">
-          <div class="chip-name">阶段</div>
-          <div class="chip-sub">Stage / 序号</div>
-        </div>
-        <div class="lc-cells lc-stages">
-          <div class="lc-stage"><span class="num">01</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-1">概念阶段</span></div>
-          <div class="lc-stage"><span class="num">02</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-2">产品立项</span></div>
-          <div class="lc-stage"><span class="num">03</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-3">产品研发</span></div>
-          <div class="lc-stage"><span class="num">04</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-4">产品验证</span></div>
-          <div class="lc-stage"><span class="num">05</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-5">小量试制</span></div>
-          <div class="lc-stage"><span class="num">06</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-6">产品量产</span></div>
-          <div class="lc-stage"><span class="num">07</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-7">产品退市</span></div>
-        </div>
-      </div>
+      <!-- Stage header + chip rows + detail cards injected by JS -->
+      <div id="lc-container"></div>
 
-      <!-- SDC100 -->
-      <div class="lc-row-wrap">
-        <div class="lc-label">
-          <div class="chip-name">SDC100</div>
-          <div class="chip-sub">一代芯片 · 小量试制</div>
-        </div>
-        <div class="lc-cells">
-          <div class="lc-cell done"></div>
-          <div class="lc-cell done"></div>
-          <div class="lc-cell done"></div>
-          <div class="lc-cell done"></div>
-          <div class="lc-cell current"></div>
-          <div class="lc-cell future"></div>
-          <div class="lc-cell future"></div>
-        </div>
-      </div>
-      <div class="lc-actions">
-        <button class="lc-act risk" onclick="goLCSub('sdc100','risk')"><span class="la-icon">!</span><span class="la-t">过程风险</span><span class="la-cnt" id="lcc-sdc100-risk">0</span></button>
-        <button class="lc-act issue" onclick="goLCSub('sdc100','issue')"><span class="la-icon">?</span><span class="la-t">过程问题</span><span class="la-cnt" id="lcc-sdc100-issue">0</span></button>
-        <button class="lc-act help" onclick="goLCSub('sdc100','help')"><span class="la-icon">SOS</span><span class="la-t">求助</span><span class="la-cnt" id="lcc-sdc100-help">0</span></button>
-        <button class="lc-act sync" onclick="goLCSub('sdc100','sync')"><span class="la-icon">∞</span><span class="la-t">信息同步</span><span class="la-cnt" id="lcc-sdc100-sync">0</span></button>
-      </div>
-
-      <!-- SDC200 -->
-      <div class="lc-row-wrap">
-        <div class="lc-label">
-          <div class="chip-name">SDC200</div>
-          <div class="chip-sub">二代芯片 · 产品研发</div>
-        </div>
-        <div class="lc-cells">
-          <div class="lc-cell done"></div>
-          <div class="lc-cell done"></div>
-          <div class="lc-cell current"></div>
-          <div class="lc-cell future"></div>
-          <div class="lc-cell future"></div>
-          <div class="lc-cell future"></div>
-          <div class="lc-cell future"></div>
-        </div>
-      </div>
-      <div class="lc-actions">
-        <button class="lc-act risk" onclick="goLCSub('sdc200','risk')"><span class="la-icon">!</span><span class="la-t">过程风险</span><span class="la-cnt" id="lcc-sdc200-risk">0</span></button>
-        <button class="lc-act issue" onclick="goLCSub('sdc200','issue')"><span class="la-icon">?</span><span class="la-t">过程问题</span><span class="la-cnt" id="lcc-sdc200-issue">0</span></button>
-        <button class="lc-act help" onclick="goLCSub('sdc200','help')"><span class="la-icon">SOS</span><span class="la-t">求助</span><span class="la-cnt" id="lcc-sdc200-help">0</span></button>
-        <button class="lc-act sync" onclick="goLCSub('sdc200','sync')"><span class="la-icon">∞</span><span class="la-t">信息同步</span><span class="la-cnt" id="lcc-sdc200-sync">0</span></button>
-      </div>
-
-      <!-- SDC300 -->
-      <div class="lc-row-wrap">
-        <div class="lc-label">
-          <div class="chip-name">SDC300</div>
-          <div class="chip-sub">三代芯片 · 产品立项</div>
-        </div>
-        <div class="lc-cells">
-          <div class="lc-cell done"></div>
-          <div class="lc-cell current"></div>
-          <div class="lc-cell future"></div>
-          <div class="lc-cell future"></div>
-          <div class="lc-cell future"></div>
-          <div class="lc-cell future"></div>
-          <div class="lc-cell future"></div>
-        </div>
-      </div>
-      <div class="lc-actions">
-        <button class="lc-act risk" onclick="goLCSub('sdc300','risk')"><span class="la-icon">!</span><span class="la-t">过程风险</span><span class="la-cnt" id="lcc-sdc300-risk">0</span></button>
-        <button class="lc-act issue" onclick="goLCSub('sdc300','issue')"><span class="la-icon">?</span><span class="la-t">过程问题</span><span class="la-cnt" id="lcc-sdc300-issue">0</span></button>
-        <button class="lc-act help" onclick="goLCSub('sdc300','help')"><span class="la-icon">SOS</span><span class="la-t">求助</span><span class="la-cnt" id="lcc-sdc300-help">0</span></button>
-        <button class="lc-act sync" onclick="goLCSub('sdc300','sync')"><span class="la-icon">∞</span><span class="la-t">信息同步</span><span class="la-cnt" id="lcc-sdc300-sync">0</span></button>
-      </div>
-
-      <!-- Stage detail cards (editable) -->
-      <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-        <div style="background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--progress); border-radius: 12px; padding: 20px;">
-          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; margin-bottom: 8px;">SDC100 · 当前</div>
-          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc100-title">产品小量试制阶段</span></div>
-          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc100-desc">已完成工程样品流片与功能验证，进入小批量产线试制，目标 Q4 完成 5K 片交付并启动客户认证。</span></div>
-        </div>
-        <div style="background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--progress); border-radius: 12px; padding: 20px;">
-          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; margin-bottom: 8px;">SDC200 · 当前</div>
-          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc200-title">产品研发阶段</span></div>
-          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc200-desc">架构设计与 RTL 开发完成 72%，DV 验证覆盖率 65%，预计 Q4 末流片，性能较一代提升 40%。</span></div>
-        </div>
-        <div style="background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--progress); border-radius: 12px; padding: 20px;">
-          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; margin-bottom: 8px;">SDC300 · 当前</div>
-          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc300-title">产品立项阶段</span></div>
-          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc300-desc">市场调研与竞品分析完成，PRD v0.1 已评审，目标 10 月完成立项决策评审，11 月进入研发阶段。</span></div>
-        </div>
-      </div>
       <div style="display: flex; justify-content: center;"><div class="lc-edit-hint">阶段名与说明均可直接点击编辑，自动保存</div></div>
     </div>
   </section>
+
+  <!-- New chip modal -->
+  <div class="modal-overlay" id="modal-newchip" onclick="if(event.target===this)closeNewChipModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>新增产品</h3>
+        <button class="modal-close" onclick="closeNewChipModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label>产品代号 <span class="req">*</span></label>
+          <input type="text" id="nc-name" placeholder="如：SDC400" />
+        </div>
+        <div class="form-row">
+          <label>代际描述</label>
+          <input type="text" id="nc-gen" placeholder="如：四代芯片" />
+        </div>
+        <div class="form-row">
+          <label>当前所处阶段</label>
+          <select id="nc-stage">
+            <option value="1">01 · 概念阶段</option>
+            <option value="2">02 · 产品立项</option>
+            <option value="3">03 · 产品研发</option>
+            <option value="4">04 · 产品验证</option>
+            <option value="5" selected>05 · 小量试制</option>
+            <option value="6">06 · 产品量产</option>
+            <option value="7">07 · 产品退市</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>当前阶段标题</label>
+          <input type="text" id="nc-title" placeholder="如：产品概念阶段" />
+        </div>
+        <div class="form-row">
+          <label>当前阶段说明</label>
+          <textarea id="nc-desc" rows="3" placeholder="当前阶段进展、目标、风险..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeNewChipModal()">取消</button>
+        <button class="btn primary" onclick="confirmNewChip()">创建产品</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ════════════ PAGE 3: PROJECTS ════════════ -->
   <section class="view" id="view-projects">
@@ -1847,9 +1903,7 @@
     </div>
 
     <div class="sub-tabs" id="lcs-tabs">
-      <button class="sub-tab active" data-chip="sdc100" onclick="switchLCSChip('sdc100')">SDC100</button>
-      <button class="sub-tab" data-chip="sdc200" onclick="switchLCSChip('sdc200')">SDC200</button>
-      <button class="sub-tab" data-chip="sdc300" onclick="switchLCSChip('sdc300')">SDC300</button>
+      <!-- Tabs injected dynamically by renderLCSTabs() -->
     </div>
 
     <div class="items-list" id="lcs-items-list"></div>
@@ -1866,7 +1920,7 @@
 
 <script>
   // ── Data store with localStorage persistence ──
-  const STORE_KEY = 'pm-report-data-v4';
+  const STORE_KEY = 'pm-report-data-v5';
 
   // Default data - based on typical chip product milestones
   // NOTE: Since no image was provided, this uses typical milestone structures.
@@ -1874,6 +1928,33 @@
   // 数据来源：进度计划.png / 进度计划4.png（DF1000/DF1000P AI 加速芯片交付时间线）
   // 时间标注：原始图中"7/3"等指 2024 年，"2027年1月"等保持原样
   const DEFAULT_DATA = {
+    lcStages: ['概念阶段', '产品立项', '产品研发', '产品验证', '小量试制', '产品量产', '产品退市'],
+    chips: [
+      {
+        id: 'sdc100',
+        name: 'SDC100',
+        gen: '一代芯片',
+        currentStage: 5,
+        title: '产品小量试制阶段',
+        desc: '已完成工程样品流片与功能验证，进入小批量产线试制，目标 Q4 完成 5K 片交付并启动客户认证。'
+      },
+      {
+        id: 'sdc200',
+        name: 'SDC200',
+        gen: '二代芯片',
+        currentStage: 3,
+        title: '产品研发阶段',
+        desc: '架构设计与 RTL 开发完成 72%，DV 验证覆盖率 65%，预计 Q4 末流片，性能较一代提升 40%。'
+      },
+      {
+        id: 'sdc300',
+        name: 'SDC300',
+        gen: '三代芯片',
+        currentStage: 2,
+        title: '产品立项阶段',
+        desc: '市场调研与竞品分析完成，PRD v0.1 已评审，目标 10 月完成立项决策评审，11 月进入研发阶段。'
+      }
+    ],
     projects: [
       {
         id: 'ye512',
@@ -1971,6 +2052,9 @@
 
   // Load data
   let data = loadJSON(STORE_KEY) || JSON.parse(JSON.stringify(DEFAULT_DATA));
+  // Backfill lifecycle fields if loading older saved state without them
+  if (!data.lcStages) data.lcStages = JSON.parse(JSON.stringify(DEFAULT_DATA.lcStages));
+  if (!Array.isArray(data.chips)) data.chips = JSON.parse(JSON.stringify(DEFAULT_DATA.chips));
 
   function loadJSON(key) {
     try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
@@ -2383,6 +2467,144 @@
     });
   }
 
+  // ── Render lifecycle (chips + stages) dynamically ──
+  function renderLifecycle() {
+    const container = document.getElementById('lc-container');
+    if (!container) return;
+    const stages = data.lcStages || ['概念阶段','产品立项','产品研发','产品验证','小量试制','产品量产','产品退市'];
+    const chips = data.chips || [];
+
+    // 1. Stage header row (editable stage names)
+    let html = `<div class="lc-row-wrap lc-stages-wrap">
+      <div class="lc-label" style="visibility:hidden">spacer</div>
+      <div class="lc-cells">`;
+    stages.forEach((s, i) => {
+      html += `<div class="lc-cell">
+        <span class="stage-num">${String(i + 1).padStart(2, '0')}</span>
+        <span class="stage-name" contenteditable="true" data-stage-idx="${i}" oninput="updateStageName(${i}, this.textContent)">${escapeHtml(s)}</span>
+      </div>`;
+    });
+    html += `</div></div>`;
+
+    // 2. Per-chip row + detail card
+    chips.forEach(c => {
+      const cur = Math.max(1, Math.min(stages.length, c.currentStage || 1));
+      // Status row
+      html += `<div class="lc-row-wrap">
+        <div class="lc-label">
+          <div class="chip-name">${escapeHtml(c.name)}</div>
+          <div class="chip-sub">${escapeHtml(c.gen || '')}</div>
+        </div>
+        <div class="lc-cells">`;
+      for (let i = 1; i <= stages.length; i++) {
+        const cls = i < cur ? 'done' : (i === cur ? 'current' : 'future');
+        html += `<div class="lc-cell ${cls}"></div>`;
+      }
+      html += `</div></div>`;
+
+      // Detail card
+      html += `<div class="chip-card">
+        <div class="cc-head">
+          <div>
+            <h4>${escapeHtml(c.name)}</h4><span class="cc-sub">${escapeHtml(c.gen || '')} · 当前阶段 ${String(cur).padStart(2,'0')} · ${escapeHtml(stages[cur - 1] || '')}</span>
+          </div>
+          <button class="btn danger" style="font-size: 11px; padding: 4px 10px;" onclick="deleteChip('${escapeAttr(c.id)}')">删除产品</button>
+        </div>
+        <div class="cc-title" contenteditable="true" data-chip="${escapeAttr(c.id)}" data-field="title" oninput="updateChipField('${escapeAttr(c.id)}','title',this.textContent)">${escapeHtml(c.title || '')}</div>
+        <div class="cc-desc" contenteditable="true" data-chip="${escapeAttr(c.id)}" data-field="desc" oninput="updateChipField('${escapeAttr(c.id)}','desc',this.textContent)">${escapeHtml(c.desc || '')}</div>
+        <div class="cc-actions">
+          <button class="lc-act risk" onclick="goLCSub('${escapeAttr(c.id)}','risk')">
+            <span class="la-icon">!</span><span class="la-t">过程风险</span><span class="la-cnt" id="lcc-${escapeAttr(c.id)}-risk">0</span>
+          </button>
+          <button class="lc-act issue" onclick="goLCSub('${escapeAttr(c.id)}','issue')">
+            <span class="la-icon">?</span><span class="la-t">过程问题</span><span class="la-cnt" id="lcc-${escapeAttr(c.id)}-issue">0</span>
+          </button>
+          <button class="lc-act help" onclick="goLCSub('${escapeAttr(c.id)}','help')">
+            <span class="la-icon">SOS</span><span class="la-t">求助</span><span class="la-cnt" id="lcc-${escapeAttr(c.id)}-help">0</span>
+          </button>
+          <button class="lc-act sync" onclick="goLCSub('${escapeAttr(c.id)}','sync')">
+            <span class="la-icon">∞</span><span class="la-t">信息同步</span><span class="la-cnt" id="lcc-${escapeAttr(c.id)}-sync">0</span>
+          </button>
+        </div>
+      </div>`;
+    });
+
+    // 3. Add product button
+    html += `<div class="lc-add-chip-row"><button class="btn primary" onclick="openNewChipModal()">+ 新增产品</button></div>`;
+
+    container.innerHTML = html;
+    updateLCSCounts();
+  }
+
+  function updateStageName(idx, value) {
+    if (!data.lcStages) data.lcStages = ['概念阶段','产品立项','产品研发','产品验证','小量试制','产品量产','产品退市'];
+    if (idx < 0 || idx >= data.lcStages.length) return;
+    data.lcStages[idx] = value;
+    saveData();
+  }
+
+  function updateChipField(chipId, field, value) {
+    const c = (data.chips || []).find(x => x.id === chipId);
+    if (!c) return;
+    c[field] = value;
+    saveData();
+  }
+
+  // ── New chip modal ──
+  function openNewChipModal() {
+    // Rebuild stage options from data to stay in sync with stage edits
+    const sel = document.getElementById('nc-stage');
+    const stages = data.lcStages || ['概念阶段','产品立项','产品研发','产品验证','小量试制','产品量产','产品退市'];
+    sel.innerHTML = stages.map((s, i) => `<option value="${i + 1}">${String(i + 1).padStart(2, '0')} · ${escapeHtml(s)}</option>`).join('');
+    if (!sel.dataset.touched) sel.value = '5';
+    document.getElementById('modal-newchip').classList.add('show');
+    setTimeout(() => document.getElementById('nc-name').focus(), 50);
+  }
+  function closeNewChipModal() {
+    document.getElementById('modal-newchip').classList.remove('show');
+    ['nc-name','nc-gen','nc-title'].forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('nc-desc').value = '';
+  }
+  function confirmNewChip() {
+    const name = document.getElementById('nc-name').value.trim();
+    if (!name) { alert('请填写产品代号'); return; }
+    // Generate unique id: prefer ascii letters from name, fallback to chip-N
+    let baseId = 'chip' + Date.now().toString(36);
+    const cand = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (cand) baseId = cand;
+    let id = baseId;
+    while ((data.chips || []).some(c => c.id === id)) id = baseId + Date.now().toString(36).slice(-3);
+
+    const stageVal = parseInt(document.getElementById('nc-stage').value, 10) || 5;
+    const stages = data.lcStages || ['概念阶段','产品立项','产品研发','产品验证','小量试制','产品量产','产品退市'];
+    const title = document.getElementById('nc-title').value.trim() || (stages[stageVal - 1] || '') + '阶段';
+    const newChip = {
+      id,
+      name,
+      gen: document.getElementById('nc-gen').value.trim() || '新一代芯片',
+      currentStage: stageVal,
+      title,
+      desc: document.getElementById('nc-desc').value.trim() || '（待补充当前阶段说明）'
+    };
+    if (!data.chips) data.chips = [];
+    data.chips.push(newChip);
+    saveData();
+    renderLifecycle();
+    closeNewChipModal();
+    showToast();
+  }
+  function deleteChip(chipId) {
+    if (!confirm('确定删除此产品及其阶段过程数据？此操作不可撤销。')) return;
+    data.chips = (data.chips || []).filter(c => c.id !== chipId);
+    // Clean LCS items for this chip
+    const all = loadLCSItems();
+    ['risk','issue','help','sync'].forEach(t => delete all[`${chipId}:${t}`]);
+    saveLCSItems(all);
+    saveData();
+    renderLifecycle();
+    showToast();
+  }
+
   // ── Render items (risk/issue/help/sync) ──
   function renderItems() {
     const list = document.getElementById('items-list');
@@ -2521,6 +2743,11 @@
     if (s == null) return '';
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
+  function escapeAttr(s) {
+    if (s == null) return '';
+    // For use inside single-quoted JS string literals in onclick attributes
+    return String(s).replace(/[&<>"'\\]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','\\':'\\\\'}[c]));
+  }
 
   // ── Real-time clock (auto-align to local computer time) ──
   function pad(n) { return String(n).padStart(2, '0'); }
@@ -2607,10 +2834,16 @@
     const m = typeMap[type];
     document.getElementById('lcs-eyebrow').textContent = m.eyebrow;
     document.getElementById('lcs-title').innerHTML = m.title;
-    document.querySelectorAll('#lcs-tabs .sub-tab').forEach(t => {
-      t.classList.toggle('active', t.dataset.chip === chip);
-    });
+    renderLCSTabs();
     renderLCSItems();
+  }
+  function renderLCSTabs() {
+    const tabsEl = document.getElementById('lcs-tabs');
+    if (!tabsEl) return;
+    const chips = data.chips || [];
+    tabsEl.innerHTML = chips.map(c => `
+      <button class="sub-tab ${c.id === currentLCSChip ? 'active' : ''}" data-chip="${escapeAttr(c.id)}" onclick="switchLCSChip('${escapeAttr(c.id)}')">${escapeHtml(c.name)}</button>
+    `).join('');
   }
   function switchLCSChip(chip) {
     currentLCSChip = chip;
@@ -2735,10 +2968,11 @@
   }
   function updateLCSCounts() {
     const all = loadLCSItems();
-    ['sdc100', 'sdc200', 'sdc300'].forEach(chip => {
+    const chips = data.chips || [];
+    chips.forEach(c => {
       ['risk', 'issue', 'help', 'sync'].forEach(type => {
-        const el = document.getElementById(`lcc-${chip}-${type}`);
-        if (el) el.textContent = (all[`${chip}:${type}`] || []).length;
+        const el = document.getElementById(`lcc-${c.id}-${type}`);
+        if (el) el.textContent = (all[`${c.id}:${type}`] || []).length;
       });
     });
   }
@@ -2749,6 +2983,7 @@
     renderProjects();
     renderMilestones();
     updateCounts();
+    renderLifecycle();
     initLCEdits();
     updateLCSCounts();
     // Animate progress bars after a beat
