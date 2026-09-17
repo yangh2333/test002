@@ -1030,6 +1030,50 @@
   }
   .ms-gantt-bar.pending::after { display: none; }
 
+  /* Multi-milestone rows: stack IDs/names in the left column */
+  .ms-gantt-row.multi .ms-gantt-name {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  .ms-gantt-row .msm-name-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  .ms-gantt-row .msm-name-item .msm-id { flex-shrink: 0; }
+  .ms-gantt-row .msm-name-item input { flex: 1; min-width: 0; }
+
+  /* Dependency arrows between consecutive bars on the same row */
+  .ms-gantt-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2px;
+    background: var(--ink-mute);
+    opacity: 0.55;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .ms-gantt-arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 7px solid var(--ink-mute);
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    opacity: 1;
+  }
+  .ms-gantt-row.multi .ms-gantt-track { height: 36px; }
+  .ms-gantt-row.multi .ms-gantt-bar { top: 6px; bottom: 6px; }
+
   /* Start/end date labels flanking the bar */
   .ms-gantt-date {
     position: absolute;
@@ -1153,9 +1197,23 @@
     gap: 4px;
   }
   .ms-gantt-edit.show { display: flex; }
+  .ms-gantt-edit-hint {
+    display: none;
+    margin: 6px 0 2px;
+    padding: 6px 10px;
+    background: var(--progress-bg);
+    border: 1px solid rgba(37,99,235,0.25);
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--info);
+    letter-spacing: 0.02em;
+  }
+  .ms-gantt-edit.show ~ .ms-gantt-edit-hint,
+  .ms-gantt-edit-hint.show { display: block; }
   .ms-gantt-edit-row {
     display: grid;
-    grid-template-columns: 40px 1fr 110px 110px 70px 110px 100px;
+    grid-template-columns: 40px 50px 1fr 110px 110px 70px 110px 100px;
     gap: 6px;
     align-items: center;
     padding: 4px 8px;
@@ -2161,6 +2219,14 @@
     data.lcStageDescs = arr;
   }
   if (!Array.isArray(data.chips)) data.chips = JSON.parse(JSON.stringify(DEFAULT_DATA.chips));
+  // Backfill milestone.group field (for multi-segment gantt rows)
+  if (data.milestones && typeof data.milestones === 'object') {
+    Object.values(data.milestones).forEach(arr => {
+      if (Array.isArray(arr)) arr.forEach((m, i) => {
+        if (m.group == null || m.group === '') m.group = i + 1;
+      });
+    });
+  }
 
   function loadJSON(key) {
     try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
@@ -2345,7 +2411,8 @@
       progress: 0,
       status: 'pending',
       actualDate: '',
-      owner: data.projects.find(p => p.id === projId)?.owner || ''
+      owner: data.projects.find(p => p.id === projId)?.owner || '',
+      group: items.length + 1
     });
     saveData();
     renderMilestones();
@@ -2388,9 +2455,12 @@
 
   // ── Toggle compact edit panel in gantt chart ──
   function toggleGanttEdit(btn) {
-    const panel = btn.parentElement.querySelector('.ms-gantt-edit');
+    const parent = btn.parentElement;
+    const panel = parent.querySelector('.ms-gantt-edit');
+    const hint = parent.querySelector('.ms-gantt-edit-hint');
     if (!panel) return;
     const showing = panel.classList.toggle('show');
+    if (hint) hint.classList.toggle('show', showing);
     btn.textContent = showing ? '▾ 收起编辑明细' : '✎ 展开编辑明细';
   }
 
@@ -2438,53 +2508,94 @@
         return { p, label: t.toISOString().slice(0, 10).replace(/-/g, '/').slice(5) };
       });
 
-      // Build rows
-      const rowsHtml = items.map((m, idx) => {
-        // start = planDate; end = actualDate (or fallback)
+      // Compute geometry for a single milestone (returns bar coords + labels)
+      function barGeom(m, idx) {
         let startPct = pct(m.planDate);
         let endPct = pct(m.actualDate);
-        // Fallbacks when dates missing
         if (startPct === null && endPct !== null) startPct = endPct;
         if (endPct === null && startPct !== null) {
-          // infer end by status
           if (m.status === 'progress' || m.status === 'delayed') endPct = todayPct;
           else if (m.status === 'achieved') endPct = startPct + 1.5;
-          else endPct = startPct + 1.5; // pending point
+          else endPct = startPct + 1.5;
         }
         if (startPct === null && endPct === null) {
           startPct = (idx + 0.5) / items.length * 100 - 1;
           endPct = startPct + 2;
         }
-        // Ensure start <= end
         if (endPct < startPct) { const t = startPct; startPct = endPct; endPct = t; }
-        // Min visible width
         const minW = 1.5;
         if (endPct - startPct < minW) endPct = startPct + minW;
-        // Cap to 100
         if (endPct > 100) endPct = 100;
         if (startPct < 0) startPct = 0;
-        const barWidth = endPct - startPct;
+        return {
+          startPct,
+          endPct,
+          barWidth: endPct - startPct,
+          statusIcon: { achieved: '✓', delayed: '▲', progress: '●', pending: '○' }[m.status] || '·',
+          startLabel: m.planDate ? m.planDate.replace(/-/g, '/').slice(5) : '—',
+          endLabel: m.actualDate ? m.actualDate.replace(/-/g, '/').slice(5) : (m.status === 'progress' || m.status === 'delayed' ? '至今' : '—'),
+          showLabels: (endPct - startPct) > 12
+        };
+      }
 
-        const statusIcon = { achieved: '✓', delayed: '▲', progress: '●', pending: '○' }[m.status] || '·';
-        const startLabel = m.planDate ? m.planDate.replace(/-/g, '/').slice(5) : '—';
-        const endLabel = m.actualDate ? m.actualDate.replace(/-/g, '/').slice(5) : (m.status === 'progress' || m.status === 'delayed' ? '至今' : '—');
+      // Group milestones by their `group` field, preserving first-seen order
+      const groupOrder = [];
+      const groupMap = new Map();
+      items.forEach((m, idx) => {
+        const g = String(m.group != null && m.group !== '' ? m.group : (idx + 1));
+        if (!groupMap.has(g)) { groupMap.set(g, []); groupOrder.push(g); }
+        groupMap.get(g).push({ m, idx });
+      });
 
-        // Decide if labels fit (bar too narrow -> hide)
-        const showLabels = barWidth > 12;
+      // Build rows: one row per group, multiple bars + dependency arrows on the same track
+      const rowsHtml = groupOrder.map(g => {
+        const arr = groupMap.get(g);
+        // Compute geometry for each milestone in this group
+        const bars = arr.map(({ m, idx }) => {
+          const geo = barGeom(m, idx);
+          return { m, idx, ...geo };
+        });
+        // Sort a copy by startPct to draw arrows in chronological order
+        const sorted = [...bars].sort((a, b) => a.startPct - b.startPct);
+
+        // Name column: one id+input per milestone in this group
+        const nameHtml = bars.map(b => `
+          <div class="msm-name-item">
+            <span class="msm-id">${b.m.id}</span>
+            <input type="text" value="${escapeHtml(b.m.name)}" data-idx="${b.idx}" data-field="name" placeholder="节点名..." />
+          </div>
+        `).join('');
+
+        // Track: today line + dependency arrows + bars (with date labels)
+        const barsHtml = bars.map(b => {
+          const tip = escapeHtml(b.m.id + ': ' + b.m.name + ' | ' + (b.m.planDate || '?') + ' → ' + (b.m.actualDate || (b.m.status === 'progress' || b.m.status === 'delayed' ? '至今' : '?')) + ' | ' + b.m.progress + '%');
+          return `
+            ${b.showLabels ? `<div class="ms-gantt-date start" style="left:${b.startPct}%">${b.startLabel}</div>` : ''}
+            <div class="ms-gantt-bar ${b.m.status}" style="left:${b.startPct}%; width:${b.barWidth}%" title="${tip}">
+              ${b.statusIcon} ${b.m.id} ${b.m.progress}%
+            </div>
+            ${b.showLabels ? `<div class="ms-gantt-date end" style="left:${b.endPct}%">${b.endLabel}</div>` : ''}
+          `;
+        }).join('');
+
+        // Dependency arrows between consecutive bars (sorted by start)
+        const arrowsHtml = sorted.length > 1 ? sorted.slice(1).map((b, i) => {
+          const prev = sorted[i];
+          const fromPct = prev.endPct;
+          const toPct = b.startPct;
+          if (toPct <= fromPct + 0.5) return ''; // skip if overlapping or backward
+          const w = toPct - fromPct;
+          const tip = escapeHtml(prev.m.id + ' → ' + b.m.id + ' · 前后依赖');
+          return `<div class="ms-gantt-arrow" style="left:${fromPct}%; width:${w}%" title="${tip}"></div>`;
+        }).join('') : '';
 
         return `
-          <div class="ms-gantt-row" data-idx="${idx}" data-status="${m.status}">
-            <div class="ms-gantt-name">
-              <span class="msm-id">${m.id}</span>
-              <input type="text" value="${escapeHtml(m.name)}" data-field="name" placeholder="节点名..." />
-            </div>
+          <div class="ms-gantt-row ${arr.length > 1 ? 'multi' : ''}" data-group="${escapeAttr(g)}">
+            <div class="ms-gantt-name">${nameHtml}</div>
             <div class="ms-gantt-track">
               ${todayPct !== null ? `<div class="ms-gantt-today" style="left:${todayPct}%"></div>` : ''}
-              ${showLabels ? `<div class="ms-gantt-date start" style="left:${startPct}%">${startLabel}</div>` : ''}
-              <div class="ms-gantt-bar ${m.status}" style="left:${startPct}%; width:${barWidth}%" title="${escapeHtml(m.id + ': ' + m.name + ' | ' + (m.planDate || '?') + ' → ' + (m.actualDate || (m.status === 'progress' || m.status === 'delayed' ? '至今' : '?')) + ' | ' + m.progress + '%')}">
-                ${statusIcon} ${m.progress}%
-              </div>
-              ${showLabels ? `<div class="ms-gantt-date end" style="left:${endPct}%">${endLabel}</div>` : ''}
+              ${arrowsHtml}
+              ${barsHtml}
             </div>
           </div>
         `;
@@ -2502,13 +2613,16 @@
           <div class="msl-item"><span class="msl-swatch delayed"></span>延期</div>
           <div class="msl-item"><span class="msl-swatch pending"></span>未开始</div>
           <div class="msl-item" style="margin-left:auto"><span style="display:inline-block;width:2px;height:14px;background:var(--delayed);vertical-align:middle;margin-right:4px"></span>今天</div>
+          <div class="msl-item" style="margin-left:8px"><span style="display:inline-block;width:18px;height:2px;background:var(--ink-mute);vertical-align:middle;margin-right:4px;position:relative"><span style="position:absolute;right:-2px;top:-3px;width:0;height:0;border-left:6px solid var(--ink-mute);border-top:4px solid transparent;border-bottom:4px solid transparent"></span></span>前后依赖</div>
         </div>
         <button class="ms-gantt-edit-toggle" onclick="toggleGanttEdit(this)">✎ 展开编辑明细</button>
-        <!-- Editable detail inputs (compact) -->
+        <div class="ms-gantt-edit-hint">提示：把多个里程碑的「行」设为同一数字，即可合并到同一行展示前后依赖箭头。</div>
+        <!-- Editable detail inputs (compact). "行" column merges milestones into one row to show front-back dependency. -->
         <div class="ms-gantt-edit">
           ${items.map((m, idx) => `
             <div class="ms-gantt-edit-row" data-idx="${idx}">
               <span class="ms-er-id">${m.id}</span>
+              <input type="number" class="ms-er-group" min="1" value="${m.group != null && m.group !== '' ? m.group : (idx + 1)}" data-field="group" title="所在行号（同号合并到一行，显示前后依赖）" />
               <input type="text" class="ms-er-desc" value="${escapeHtml(m.desc)}" data-field="desc" placeholder="描述..." />
               <input type="date" class="ms-er-plan" value="${m.planDate}" data-field="planDate" title="开始日期" />
               <input type="date" class="ms-er-actual" value="${m.actualDate || ''}" data-field="actualDate" title="结束日期" />
@@ -2525,7 +2639,7 @@
         </div>
       `;
 
-      // Wire editable inputs
+      // Wire editable inputs (including the new "行"/group field)
       container.querySelectorAll('.ms-gantt-edit-row').forEach(row => {
         const idx = parseInt(row.dataset.idx);
         row.querySelectorAll('input, select').forEach(el => {
@@ -2534,6 +2648,7 @@
           el.addEventListener(ev, () => {
             let val = el.value;
             if (field === 'progress') val = parseInt(val) || 0;
+            if (field === 'group') val = parseInt(val) || 1;
             data.milestones[proj][idx][field] = val;
             if (field === 'status') el.className = 'ms-er-status ' + val;
             // Re-render to recompute date axis & bars
@@ -2544,13 +2659,19 @@
         });
       });
 
-      // Wire name inputs (top of each gantt row)
-      container.querySelectorAll('.ms-gantt-name input').forEach(inp => {
-        const row = inp.closest('.ms-gantt-row');
-        const idx = parseInt(row.dataset.idx);
+      // Wire name inputs (top of each gantt row) — use data-idx attr on the input itself
+      container.querySelectorAll('.ms-gantt-name input[data-field="name"]').forEach(inp => {
+        const idx = parseInt(inp.dataset.idx);
         inp.addEventListener('input', () => {
+          if (!data.milestones[proj][idx]) return;
           data.milestones[proj][idx].name = inp.value;
           saveData();
+          // Live-update the bar tooltip so the user sees the change without a full re-render
+          const bar = inp.closest('.ms-gantt-row').querySelector('.ms-gantt-bar');
+          if (bar) {
+            const m = data.milestones[proj][idx];
+            bar.title = m.id + ': ' + m.name + ' | ' + (m.planDate || '?') + ' → ' + (m.actualDate || (m.status === 'progress' || m.status === 'delayed' ? '至今' : '?')) + ' | ' + m.progress + '%';
+          }
         });
       });
     });
