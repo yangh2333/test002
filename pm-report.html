@@ -470,6 +470,43 @@
   .lc-legend .l-current { background: var(--progress-bg); border: 2px solid var(--progress); }
   .lc-legend .l-future { background: transparent; border: 1px solid var(--border); }
 
+  /* Editable fields in lifecycle page */
+  [contenteditable="true"].lc-edit {
+    outline: none;
+    border-radius: 4px;
+    transition: background 0.15s, box-shadow 0.15s;
+    padding: 2px 6px;
+    margin: -2px -6px;
+    cursor: text;
+  }
+  [contenteditable="true"].lc-edit:hover {
+    background: var(--bg-input);
+    box-shadow: 0 0 0 1px var(--border-soft);
+  }
+  [contenteditable="true"].lc-edit:focus {
+    background: var(--bg-input);
+    box-shadow: 0 0 0 2px var(--info);
+  }
+  /* Edit hint chip */
+  .lc-edit-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 6px 12px;
+    background: var(--progress-bg);
+    border: 1px solid rgba(37,99,235,0.3);
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--info);
+    letter-spacing: 0.04em;
+  }
+  .lc-edit-hint::before {
+    content: '✎';
+    font-weight: 700;
+  }
+
   /* ── Page 3: Projects ── */
   .project-tabs {
     display: flex;
@@ -1110,13 +1147,13 @@
           <div class="chip-sub">Stage / 序号</div>
         </div>
         <div class="lc-cells lc-stages">
-          <div class="lc-stage"><span class="num">01</span>概念阶段</div>
-          <div class="lc-stage"><span class="num">02</span>产品立项</div>
-          <div class="lc-stage"><span class="num">03</span>产品研发</div>
-          <div class="lc-stage"><span class="num">04</span>产品验证</div>
-          <div class="lc-stage"><span class="num">05</span>小量试制</div>
-          <div class="lc-stage"><span class="num">06</span>产品量产</div>
-          <div class="lc-stage"><span class="num">07</span>产品退市</div>
+          <div class="lc-stage"><span class="num">01</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-1">概念阶段</span></div>
+          <div class="lc-stage"><span class="num">02</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-2">产品立项</span></div>
+          <div class="lc-stage"><span class="num">03</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-3">产品研发</span></div>
+          <div class="lc-stage"><span class="num">04</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-4">产品验证</span></div>
+          <div class="lc-stage"><span class="num">05</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-5">小量试制</span></div>
+          <div class="lc-stage"><span class="num">06</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-6">产品量产</span></div>
+          <div class="lc-stage"><span class="num">07</span><span class="lc-edit" contenteditable="true" data-lc-key="stage-7">产品退市</span></div>
         </div>
       </div>
 
@@ -1171,24 +1208,25 @@
         </div>
       </div>
 
-      <!-- Stage detail cards -->
+      <!-- Stage detail cards (editable) -->
       <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
         <div style="background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--progress); border-radius: 12px; padding: 20px;">
           <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; margin-bottom: 8px;">SDC100 · 当前</div>
-          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;">产品小量试制阶段</div>
-          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;">已完成工程样品流片与功能验证，进入小批量产线试制，目标 Q4 完成 5K 片交付并启动客户认证。</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc100-title">产品小量试制阶段</span></div>
+          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc100-desc">已完成工程样品流片与功能验证，进入小批量产线试制，目标 Q4 完成 5K 片交付并启动客户认证。</span></div>
         </div>
         <div style="background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--progress); border-radius: 12px; padding: 20px;">
           <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; margin-bottom: 8px;">SDC200 · 当前</div>
-          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;">产品研发阶段</div>
-          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;">架构设计与 RTL 开发完成 72%，DV 验证覆盖率 65%，预计 Q4 末流片，性能较一代提升 40%。</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc200-title">产品研发阶段</span></div>
+          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc200-desc">架构设计与 RTL 开发完成 72%，DV 验证覆盖率 65%，预计 Q4 末流片，性能较一代提升 40%。</span></div>
         </div>
         <div style="background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--progress); border-radius: 12px; padding: 20px;">
           <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; margin-bottom: 8px;">SDC300 · 当前</div>
-          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;">产品立项阶段</div>
-          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;">市场调研与竞品分析完成，PRD v0.1 已评审，目标 10 月完成立项决策评审，11 月进入研发阶段。</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc300-title">产品立项阶段</span></div>
+          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;"><span class="lc-edit" contenteditable="true" data-lc-key="sdc300-desc">市场调研与竞品分析完成，PRD v0.1 已评审，目标 10 月完成立项决策评审，11 月进入研发阶段。</span></div>
         </div>
       </div>
+      <div style="display: flex; justify-content: center;"><div class="lc-edit-hint">阶段名与说明均可直接点击编辑，自动保存</div></div>
     </div>
   </section>
 
@@ -1748,11 +1786,44 @@
   // Refresh every 1s to keep aligned with computer clock (seconds-level)
   setInterval(updateClock, 1000);
 
+  // ── Lifecycle page: editable stages & detail cards ──
+  const LC_STORE_KEY = 'pm-report-lc-edit-v1';
+  function loadLCEdits() {
+    try { return JSON.parse(localStorage.getItem(LC_STORE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveLCEdits(obj) {
+    localStorage.setItem(LC_STORE_KEY, JSON.stringify(obj));
+    showToast();
+  }
+  function initLCEdits() {
+    const saved = loadLCEdits();
+    document.querySelectorAll('.lc-edit[data-lc-key]').forEach(el => {
+      const key = el.dataset.lcKey;
+      // Restore saved content if present
+      if (saved[key] != null) el.innerHTML = saved[key];
+      // Persist on input
+      el.addEventListener('input', () => {
+        const data = loadLCEdits();
+        data[key] = el.innerHTML;
+        saveLCEdits(data);
+      });
+      // Prevent Enter from creating <div> (use <br> instead) for single-line fields
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !el.dataset.lcKey.includes('desc')) {
+          e.preventDefault();
+          document.execCommand('insertHTML', false, '<br>');
+        }
+      });
+    });
+  }
+
   // ── Init ──
   function init() {
     updateClock();
     renderMilestones();
     updateCounts();
+    initLCEdits();
     // Animate progress bars after a beat
     setTimeout(animateProgressBars, 200);
   }
