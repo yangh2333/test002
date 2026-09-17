@@ -1046,10 +1046,10 @@
       <p class="lede">本汇报系统梳理公司芯片产品全生命周期进度、当前重点专项里程碑达成情况，以及过程中的风险、问题、求助与信息同步事项。</p>
 
       <div class="cover-meta">
-        <div class="cm"><div class="k">汇报周期</div><div class="v">2026 Q3</div></div>
+        <div class="cm"><div class="k">汇报周期</div><div class="v">2024 全年</div></div>
         <div class="cm"><div class="k">汇报人</div><div class="v">林清越</div></div>
-        <div class="cm"><div class="k">覆盖产品线</div><div class="v">SDC100/200/300</div></div>
-        <div class="cm"><div class="k">重点专项</div><div class="v">2 项</div></div>
+        <div class="cm"><div class="k">产品线</div><div class="v">SDC100/200/300</div></div>
+        <div class="cm"><div class="k">重点专项</div><div class="v">512 卡 / AFD</div></div>
       </div>
 
       <div class="cover-nav">
@@ -1199,13 +1199,13 @@
         <div class="proj-header">
           <div class="proj-card">
             <h3>仪电 512 卡交付专项</h3>
-            <div class="code">PRJ-YE512-2026 / 负责人 · 林清越 / 赞助人 · CTO</div>
-            <div class="desc">面向车载仪电平台的高可靠性 512 通道采集卡，目标 Q4 完成 A 样交付并通过客户全项认证，2027 Q1 进入小批量产。当前处于工程样件功能联调阶段。</div>
+            <div class="code">PRJ-YE512-2024 / 负责人 · 林清越 / 赞助人 · CTO</div>
+            <div class="desc">面向仪电客户的 512 卡（DF1000/DF1000X）规模化交付专项，覆盖 128 卡小批量、512 OAM、12/15 收入确认等关键节点。当前处于 512 OAM 形态量产爬坡阶段，良率与 H3C 单供为主要风险。</div>
           </div>
           <div class="overall-prog">
             <div class="op-label">专项总进度</div>
             <div class="op-val" id="op-ye512">58%</div>
-            <div style="font-size: 12px; color: var(--ink-mute);">较基线 <span style="color: var(--delayed);">−6 pp</span></div>
+            <div style="font-size: 12px; color: var(--ink-mute);">12/15 收入确认倒计时</div>
             <div class="op-bar"><div class="op-bar-fill" data-w="58" data-proj="ye512"></div></div>
           </div>
         </div>
@@ -1253,13 +1253,13 @@
         <div class="proj-header">
           <div class="proj-card">
             <h3>AFD 产品化专项</h3>
-            <div class="code">PRJ-AFD-2026 / 负责人 · 周砚之 / 赞助人 · COO</div>
-            <div class="desc">AFD（自动故障诊断）算法模块从研究阶段转向产品化，目标 Q4 完成 SDK 封装与 3 个垂直行业 POC，2027 Q1 进入商业化推广。当前处于算法工程化封装阶段。</div>
+            <div class="code">PRJ-AFD-2024 / 负责人 · 周砚之 / 赞助人 · COO</div>
+            <div class="desc">DF1000P OAM 形态产品化与规模化交付专项，覆盖 PG1 产测、200/400/730 卡密集交付、PCIe 形态量产等节点。PG1 产测延期 3 周已复盘，当前处于 POC 修正与密集交付爬坡阶段，PCIe 量产目标 2027 年 3 月。</div>
           </div>
           <div class="overall-prog">
             <div class="op-label">专项总进度</div>
             <div class="op-val" id="op-afd">42%</div>
-            <div style="font-size: 12px; color: var(--ink-mute);">较基线 <span style="color: var(--achieved);">+2 pp</span></div>
+            <div style="font-size: 12px; color: var(--ink-mute);">PG1 复盘 / 11 月密集交付</div>
             <div class="op-bar"><div class="op-bar-fill" data-w="42" data-proj="afd"></div></div>
           </div>
         </div>
@@ -1334,64 +1334,85 @@
 
 <script>
   // ── Data store with localStorage persistence ──
-  const STORE_KEY = 'pm-report-data-v1';
+  const STORE_KEY = 'pm-report-data-v2';
 
   // Default data - based on typical chip product milestones
   // NOTE: Since no image was provided, this uses typical milestone structures.
   // Editable on-page; replaces with your real data.
+  // 数据来源：进度计划.png / 进度计划4.png（DF1000/DF1000P AI 加速芯片交付时间线）
+  // 时间标注：原始图中"7/3"等指 2024 年，"2027年1月"等保持原样
   const DEFAULT_DATA = {
     milestones: {
       ye512: [
-        { id: 'M1', name: '需求规格评审完成', desc: 'PRD 评审通过，需求基线冻结', planDate: '2026-07-15', progress: 100, status: 'achieved', actualDate: '2026-07-12', owner: '林清越' },
-        { id: 'M2', name: '架构设计评审', desc: '硬件架构与 FPGA 设计评审通过', planDate: '2026-08-05', progress: 100, status: 'achieved', actualDate: '2026-08-03', owner: '陆景明' },
-        { id: 'M3', name: '工程样件流片回片', desc: 'ES 样件回片并完成外观检测', planDate: '2026-08-25', progress: 100, status: 'achieved', actualDate: '2026-08-28', owner: '陆景明' },
-        { id: 'M4', name: '功能联调与自测', desc: '硬件 + 固件 + 上位机联调，功能自测通过率 90%', planDate: '2026-09-20', progress: 75, status: 'progress', actualDate: '2026-09-22', owner: '叶南舟' },
-        { id: 'M5', name: 'A 样交付客户', desc: 'A 样件 + 全套文档交付客户，启动认证', planDate: '2026-10-15', progress: 30, status: 'progress', actualDate: '2026-10-20', owner: '林清越' },
-        { id: 'M6', name: '客户全项认证通过', desc: '通过客户可靠性、EMC、功能全项认证', planDate: '2026-12-20', progress: 0, status: 'pending', actualDate: '', owner: '林清越' },
-        { id: 'M7', name: '小批量产启动', desc: '5K 片小批量产线投产', planDate: '2027-01-15', progress: 0, status: 'pending', actualDate: '', owner: '秦若笙' }
+        { id: 'M1', name: '512 卡启动', desc: '仪电 512 卡项目正式启动，立项决策完成', planDate: '2024-03-10', progress: 100, status: 'achieved', actualDate: '2024-03-10', owner: '林清越' },
+        { id: 'M2', name: '128 卡发货（50pcs）', desc: '首批 128 卡 50 片发货，小批量验证', planDate: '2024-05-29', progress: 100, status: 'achieved', actualDate: '2024-05-29', owner: '陆景明' },
+        { id: 'M3', name: '128 卡发货（200pcs）', desc: '第二批 128 卡 200 片发货', planDate: '2024-06-14', progress: 100, status: 'achieved', actualDate: '2024-06-14', owner: '陆景明' },
+        { id: 'M4', name: '128 卡发货（150pcs）', desc: '第三批 128 卡 150 片发货', planDate: '2024-06-16', progress: 100, status: 'achieved', actualDate: '2024-06-16', owner: '陆景明' },
+        { id: 'M5', name: '512 卡首次发货', desc: '首台 512 卡发货（历时 162 天）— 红框风险点', planDate: '2024-07-03', progress: 80, status: 'delayed', actualDate: '2024-07-24', owner: '林清越' },
+        { id: 'M6', name: '关键里程碑评审', desc: '512 卡阶段评审，确认备货与产测流程就绪', planDate: '2024-07-26', progress: 100, status: 'achieved', actualDate: '2024-07-26', owner: '林清越' },
+        { id: 'M7', name: '128 卡发货（175pcs）', desc: '第四批 128 卡 175 片发货', planDate: '2024-08-14', progress: 100, status: 'achieved', actualDate: '2024-08-14', owner: '陆景明' },
+        { id: 'M8', name: '128 卡发货（125pcs）', desc: '第五批 128 卡 125 片发货', planDate: '2024-09-21', progress: 100, status: 'achieved', actualDate: '2024-09-21', owner: '陆景明' },
+        { id: 'M9', name: '512 DF1000 OAM（300pcs）', desc: '512 卡 DF1000 OAM 形态 300 片交付', planDate: '2024-11-05', progress: 45, status: 'progress', actualDate: '2024-11-10', owner: '陆景明' },
+        { id: 'M10', name: '512 卡交付目标（收入确认）', desc: '仪电 512 卡 DF1000X 12/15 前交付，收入确认', planDate: '2024-12-15', progress: 30, status: 'progress', actualDate: '2024-12-15', owner: '林清越' },
+        { id: 'M11', name: '2025 年度交付目标', desc: '2025 年度 512 卡持续交付与扩容计划', planDate: '2025-06-30', progress: 0, status: 'pending', actualDate: '', owner: '林清越' }
       ],
       afd: [
-        { id: 'M1', name: '算法基线冻结', desc: 'AFD 算法 v1.0 基线模型冻结，准确率达标', planDate: '2026-07-20', progress: 100, status: 'achieved', actualDate: '2026-07-18', owner: '周砚之' },
-        { id: 'M2', name: 'SDK 架构设计', desc: 'SDK 接口设计与跨平台架构方案评审通过', planDate: '2026-08-15', progress: 100, status: 'achieved', actualDate: '2026-08-14', owner: '周砚之' },
-        { id: 'M3', name: '算法工程化封装', desc: 'C++ 封装 + Python 绑定，性能优化', planDate: '2026-09-25', progress: 60, status: 'progress', actualDate: '2026-09-30', owner: '叶南舟' },
-        { id: 'M4', name: '3 个行业 POC 启动', desc: '电力、轨交、石化三行业 POC 同步启动', planDate: '2026-10-20', progress: 20, status: 'progress', actualDate: '2026-10-25', owner: '林清越' },
-        { id: 'M5', name: 'POC 数据回收与结论', desc: '三行业 POC 完成数据回收与有效性结论', planDate: '2026-12-10', progress: 0, status: 'pending', actualDate: '', owner: '周砚之' },
-        { id: 'M6', name: '商业化方案与定价', desc: '输出商业模式、定价方案与销售工具包', planDate: '2026-12-30', progress: 0, status: 'pending', actualDate: '', owner: '林清越' }
+        { id: 'M1', name: '产品规划', desc: 'AFD 专项产品规划启动，路线图制定', planDate: '2024-05-27', progress: 100, status: 'achieved', actualDate: '2024-05-27', owner: '周砚之' },
+        { id: 'M2', name: '56 138 OAM DF1000P', desc: '56 卡 138 节点 OAM 形态 DF1000P 验证', planDate: '2024-07-19', progress: 100, status: 'achieved', actualDate: '2024-07-19', owner: '陆景明' },
+        { id: 'M3', name: 'PG1 产测阶段', desc: 'PG1 产测发现问题，完整出货延期三周，1 机仍有出错', planDate: '2024-08-15', progress: 70, status: 'delayed', actualDate: '2024-09-05', owner: '陆景明' },
+        { id: 'M4', name: 'POC 修正', desc: 'PG1 转片与产测流程完善，POC 修正迭代', planDate: '2024-09-20', progress: 60, status: 'progress', actualDate: '2024-09-25', owner: '周砚之' },
+        { id: 'M5', name: '200 OAM DF1000P POC 送测', desc: '200 卡 OAM 形态 DF1000P POC 送测', planDate: '2024-11-05', progress: 30, status: 'progress', actualDate: '2024-11-10', owner: '周砚之' },
+        { id: 'M6', name: '400 OAM DF1000P', desc: '400 卡 OAM 形态 DF1000P 交付', planDate: '2024-11-25', progress: 15, status: 'progress', actualDate: '2024-11-30', owner: '陆景明' },
+        { id: 'M7', name: '730 OAM DF1000P', desc: '730 卡 OAM 形态 DF1000P 规模交付', planDate: '2024-12-05', progress: 0, status: 'pending', actualDate: '', owner: '陆景明' },
+        { id: 'M8', name: '5120AM 风冷交付', desc: '5120 AM 风冷形态批量交付', planDate: '2027-01-15', progress: 0, status: 'pending', actualDate: '', owner: '陆景明' },
+        { id: 'M9', name: 'POC 修正（2027）', desc: 'PCIe 形态 POC 修正迭代', planDate: '2027-02-15', progress: 0, status: 'pending', actualDate: '', owner: '周砚之' },
+        { id: 'M10', name: 'PCIe 形态量产', desc: 'PCIe 形态产品进入规模化量产', planDate: '2027-03-31', progress: 0, status: 'pending', actualDate: '', owner: '秦若笙' }
       ]
     },
-    // sub-items: keyed by `${proj}:${type}`
-    // type: risk | issue | help | sync
+    // 子项：按 `${proj}:${type}` 索引；type: risk | issue | help | sync
     items: {
       'ye512:risk': [
-        { id: 'R1', title: '关键物料 COB 封装供应紧张', desc: 'COB 封装产能受限，Q4 5K 片交付可能受影响', level: 'high', status: 'open', owner: '陆景明', due: '2026-10-30' },
-        { id: 'R2', title: '客户认证周期不可控', desc: '客户内部认证排期未确认，可能影响 12 月窗口', level: 'mid', status: 'open', owner: '林清越', due: '2026-11-15' },
-        { id: 'R3', title: '固件兼容性历史版本', desc: '需兼容客户 3 个历史版本协议，工作量被低估', level: 'mid', status: 'progress', owner: '叶南舟', due: '2026-09-30' }
+        { id: 'R1', title: '良率偏低（8 成 MFU 23.3%）', desc: '当前 8 成 MFU 仅 23.3%，对 512 卡规模化交付形成阻塞，需立即启动良率恢复专项', level: 'high', status: 'open', owner: '陆景明', due: '2024-11-30', milestone: 'M9' },
+        { id: 'R2', title: 'H3C 单一供应商风险', desc: '目前仅 H3C 可供货，存在单点供应风险；第二客户开发，二供适配预计 9-11 月底完成，备货周期 6 个月', level: 'high', status: 'progress', owner: '林清越', due: '2024-11-30', milestone: 'M10' },
+        { id: 'R3', title: '12/15 收入确认不可移动', desc: '12/15 收入确认截止为财务硬约束，所有交付均围绕该时点倒排，缓冲极薄', level: 'high', status: 'open', owner: '林清越', due: '2024-12-15', milestone: 'M10' },
+        { id: 'R4', title: 'JYXC 138 机器与人力风险', desc: 'JYXC 138 机器与人力存在缺口，9/10 考试节点影响资源到位', level: 'mid', status: 'progress', owner: '周砚之', due: '2024-09-10', milestone: 'M8' }
       ],
       'ye512:issue': [
-        { id: 'I1', title: 'ES 样件 ADC 通道噪声超标', desc: '512 通道中 8 通道底噪超标 6dB，需硬件改版', level: 'high', status: 'progress', owner: '陆景明', due: '2026-09-25' },
-        { id: 'I2', title: '上位机偶发性丢帧', desc: '高负载下 USB 3.0 通道偶发丢帧，根因排查中', level: 'mid', status: 'open', owner: '叶南舟', due: '2026-09-30' }
+        { id: 'I1', title: 'SHA0 hang', desc: 'SHA0 出现 hang 问题，影响训练稳定性，NOC 团队跟进', level: 'high', status: 'progress', owner: 'NOC 团队', due: '2024-10-15', milestone: 'M9' },
+        { id: 'I2', title: 'SSMO hang', desc: 'SSMO 模块 hang，影响多卡协同训练', level: 'high', status: 'open', owner: 'NOC 团队', due: '2024-10-30', milestone: 'M9' },
+        { id: 'I3', title: 'PCCS/PCIE 降速', desc: 'PCCS 导致 PCIE 降速，影响训练效率，CCL 团队排查', level: 'high', status: 'progress', owner: 'CCL 团队', due: '2024-10-15', milestone: 'M9' },
+        { id: 'I4', title: 'CCL abort', desc: 'CCL 出现 abort 故障，集合通信异常中断', level: 'mid', status: 'open', owner: 'CCL 团队', due: '2024-10-30', milestone: 'M9' },
+        { id: 'I5', title: '精度问题', desc: '部分模型精度未达预期，需调优', level: 'mid', status: 'open', owner: '周砚之', due: '2024-11-15', milestone: 'M10' },
+        { id: 'I6', title: '功耗问题（TDP < 40W）', desc: '功耗需控制在 4× H20 以内的 TDP < 40W 区间', level: 'mid', status: 'progress', owner: '陆景明', due: '2024-11-30', milestone: 'M10' }
       ],
       'ye512:help': [
-        { id: 'H1', title: '协调 COB 封装产能', desc: '需 CTO 出面协调供应商锁定 Q4 5K 片产能', level: 'high', status: 'open', owner: '林清越', due: '2026-09-20' },
-        { id: 'H2', title: '客户认证排期确认', desc: '需销售 VP 协调客户给出明确认证排期', level: 'mid', status: 'open', owner: '林清越', due: '2026-10-10' }
+        { id: 'H1', title: '协调 H3C 二供资源', desc: '需 CTO 出面协调 H3C 加速供货，并推动二供适配提前完成', level: 'high', status: 'open', owner: '林清越', due: '2024-09-30', milestone: 'M10' },
+        { id: 'H2', title: '良率恢复专项立项', desc: '需研发 VP 批准良率恢复专项，组建跨团队 SWAT 小组', level: 'high', status: 'open', owner: '林清越', due: '2024-10-15', milestone: 'M9' },
+        { id: 'H3', title: '12/15 部分交付商务沟通', desc: '若良率无法短期恢复，需销售 VP 与客户协商部分交付方案', level: 'mid', status: 'open', owner: '林清越', due: '2024-11-30', milestone: 'M10' }
       ],
       'ye512:sync': [
-        { id: 'S1', title: 'A 样交付时点确认', desc: '与客户确认 A 样交付时点由 10-15 调整至 10-20', level: 'mid', status: 'progress', owner: '林清越', due: '2026-09-25' },
-        { id: 'S2', title: '专项进度周报机制', desc: '每周一 18:00 同步专项进度至战略委员会', level: 'low', status: 'open', owner: '林清越', due: '2026-12-31' }
+        { id: 'S1', title: '512 卡首次发货延期同步', desc: '512 卡首次发货由 7/3 延至 7/24（延期 21 天），已同步战略委员会', level: 'high', status: 'resolved', owner: '林清越', due: '2024-07-24', milestone: 'M5' },
+        { id: 'S2', title: 'PG1 产测复盘', desc: 'PG1 产测延期三周，已完成问题复盘并完善转片与产测流程', level: 'high', status: 'progress', owner: '陆景明', due: '2024-09-05', milestone: 'M3-AFD' },
+        { id: 'S3', title: '12/15 收入确认倒排', desc: '12/15 收入确认硬约束已同步所有团队，按此倒排交付节点', level: 'high', status: 'open', owner: '林清越', due: '2024-12-15', milestone: 'M10' }
       ],
       'afd:risk': [
-        { id: 'R1', title: 'POC 客户合作意愿不足', desc: '电力行业 1 家 POC 客户意向不明确', level: 'mid', status: 'open', owner: '林清越', due: '2026-10-15' },
-        { id: 'R2', title: '算法跨行业泛化性', desc: '石化场景样本量不足，模型泛化性存疑', level: 'high', status: 'progress', owner: '周砚之', due: '2026-11-30' }
+        { id: 'R1', title: 'PG1 产测流程不成熟', desc: 'PG1 转片与产测流程不完善，当前上架 1 机仍有出错', level: 'high', status: 'progress', owner: '陆景明', due: '2024-09-30', milestone: 'M3' },
+        { id: 'R2', title: '11 月密集交付爬坡', desc: '11 月 200→400→730 卡密集交付，产能爬坡风险高', level: 'high', status: 'open', owner: '陆景明', due: '2024-12-05', milestone: 'M7' },
+        { id: 'R3', title: 'PCIe 量产远期风险', desc: 'PCIe 形态量产目标为 2027 年 3 月，OAM 阶段问题若级联传导，远期目标存在不确定性', level: 'mid', status: 'open', owner: '林清越', due: '2027-03-31', milestone: 'M10' },
+        { id: 'R4', title: 'POC 客户合作意愿', desc: 'POC 客户合作意愿不足，可能影响 11/5 送测节点', level: 'mid', status: 'open', owner: '周砚之', due: '2024-11-05', milestone: 'M5' }
       ],
       'afd:issue': [
-        { id: 'I1', title: 'SDK 跨平台编译异常', desc: 'ARM Linux 平台编译存在符号链接错误', level: 'mid', status: 'progress', owner: '叶南舟', due: '2026-09-28' },
-        { id: 'I2', title: '推理延迟未达 SLA', desc: '边缘端单次推理 850ms，超 500ms 目标', level: 'high', status: 'open', owner: '叶南舟', due: '2026-10-15' }
+        { id: 'I1', title: 'PG1 产测延期 3 周', desc: 'PG1 产测发现问题，完整出货延期 3 周，需复盘并完善流程', level: 'high', status: 'progress', owner: '陆景明', due: '2024-09-05', milestone: 'M3' },
+        { id: 'I2', title: '上架 1 机出错', desc: '当前上架还有 1 机有出错，需根因排查', level: 'mid', status: 'open', owner: '陆景明', due: '2024-09-15', milestone: 'M3' }
       ],
       'afd:help': [
-        { id: 'H1', title: '石化行业样本数据获取', desc: '需 COO 协调石化集团获取 6 个月历史故障数据', level: 'high', status: 'open', owner: '周砚之', due: '2026-10-10' }
+        { id: 'H1', title: 'PG1 产测流程完善', desc: '需 CTO 批准 PG1 产测流程完善专项，明确产测 SOP', level: 'high', status: 'open', owner: '周砚之', due: '2024-09-30', milestone: 'M3' },
+        { id: 'H2', title: '11 月产能爬坡协调', desc: '需运营 VP 协调立讯与 H3C 产能，保障 11 月密集交付', level: 'high', status: 'open', owner: '林清越', due: '2024-10-15', milestone: 'M5' }
       ],
       'afd:sync': [
-        { id: 'S1', title: '商业化定价方向决策', desc: '按授权 or 按调用量计费，需战略委员会 10 月决策', level: 'high', status: 'open', owner: '林清越', due: '2026-10-20' }
+        { id: 'S1', title: 'PG1 产测延期三周', desc: 'PG1 产测延期三周已同步战略委员会，1 机出错仍在排查', level: 'high', status: 'open', owner: '林清越', due: '2024-09-05', milestone: 'M3' },
+        { id: 'S2', title: 'PCIe 量产目标 2027', desc: 'PCIe 形态量产目标为 2027 年 3 月，长期路线图已同步', level: 'mid', status: 'open', owner: '林清越', due: '2027-03-31', milestone: 'M10' },
+        { id: 'S3', title: 'PRD 1.1/1.2/2.0 节奏', desc: 'PRD 1.1 SDK+HLD、1.2 CI 搭建与组网仿真、2.0 产品发布节奏已对齐', level: 'mid', status: 'progress', owner: '周砚之', due: '2024-12-31', milestone: 'M7' }
       ]
     }
   };
