@@ -627,7 +627,12 @@
   .lc-row-wrap .lc-cells.lc-chip-cells .lc-cell.lc-chip-cell {
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    box-sizing: border-box;
   }
+  /* Stage header cells are the source of truth for column widths; the JS
+     syncLifecycleCellWidths() reads their measured widths and applies them
+     to the ✓ chip cells below, so widths stay 1:1 aligned. */
+  .lc-stages-wrap .lc-cells .lc-cell { box-sizing: border-box; }
   .lc-row-wrap .lc-cells.lc-chip-cells .lc-cell.lc-chip-cell:hover {
     background: var(--progress-bg);
     border-color: var(--info);
@@ -2854,7 +2859,34 @@
     html += `<div class="lc-add-chip-row"><button class="btn primary" onclick="openNewChipModal()">+ 新增产品</button></div>`;
 
     container.innerHTML = html;
+    syncLifecycleCellWidths();
     updateLCSCounts();
+  }
+
+  // Sync cell widths between stage header row and chip status rows.
+  // Reads the measured width of each stage-header cell and applies it to the
+  // corresponding chip-cell on every chip row, so the upper stage intro and
+  // the lower ✓ milestone boxes stay 1:1 aligned even after add/delete stage.
+  function syncLifecycleCellWidths() {
+    const root = document.getElementById('lc-container');
+    if (!root) return;
+    const headerCells = root.querySelectorAll('.lc-stages-wrap .lc-cells .lc-cell');
+    if (headerCells.length === 0) return;
+    // Measure widths of stage header cells (border-box)
+    const widths = Array.from(headerCells).map(c => {
+      const r = c.getBoundingClientRect();
+      return r.width;
+    });
+    // Apply to every chip row's cells (by column index)
+    root.querySelectorAll('.lc-cells.lc-chip-cells').forEach(track => {
+      const cells = track.querySelectorAll('.lc-cell.lc-chip-cell');
+      cells.forEach((cell, i) => {
+        if (widths[i] != null) {
+          cell.style.width = widths[i] + 'px';
+          cell.style.flex = '0 0 ' + widths[i] + 'px';
+        }
+      });
+    });
   }
 
   function updateStageName(idx, value) {
@@ -3354,6 +3386,29 @@
     updateLCSCounts();
     // Animate progress bars after a beat
     setTimeout(animateProgressBars, 200);
+    // Keep stage-header and ✓ chip-cell widths in sync when window/container resizes
+    let ro = null;
+    const lcContainer = document.getElementById('lc-container');
+    if (lcContainer && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => { syncLifecycleCellWidths(); });
+      // Only observe while on the lifecycle view to avoid wasted work
+      const lcView = document.getElementById('view-lifecycle');
+      if (lcView) {
+        const mo = new MutationObserver(() => {
+          if (lcView.classList.contains('active')) {
+            ro.observe(lcContainer);
+          } else {
+            ro.disconnect();
+          }
+        });
+        mo.observe(lcView, { attributes: true, attributeFilter: ['class'] });
+        if (lcView.classList.contains('active')) ro.observe(lcContainer);
+      } else {
+        ro.observe(lcContainer);
+      }
+    }
+    // Re-sync shortly after fonts/images settle
+    setTimeout(syncLifecycleCellWidths, 250);
   }
 
   init();
