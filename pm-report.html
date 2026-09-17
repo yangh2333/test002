@@ -666,7 +666,30 @@
     transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Milestones table */
+  /* Schedule table */
+  .ms-section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--ink);
+    margin: 24px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ms-section-title::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: linear-gradient(180deg, var(--info), var(--purple));
+    border-radius: 2px;
+  }
+  .ms-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-soft);
+  }
   .ms-table {
     border: 1px solid var(--border);
     border-radius: 14px;
@@ -1343,11 +1366,12 @@
           </div>
         </div>
 
-        <!-- Milestone table - editable -->
+        <!-- Schedule table - editable -->
+        <div class="ms-section-title">进度表</div>
         <div class="ms-table" id="ms-table-ye512">
           <div class="ms-row head">
             <div>ID</div>
-            <div>里程碑</div>
+            <div>进度节点</div>
             <div>计划日期</div>
             <div>进度</div>
             <div>状态</div>
@@ -1397,10 +1421,11 @@
           </div>
         </div>
 
+        <div class="ms-section-title">进度表</div>
         <div class="ms-table" id="ms-table-afd">
           <div class="ms-row head">
             <div>ID</div>
-            <div>里程碑</div>
+            <div>进度节点</div>
             <div>计划日期</div>
             <div>进度</div>
             <div>状态</div>
