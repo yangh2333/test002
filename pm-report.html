@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>产品经理专项汇报</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E1217;
+    --bg-elev: #161C24;
+    --bg-card: #1B232E;
+    --bg-input: #0F141B;
+    --border: #2A3543;
+    --border-soft: #232E3B;
+    --ink: #E8EDF3;
+    --ink-soft: #A9B3C0;
+    --ink-mute: #6B7686;
+    --achieved: #4ADE80;
+    --achieved-bg: rgba(74, 222, 128, 0.12);
+    --delayed: #F87171;
+    --delayed-bg: rgba(248, 113, 113, 0.14);
+    --progress: #60A5FA;
+    --progress-bg: rgba(96, 165, 250, 0.14);
+    --pending: #6B7686;
+    --pending-bg: rgba(107, 118, 134, 0.14);
+    --warn: #FBBF24;
+    --warn-bg: rgba(251, 191, 36, 0.14);
+    --info: #60A5FA;
+    --purple: #A78BFA;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(96,165,250,0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(167,139,250,0.05), transparent);
+  }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+  /* ── Header ── */
+  header.top {
+    border-bottom: 1px solid var(--border);
+    background: rgba(14, 18, 23, 0.85);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .top-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+  }
+  .brand .logo {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, #60A5FA, #A78BFA);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bg);
+  }
+  .brand .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-left: 4px;
+  }
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-elev);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+  }
+  .nav-tab {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 500;
+    transition: all 0.15s;
+    border: none;
+    background: transparent;
+  }
+  .nav-tab:hover { color: var(--ink); }
+  .nav-tab.active {
+    background: var(--bg-card);
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .top-meta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Views ── */
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Section heading ── */
+  section.block {
+    padding: 48px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  section.block:last-child { border-bottom: none; }
+  .block-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .block-head .left h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+  .block-head .left .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* ── Page 1: Cover ── */
+  .cover {
+    padding: 80px 0 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .cover-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--info);
+    margin-bottom: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .cover-eyebrow::before, .cover-eyebrow::after {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--info);
+  }
+  .cover h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(48px, 7vw, 88px);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin-bottom: 28px;
+    background: linear-gradient(135deg, #E8EDF3 0%, #A78BFA 50%, #60A5FA 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cover h1 em {
+    font-style: italic;
+    font-weight: 400;
+  }
+  .cover .lede {
+    color: var(--ink-soft);
+    font-size: 19px;
+    max-width: 720px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+
+  .cover-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    max-width: 880px;
+    margin: 40px auto 0;
+  }
+  .cover-meta .cm {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    text-align: left;
+  }
+  .cover-meta .cm .k {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 6px;
+  }
+  .cover-meta .cm .v {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .cover-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 920px;
+    margin: 56px auto 0;
+  }
+  .cover-nav .cn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover-nav .cn:hover {
+    border-color: var(--info);
+    transform: translateY(-2px);
+  }
+  .cover-nav .cn .num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 36px;
+    color: var(--info);
+    line-height: 1;
+    margin-bottom: 12px;
+    font-weight: 400;
+  }
+  .cover-nav .cn .t {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 19px;
+    margin-bottom: 6px;
+  }
+  .cover-nav .cn .d {
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .cover-nav .cn .arrow {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    color: var(--ink-mute);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .cover-nav .cn:hover .arrow { color: var(--info); }
+
+  /* ── Page 2: Lifecycle ── */
+  .lifecycle {
+    padding: 48px 0;
+  }
+  .lc-track {
+    position: relative;
+    margin: 48px 0 24px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+  }
+  .lc-stages {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    min-width: 900px;
+  }
+  .lc-stage {
+    padding: 16px 12px;
+    border-right: 1px solid var(--border-soft);
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    position: relative;
+  }
+  .lc-stage:last-child { border-right: none; }
+  .lc-stage .num {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .lc-rows {
+    min-width: 900px;
+    margin-top: 16px;
+  }
+  .lc-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .lc-cell {
+    padding: 18px 12px;
+    border-right: 1px solid var(--border-soft);
+    text-align: center;
+    position: relative;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lc-cell:last-child { border-right: none; }
+  .lc-cell.done {
+    background: var(--achieved-bg);
+    color: var(--achieved);
+  }
+  .lc-cell.done::after {
+    content: '✓';
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .lc-cell.current {
+    background: var(--progress-bg);
+    color: var(--progress);
+    border: 2px solid var(--progress);
+    z-index: 2;
+    font-weight: 600;
+  }
+  .lc-cell.current::after {
+    content: '● 当前';
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .lc-cell.future {
+    color: var(--ink-mute);
+  }
+  .lc-cell.future::after {
+    content: '○';
+    font-size: 14px;
+  }
+
+  .lc-row-label {
+    position: absolute;
+    left: 0;
+    top: 18px;
+    background: var(--bg);
+    padding-right: 12px;
+    z-index: 3;
+    transform: translateX(-100%);
+    padding-left: 0;
+  }
+  .lc-row-wrap {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+  .lc-row-wrap .lc-label {
+    width: 180px;
+    flex-shrink: 0;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .lc-row-wrap .lc-label .chip-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 17px;
+    margin-bottom: 2px;
+  }
+  .lc-row-wrap .lc-label .chip-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+  }
+  .lc-row-wrap .lc-cells {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .lc-row-wrap .lc-cell {
+    border-right: 1px solid var(--border-soft);
+    min-height: 60px;
+  }
+  .lc-row-wrap .lc-cell:last-child { border-right: none; }
+
+  .lc-legend {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    flex-wrap: wrap;
+  }
+  .lc-legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .lc-legend i {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .lc-legend .l-done { background: var(--achieved-bg); border: 1px solid var(--achieved); }
+  .lc-legend .l-current { background: var(--progress-bg); border: 2px solid var(--progress); }
+  .lc-legend .l-future { background: transparent; border: 1px solid var(--border); }
+
+  /* ── Page 3: Projects ── */
+  .project-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+  .ptab {
+    padding: 12px 20px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-family: 'Inter Tight', sans-serif;
+    transition: all 0.15s;
+  }
+  .ptab:hover { color: var(--ink); }
+  .ptab.active {
+    color: var(--info);
+    border-bottom-color: var(--info);
+  }
+
+  .project-panel { display: none; }
+  .project-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+  .proj-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .proj-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .proj-card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 24px;
+    margin-bottom: 8px;
+    letter-spacing: -0.015em;
+  }
+  .proj-card .code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-bottom: 16px;
+    letter-spacing: 0.08em;
+  }
+  .proj-card .desc {
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .overall-prog {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+  }
+  .overall-prog .op-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 12px;
+  }
+  .overall-prog .op-val {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 44px;
+    line-height: 1;
+    color: var(--info);
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .overall-prog .op-bar {
+    height: 8px;
+    background: var(--bg-elev);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 14px;
+  }
+  .overall-prog .op-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #60A5FA, #A78BFA);
+    border-radius: 20px;
+    width: 0;
+    transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Milestones table */
+  .ms-table {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bg-card);
+  }
+  .ms-row {
+    display: grid;
+    grid-template-columns: 60px 1.4fr 1fr 90px 110px 130px 110px;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-soft);
+    align-items: center;
+    font-size: 13px;
+  }
+  .ms-row:last-child { border-bottom: none; }
+  .ms-row.head {
+    background: var(--bg-elev);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .ms-row .ms-id { font-family: 'JetBrains Mono', monospace; color: var(--ink-mute); font-size: 12px; }
+  .ms-row .ms-name { color: var(--ink); font-weight: 500; }
+  .ms-row .ms-name small { display: block; color: var(--ink-mute); font-weight: 400; font-size: 12px; margin-top: 2px; }
+  .ms-row .ms-date { font-family: 'JetBrains Mono', monospace; color: var(--ink-soft); font-size: 12px; }
+  .ms-row .ms-prog-cell {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ms-row .ms-prog-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--bg-elev);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .ms-row .ms-prog-fill {
+    height: 100%;
+    border-radius: 20px;
+    width: 0;
+    transition: width 1s ease;
+  }
+  .ms-row .ms-prog-fill.achieved { background: var(--achieved); }
+  .ms-row .ms-prog-fill.progress { background: var(--progress); }
+  .ms-row .ms-prog-fill.delayed { background: var(--delayed); }
+  .ms-row .ms-prog-fill.pending { background: var(--pending); }
+  .ms-row .ms-prog-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; min-width: 36px; }
+
+  /* Status dropdown */
+  .status-select {
+    width: 100%;
+    padding: 6px 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23A9B3C0' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 24px;
+  }
+  .status-select.achieved { color: var(--achieved); border-color: rgba(74,222,128,0.4); }
+  .status-select.progress { color: var(--progress); border-color: rgba(96,165,250,0.4); }
+  .status-select.delayed { color: var(--delayed); border-color: rgba(248,113,113,0.4); }
+  .status-select.pending { color: var(--pending); }
+
+  .ms-row input[type="text"],
+  .ms-row input[type="date"] {
+    width: 100%;
+    padding: 6px 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .ms-row input[type="text"]:focus,
+  .ms-row input[type="date"]:focus,
+  .status-select:focus {
+    outline: none;
+    border-color: var(--info);
+  }
+  .ms-row .prog-input {
+    width: 56px;
+    padding: 6px 8px;
+    text-align: right;
+  }
+
+  .ms-editable input[type="text"] {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  /* Action buttons */
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .action-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: 'Inter Tight', sans-serif;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .action-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--info);
+  }
+  .action-btn .ab-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .action-btn.risk .ab-icon { background: var(--delayed-bg); color: var(--delayed); }
+  .action-btn.issue .ab-icon { background: var(--warn-bg); color: var(--warn); }
+  .action-btn.help .ab-icon { background: var(--progress-bg); color: var(--info); }
+  .action-btn.sync .ab-icon { background: var(--achieved-bg); color: var(--achieved); }
+  .action-btn .ab-text .ab-t { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+  .action-btn .ab-text .ab-d { font-size: 12px; color: var(--ink-mute); }
+  .action-btn .ab-count {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    background: var(--bg-elev);
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  /* ── Sub-pages (risk/issues/help/sync) ── */
+  .subpage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--border-soft);
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .subpage-header .sp-left .sp-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--info);
+    margin-bottom: 6px;
+  }
+  .subpage-header .sp-left h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .subpage-header .sp-left h2 em {
+    font-style: italic;
+    color: var(--info);
+    font-weight: 400;
+  }
+  .subpage-header .sp-right {
+    display: flex;
+    gap: 8px;
+  }
+  .btn {
+    padding: 8px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--ink);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { border-color: var(--info); }
+  .btn.primary {
+    background: var(--info);
+    color: var(--bg);
+    border-color: var(--info);
+  }
+  .btn.primary:hover { background: #7DB5FC; }
+  .btn.danger { color: var(--delayed); border-color: rgba(248,113,113,0.4); }
+  .btn.danger:hover { background: var(--delayed-bg); }
+
+  /* Sub-page tabs (switch between projects in sub-page) */
+  .sub-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .sub-tab {
+    padding: 6px 14px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .sub-tab:hover { color: var(--ink); }
+  .sub-tab.active {
+    background: var(--info);
+    color: var(--bg);
+    border-color: var(--info);
+  }
+
+  /* Items list */
+  .items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .item-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    border-left: 4px solid var(--info);
+  }
+  .item-card.high { border-left-color: var(--delayed); }
+  .item-card.mid { border-left-color: var(--warn); }
+  .item-card.low { border-left-color: var(--info); }
+  .item-card.resolved { border-left-color: var(--achieved); opacity: 0.7; }
+
+  .item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .item-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 200px;
+  }
+  .item-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    background: var(--bg-elev);
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .item-title-input {
+    flex: 1;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 6px;
+    min-width: 0;
+  }
+  .item-title-input:hover { border-color: var(--border-soft); background: var(--bg-input); }
+  .item-title-input:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
+
+  .item-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .item-select {
+    padding: 5px 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23A9B3C0' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 22px;
+  }
+  .item-select.high { color: var(--delayed); border-color: rgba(248,113,113,0.4); }
+  .item-select.mid { color: var(--warn); border-color: rgba(251,191,36,0.4); }
+  .item-select.low { color: var(--info); border-color: rgba(96,165,250,0.4); }
+  .item-select.resolved { color: var(--achieved); border-color: rgba(74,222,128,0.4); }
+  .item-select.open { color: var(--delayed); border-color: rgba(248,113,113,0.4); }
+  .item-select.progress { color: var(--info); border-color: rgba(96,165,250,0.4); }
+
+  .item-desc {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ink-soft);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    resize: vertical;
+    min-height: 36px;
+  }
+  .item-desc:hover { border-color: var(--border-soft); background: var(--bg-input); }
+  .item-desc:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
+
+  .item-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border-soft);
+    font-size: 12px;
+  }
+  .item-meta .im-item .im-k {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+  }
+  .item-meta .im-item input {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ink);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    padding: 4px 6px;
+    border-radius: 4px;
+  }
+  .item-meta .im-item input:hover { border-color: var(--border-soft); background: var(--bg-input); }
+  .item-meta .im-item input:focus { outline: none; border-color: var(--info); background: var(--bg-input); }
+
+  .item-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-mute);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    background: var(--bg-card);
+  }
+  .empty-state .es-icon {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 48px;
+    color: var(--border);
+    margin-bottom: 12px;
+  }
+  .empty-state .es-t { font-size: 15px; margin-bottom: 6px; color: var(--ink-soft); }
+  .empty-state .es-d { font-size: 13px; }
+
+  .save-toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--achieved);
+    color: var(--bg);
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 100;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+  .save-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* ── Footer ── */
+  footer {
+    padding: 32px 0;
+    text-align: center;
+    color: var(--ink-mute);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    border-top: 1px solid var(--border-soft);
+    margin-top: 40px;
+  }
+  footer .end {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  /* Responsive */
+  @media (max-width: 980px) {
+    .cover-meta, .cover-nav { grid-template-columns: repeat(2, 1fr); }
+    .proj-header { grid-template-columns: 1fr; }
+    .action-grid { grid-template-columns: repeat(2, 1fr); }
+    .ms-row { grid-template-columns: 50px 1fr 80px 100px; gap: 8px; font-size: 12px; }
+    .ms-row .ms-date, .ms-row .col-status, .ms-row .col-prog { display: none; }
+    .top-meta { display: none; }
+    .nav-tabs { display: none; }
+    .wrap { padding: 0 20px; }
+    .top-inner { padding: 12px 20px; }
+  }
+  @media (max-width: 640px) {
+    .cover-meta, .cover-nav, .action-grid { grid-template-columns: 1fr; }
+    .item-meta { grid-template-columns: 1fr; }
+    .lc-row-wrap { flex-direction: column; }
+    .lc-row-wrap .lc-label { width: 100%; }
+    .lc-row-wrap .lc-cells { grid-template-columns: repeat(7, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand" onclick="go('home')">
+      <div class="logo">PM</div>
+      <span>产品经理专项汇报</span>
+      <span class="sub">/ FY26 Q3</span>
+    </div>
+    <nav class="nav-tabs">
+      <button class="nav-tab active" data-view="home" onclick="go('home')">首页</button>
+      <button class="nav-tab" data-view="lifecycle" onclick="go('lifecycle')">产品生命周期</button>
+      <button class="nav-tab" data-view="projects" onclick="go('projects')">重点专项</button>
+    </nav>
+    <div class="top-meta">
+      <span>2026.09.16</span>
+      <span>· 林清越</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ════════════ PAGE 1: COVER ════════════ -->
+  <section class="view active" id="view-home">
+    <div class="cover">
+      <div class="cover-eyebrow">Product Manager Report · 专项汇报</div>
+      <h1>产品经理<em>专项</em>汇报</h1>
+      <p class="lede">本汇报系统梳理公司芯片产品全生命周期进度、当前重点专项里程碑达成情况，以及过程中的风险、问题、求助与信息同步事项。</p>
+
+      <div class="cover-meta">
+        <div class="cm"><div class="k">汇报周期</div><div class="v">2026 Q3</div></div>
+        <div class="cm"><div class="k">汇报人</div><div class="v">林清越</div></div>
+        <div class="cm"><div class="k">覆盖产品线</div><div class="v">SDC100/200/300</div></div>
+        <div class="cm"><div class="k">重点专项</div><div class="v">2 项</div></div>
+      </div>
+
+      <div class="cover-nav">
+        <div class="cn" onclick="go('lifecycle')">
+          <div class="num">01</div>
+          <div class="t">产品全生命周期</div>
+          <div class="d">SDC100 / SDC200 / SDC300 三代芯片在概念、立项、研发、验证、试制、量产、退市七阶段中的当前所处位置。</div>
+          <span class="arrow">→</span>
+        </div>
+        <div class="cn" onclick="go('projects')">
+          <div class="num">02</div>
+          <div class="t">公司重点产品专项</div>
+          <div class="d">仪电 512 卡交付专项与 AFD 产品化专项的进度里程碑达成情况，支持在线编辑与状态更新。</div>
+          <span class="arrow">→</span>
+        </div>
+        <div class="cn" onclick="go('projects')">
+          <div class="num">03</div>
+          <div class="t">过程管理四象限</div>
+          <div class="d">从重点专项可进入：过程风险、过程问题、求助项、信息同步四个子页面，均支持输入更新。</div>
+          <span class="arrow">→</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ PAGE 2: LIFECYCLE ════════════ -->
+  <section class="view" id="view-lifecycle">
+    <div class="lifecycle">
+      <div class="block-head">
+        <div class="left">
+          <div class="kicker">02 · Product Lifecycle</div>
+          <h2>芯片产品全生命周期</h2>
+        </div>
+        <div class="lc-legend">
+          <span><i class="l-done"></i>已完成阶段</span>
+          <span><i class="l-current"></i>当前所处阶段</span>
+          <span><i class="l-future"></i>未进入阶段</span>
+        </div>
+      </div>
+
+      <!-- Stage header -->
+      <div class="lc-stages">
+        <div class="lc-stage"><span class="num">01</span>概念阶段</div>
+        <div class="lc-stage"><span class="num">02</span>产品立项</div>
+        <div class="lc-stage"><span class="num">03</span>产品研发</div>
+        <div class="lc-stage"><span class="num">04</span>产品验证</div>
+        <div class="lc-stage"><span class="num">05</span>小量试制</div>
+        <div class="lc-stage"><span class="num">06</span>产品量产</div>
+        <div class="lc-stage"><span class="num">07</span>产品退市</div>
+      </div>
+
+      <!-- SDC100 -->
+      <div class="lc-row-wrap">
+        <div class="lc-label">
+          <div class="chip-name">SDC100</div>
+          <div class="chip-sub">一代芯片 · 小量试制</div>
+        </div>
+        <div class="lc-cells">
+          <div class="lc-cell done"></div>
+          <div class="lc-cell done"></div>
+          <div class="lc-cell done"></div>
+          <div class="lc-cell done"></div>
+          <div class="lc-cell current"></div>
+          <div class="lc-cell future"></div>
+          <div class="lc-cell future"></div>
+        </div>
+      </div>
+
+      <!-- SDC200 -->
+      <div class="lc-row-wrap">
+        <div class="lc-label">
+          <div class="chip-name">SDC200</div>
+          <div class="chip-sub">二代芯片 · 产品研发</div>
+        </div>
+        <div class="lc-cells">
+          <div class="lc-cell done"></div>
+          <div class="lc-cell done"></div>
+          <div class="lc-cell current"></div>
+          <div class="lc-cell future"></div>
+          <div class="lc-cell future"></div>
+          <div class="lc-cell future"></div>
+          <div class="lc-cell future"></div>
+        </div>
+      </div>
+
+      <!-- SDC300 -->
+      <div class="lc-row-wrap">
+        <div class="lc-label">
+          <div class="chip-name">SDC300</div>
+          <div class="chip-sub">三代芯片 · 产品立项</div>
+        </div>
+        <div class="lc-cells">
+          <div class="lc-cell done"></div>
+          <div class="lc-cell current"></div>
+          <div class="lc-cell future"></div>
+          <div class="lc-cell future"></div>
+          <div class="lc-cell future"></div>
+          <div class="lc-cell future"></div>
+          <div class="lc-cell future"></div>
+        </div>
+      </div>
+
+      <!-- Stage detail cards -->
+      <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--progress); border-radius: 12px; padding: 20px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; margin-bottom: 8px;">SDC100 · 当前</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;">产品小量试制阶段</div>
+          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;">已完成工程样品流片与功能验证，进入小批量产线试制，目标 Q4 完成 5K 片交付并启动客户认证。</div>
+        </div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--progress); border-radius: 12px; padding: 20px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; margin-bottom: 8px;">SDC200 · 当前</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;">产品研发阶段</div>
+          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;">架构设计与 RTL 开发完成 72%，DV 验证覆盖率 65%，预计 Q4 末流片，性能较一代提升 40%。</div>
+        </div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--progress); border-radius: 12px; padding: 20px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; margin-bottom: 8px;">SDC300 · 当前</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; margin-bottom: 8px;">产品立项阶段</div>
+          <div style="color: var(--ink-soft); font-size: 13px; line-height: 1.55;">市场调研与竞品分析完成，PRD v0.1 已评审，目标 10 月完成立项决策评审，11 月进入研发阶段。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ PAGE 3: PROJECTS ════════════ -->
+  <section class="view" id="view-projects">
+    <div style="padding-top: 32px;">
+      <div class="block-head">
+        <div class="left">
+          <div class="kicker">03 · Key Projects</div>
+          <h2>公司重点产品专项</h2>
+        </div>
+        <div class="legend" style="display: flex; gap: 16px; font-size: 12px; color: var(--ink-soft); flex-wrap: wrap;">
+          <span style="display: inline-flex; align-items: center; gap: 6px;"><i style="width:10px;height:10px;border-radius:3px;background:var(--achieved);"></i>达成</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px;"><i style="width:10px;height:10px;border-radius:3px;background:var(--progress);"></i>进行中</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px;"><i style="width:10px;height:10px;border-radius:3px;background:var(--delayed);"></i>延期</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px;"><i style="width:10px;height:10px;border-radius:3px;background:var(--pending);"></i>未开始</span>
+        </div>
+      </div>
+
+      <div class="project-tabs">
+        <button class="ptab active" data-proj="ye512" onclick="switchProj('ye512')">仪电 512 卡交付专项</button>
+        <button class="ptab" data-proj="afd" onclick="switchProj('afd')">AFD 产品化专项</button>
+      </div>
+
+      <!-- Project 1: YE512 -->
+      <div class="project-panel active" id="proj-ye512">
+        <div class="proj-header">
+          <div class="proj-card">
+            <h3>仪电 512 卡交付专项</h3>
+            <div class="code">PRJ-YE512-2026 / 负责人 · 林清越 / 赞助人 · CTO</div>
+            <div class="desc">面向车载仪电平台的高可靠性 512 通道采集卡，目标 Q4 完成 A 样交付并通过客户全项认证，2027 Q1 进入小批量产。当前处于工程样件功能联调阶段。</div>
+          </div>
+          <div class="overall-prog">
+            <div class="op-label">专项总进度</div>
+            <div class="op-val" id="op-ye512">58%</div>
+            <div style="font-size: 12px; color: var(--ink-mute);">较基线 <span style="color: var(--delayed);">−6 pp</span></div>
+            <div class="op-bar"><div class="op-bar-fill" data-w="58" data-proj="ye512"></div></div>
+          </div>
+        </div>
+
+        <!-- Milestone table - editable -->
+        <div class="ms-table" id="ms-table-ye512">
+          <div class="ms-row head">
+            <div>ID</div>
+            <div>里程碑</div>
+            <div>计划日期</div>
+            <div>进度</div>
+            <div>状态</div>
+            <div>实际/预计日期</div>
+            <div>负责人</div>
+          </div>
+          <!-- Rows injected by JS -->
+        </div>
+
+        <div class="action-grid">
+          <button class="action-btn risk" onclick="goSub('ye512','risk')">
+            <div class="ab-icon">!</div>
+            <div class="ab-text"><div class="ab-t">过程风险</div><div class="ab-d">当前阶段风险登记</div></div>
+            <div class="ab-count" id="cnt-ye512-risk">0</div>
+          </button>
+          <button class="action-btn issue" onclick="goSub('ye512','issue')">
+            <div class="ab-icon">?</div>
+            <div class="ab-text"><div class="ab-t">过程问题</div><div class="ab-d">已识别问题清单</div></div>
+            <div class="ab-count" id="cnt-ye512-issue">0</div>
+          </button>
+          <button class="action-btn help" onclick="goSub('ye512','help')">
+            <div class="ab-icon">SOS</div>
+            <div class="ab-text"><div class="ab-t">求助项</div><div class="ab-d">需上级协调事项</div></div>
+            <div class="ab-count" id="cnt-ye512-help">0</div>
+          </button>
+          <button class="action-btn sync" onclick="goSub('ye512','sync')">
+            <div class="ab-icon">∞</div>
+            <div class="ab-text"><div class="ab-t">信息同步</div><div class="ab-d">关键决策与同步</div></div>
+            <div class="ab-count" id="cnt-ye512-sync">0</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Project 2: AFD -->
+      <div class="project-panel" id="proj-afd">
+        <div class="proj-header">
+          <div class="proj-card">
+            <h3>AFD 产品化专项</h3>
+            <div class="code">PRJ-AFD-2026 / 负责人 · 周砚之 / 赞助人 · COO</div>
+            <div class="desc">AFD（自动故障诊断）算法模块从研究阶段转向产品化，目标 Q4 完成 SDK 封装与 3 个垂直行业 POC，2027 Q1 进入商业化推广。当前处于算法工程化封装阶段。</div>
+          </div>
+          <div class="overall-prog">
+            <div class="op-label">专项总进度</div>
+            <div class="op-val" id="op-afd">42%</div>
+            <div style="font-size: 12px; color: var(--ink-mute);">较基线 <span style="color: var(--achieved);">+2 pp</span></div>
+            <div class="op-bar"><div class="op-bar-fill" data-w="42" data-proj="afd"></div></div>
+          </div>
+        </div>
+
+        <div class="ms-table" id="ms-table-afd">
+          <div class="ms-row head">
+            <div>ID</div>
+            <div>里程碑</div>
+            <div>计划日期</div>
+            <div>进度</div>
+            <div>状态</div>
+            <div>实际/预计日期</div>
+            <div>负责人</div>
+          </div>
+        </div>
+
+        <div class="action-grid">
+          <button class="action-btn risk" onclick="goSub('afd','risk')">
+            <div class="ab-icon">!</div>
+            <div class="ab-text"><div class="ab-t">过程风险</div><div class="ab-d">当前阶段风险登记</div></div>
+            <div class="ab-count" id="cnt-afd-risk">0</div>
+          </button>
+          <button class="action-btn issue" onclick="goSub('afd','issue')">
+            <div class="ab-icon">?</div>
+            <div class="ab-text"><div class="ab-t">过程问题</div><div class="ab-d">已识别问题清单</div></div>
+            <div class="ab-count" id="cnt-afd-issue">0</div>
+          </button>
+          <button class="action-btn help" onclick="goSub('afd','help')">
+            <div class="ab-icon">SOS</div>
+            <div class="ab-text"><div class="ab-t">求助项</div><div class="ab-d">需上级协调事项</div></div>
+            <div class="ab-count" id="cnt-afd-help">0</div>
+          </button>
+          <button class="action-btn sync" onclick="goSub('afd','sync')">
+            <div class="ab-icon">∞</div>
+            <div class="ab-text"><div class="ab-t">信息同步</div><div class="ab-d">关键决策与同步</div></div>
+            <div class="ab-count" id="cnt-afd-sync">0</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ SUB PAGES ════════════ -->
+  <section class="view" id="view-sub">
+    <div class="subpage-header">
+      <div class="sp-left">
+        <div class="sp-eyebrow" id="sp-eyebrow">Process Tracking · 过程管理</div>
+        <h2 id="sp-title">过程<em>风险</em></h2>
+      </div>
+      <div class="sp-right">
+        <button class="btn" onclick="go('projects')">← 返回重点专项</button>
+        <button class="btn primary" onclick="addItem()">+ 新增</button>
+      </div>
+    </div>
+
+    <div class="sub-tabs" id="sub-tabs">
+      <button class="sub-tab active" data-proj="ye512" onclick="switchSubProj('ye512')">仪电 512 卡</button>
+      <button class="sub-tab" data-proj="afd" onclick="switchSubProj('afd')">AFD 产品化</button>
+    </div>
+
+    <div class="items-list" id="items-list"></div>
+  </section>
+
+</div>
+
+<footer>
+  <div>产品经理专项汇报 · FY26 Q3 · 数据可编辑并自动保存至本地浏览器</div>
+  <div class="end">— 由产品管理办公室维护 —</div>
+</footer>
+
+<div class="save-toast" id="toast">已保存 ✓</div>
+
+<script>
+  // ── Data store with localStorage persistence ──
+  const STORE_KEY = 'pm-report-data-v1';
+
+  // Default data - based on typical chip product milestones
+  // NOTE: Since no image was provided, this uses typical milestone structures.
+  // Editable on-page; replaces with your real data.
+  const DEFAULT_DATA = {
+    milestones: {
+      ye512: [
+        { id: 'M1', name: '需求规格评审完成', desc: 'PRD 评审通过，需求基线冻结', planDate: '2026-07-15', progress: 100, status: 'achieved', actualDate: '2026-07-12', owner: '林清越' },
+        { id: 'M2', name: '架构设计评审', desc: '硬件架构与 FPGA 设计评审通过', planDate: '2026-08-05', progress: 100, status: 'achieved', actualDate: '2026-08-03', owner: '陆景明' },
+        { id: 'M3', name: '工程样件流片回片', desc: 'ES 样件回片并完成外观检测', planDate: '2026-08-25', progress: 100, status: 'achieved', actualDate: '2026-08-28', owner: '陆景明' },
+        { id: 'M4', name: '功能联调与自测', desc: '硬件 + 固件 + 上位机联调，功能自测通过率 90%', planDate: '2026-09-20', progress: 75, status: 'progress', actualDate: '2026-09-22', owner: '叶南舟' },
+        { id: 'M5', name: 'A 样交付客户', desc: 'A 样件 + 全套文档交付客户，启动认证', planDate: '2026-10-15', progress: 30, status: 'progress', actualDate: '2026-10-20', owner: '林清越' },
+        { id: 'M6', name: '客户全项认证通过', desc: '通过客户可靠性、EMC、功能全项认证', planDate: '2026-12-20', progress: 0, status: 'pending', actualDate: '', owner: '林清越' },
+        { id: 'M7', name: '小批量产启动', desc: '5K 片小批量产线投产', planDate: '2027-01-15', progress: 0, status: 'pending', actualDate: '', owner: '秦若笙' }
+      ],
+      afd: [
+        { id: 'M1', name: '算法基线冻结', desc: 'AFD 算法 v1.0 基线模型冻结，准确率达标', planDate: '2026-07-20', progress: 100, status: 'achieved', actualDate: '2026-07-18', owner: '周砚之' },
+        { id: 'M2', name: 'SDK 架构设计', desc: 'SDK 接口设计与跨平台架构方案评审通过', planDate: '2026-08-15', progress: 100, status: 'achieved', actualDate: '2026-08-14', owner: '周砚之' },
+        { id: 'M3', name: '算法工程化封装', desc: 'C++ 封装 + Python 绑定，性能优化', planDate: '2026-09-25', progress: 60, status: 'progress', actualDate: '2026-09-30', owner: '叶南舟' },
+        { id: 'M4', name: '3 个行业 POC 启动', desc: '电力、轨交、石化三行业 POC 同步启动', planDate: '2026-10-20', progress: 20, status: 'progress', actualDate: '2026-10-25', owner: '林清越' },
+        { id: 'M5', name: 'POC 数据回收与结论', desc: '三行业 POC 完成数据回收与有效性结论', planDate: '2026-12-10', progress: 0, status: 'pending', actualDate: '', owner: '周砚之' },
+        { id: 'M6', name: '商业化方案与定价', desc: '输出商业模式、定价方案与销售工具包', planDate: '2026-12-30', progress: 0, status: 'pending', actualDate: '', owner: '林清越' }
+      ]
+    },
+    // sub-items: keyed by `${proj}:${type}`
+    // type: risk | issue | help | sync
+    items: {
+      'ye512:risk': [
+        { id: 'R1', title: '关键物料 COB 封装供应紧张', desc: 'COB 封装产能受限，Q4 5K 片交付可能受影响', level: 'high', status: 'open', owner: '陆景明', due: '2026-10-30' },
+        { id: 'R2', title: '客户认证周期不可控', desc: '客户内部认证排期未确认，可能影响 12 月窗口', level: 'mid', status: 'open', owner: '林清越', due: '2026-11-15' },
+        { id: 'R3', title: '固件兼容性历史版本', desc: '需兼容客户 3 个历史版本协议，工作量被低估', level: 'mid', status: 'progress', owner: '叶南舟', due: '2026-09-30' }
+      ],
+      'ye512:issue': [
+        { id: 'I1', title: 'ES 样件 ADC 通道噪声超标', desc: '512 通道中 8 通道底噪超标 6dB，需硬件改版', level: 'high', status: 'progress', owner: '陆景明', due: '2026-09-25' },
+        { id: 'I2', title: '上位机偶发性丢帧', desc: '高负载下 USB 3.0 通道偶发丢帧，根因排查中', level: 'mid', status: 'open', owner: '叶南舟', due: '2026-09-30' }
+      ],
+      'ye512:help': [
+        { id: 'H1', title: '协调 COB 封装产能', desc: '需 CTO 出面协调供应商锁定 Q4 5K 片产能', level: 'high', status: 'open', owner: '林清越', due: '2026-09-20' },
+        { id: 'H2', title: '客户认证排期确认', desc: '需销售 VP 协调客户给出明确认证排期', level: 'mid', status: 'open', owner: '林清越', due: '2026-10-10' }
+      ],
+      'ye512:sync': [
+        { id: 'S1', title: 'A 样交付时点确认', desc: '与客户确认 A 样交付时点由 10-15 调整至 10-20', level: 'mid', status: 'progress', owner: '林清越', due: '2026-09-25' },
+        { id: 'S2', title: '专项进度周报机制', desc: '每周一 18:00 同步专项进度至战略委员会', level: 'low', status: 'open', owner: '林清越', due: '2026-12-31' }
+      ],
+      'afd:risk': [
+        { id: 'R1', title: 'POC 客户合作意愿不足', desc: '电力行业 1 家 POC 客户意向不明确', level: 'mid', status: 'open', owner: '林清越', due: '2026-10-15' },
+        { id: 'R2', title: '算法跨行业泛化性', desc: '石化场景样本量不足，模型泛化性存疑', level: 'high', status: 'progress', owner: '周砚之', due: '2026-11-30' }
+      ],
+      'afd:issue': [
+        { id: 'I1', title: 'SDK 跨平台编译异常', desc: 'ARM Linux 平台编译存在符号链接错误', level: 'mid', status: 'progress', owner: '叶南舟', due: '2026-09-28' },
+        { id: 'I2', title: '推理延迟未达 SLA', desc: '边缘端单次推理 850ms，超 500ms 目标', level: 'high', status: 'open', owner: '叶南舟', due: '2026-10-15' }
+      ],
+      'afd:help': [
+        { id: 'H1', title: '石化行业样本数据获取', desc: '需 COO 协调石化集团获取 6 个月历史故障数据', level: 'high', status: 'open', owner: '周砚之', due: '2026-10-10' }
+      ],
+      'afd:sync': [
+        { id: 'S1', title: '商业化定价方向决策', desc: '按授权 or 按调用量计费，需战略委员会 10 月决策', level: 'high', status: 'open', owner: '林清越', due: '2026-10-20' }
+      ]
+    }
+  };
+
+  // Load data
+  let data = loadJSON(STORE_KEY) || JSON.parse(JSON.stringify(DEFAULT_DATA));
+
+  function loadJSON(key) {
+    try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
+  }
+  function saveData() {
+    localStorage.setItem(STORE_KEY, JSON.stringify(data));
+    showToast();
+  }
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    clearTimeout(window.__toastT);
+    window.__toastT = setTimeout(() => t.classList.remove('show'), 1500);
+  }
+
+  // ── Navigation ──
+  let currentView = 'home';
+  let currentProj = 'ye512';
+  let currentSubProj = 'ye512';
+  let currentSubType = 'risk';
+
+  function go(view) {
+    currentView = view;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+    document.querySelectorAll('.nav-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.view === view);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (view === 'projects') {
+      setTimeout(() => animateProgressBars(), 100);
+    }
+  }
+
+  function switchProj(proj) {
+    currentProj = proj;
+    document.querySelectorAll('.ptab').forEach(t => t.classList.toggle('active', t.dataset.proj === proj));
+    document.querySelectorAll('.project-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('proj-' + proj).classList.add('active');
+    setTimeout(() => animateProgressBars(), 100);
+  }
+
+  function goSub(proj, type) {
+    currentSubProj = proj;
+    currentSubType = type;
+    go('sub');
+    // Update sub-page header
+    const typeMap = {
+      risk: { eyebrow: 'Process Risks · 过程风险', title: '过程<em>风险</em>' },
+      issue: { eyebrow: 'Open Issues · 过程问题', title: '过程<em>问题</em>' },
+      help: { eyebrow: 'Help Needed · 求助项', title: '上级<em>求助</em>' },
+      sync: { eyebrow: 'Info Sync · 信息同步', title: '信息<em>同步</em>' }
+    };
+    const m = typeMap[type];
+    document.getElementById('sp-eyebrow').textContent = m.eyebrow;
+    document.getElementById('sp-title').innerHTML = m.title;
+    // Update sub tabs
+    document.querySelectorAll('.sub-tab').forEach(t => t.classList.toggle('active', t.dataset.proj === proj));
+    renderItems();
+  }
+
+  function switchSubProj(proj) {
+    currentSubProj = proj;
+    document.querySelectorAll('.sub-tab').forEach(t => t.classList.toggle('active', t.dataset.proj === proj));
+    renderItems();
+  }
+
+  // ── Render milestone table (editable) ──
+  function renderMilestones() {
+    ['ye512', 'afd'].forEach(proj => {
+      const container = document.getElementById('ms-table-' + proj);
+      // Clear except header
+      const header = container.querySelector('.ms-row.head');
+      container.innerHTML = '';
+      container.appendChild(header);
+      const items = data.milestones[proj];
+      items.forEach((m, idx) => {
+        const row = document.createElement('div');
+        row.className = 'ms-row ms-editable';
+        row.dataset.proj = proj;
+        row.dataset.idx = idx;
+        row.innerHTML = `
+          <div class="ms-id">${m.id}</div>
+          <div>
+            <input type="text" class="ms-name-input" value="${escapeHtml(m.name)}" data-field="name" />
+            <input type="text" class="ms-desc-input" value="${escapeHtml(m.desc)}" data-field="desc" style="font-size: 11px; color: var(--ink-mute); margin-top: 4px;" />
+          </div>
+          <div><input type="date" value="${m.planDate}" data-field="planDate" /></div>
+          <div class="ms-prog-cell">
+            <div class="ms-prog-bar"><div class="ms-prog-fill ${m.status}" data-w="${m.progress}"></div></div>
+            <input type="number" class="prog-input" min="0" max="100" value="${m.progress}" data-field="progress" />
+          </div>
+          <div>
+            <select class="status-select ${m.status}" data-field="status">
+              <option value="achieved" ${m.status === 'achieved' ? 'selected' : ''}>● 达成</option>
+              <option value="progress" ${m.status === 'progress' ? 'selected' : ''}>● 进行中</option>
+              <option value="delayed" ${m.status === 'delayed' ? 'selected' : ''}>▲ 延期</option>
+              <option value="pending" ${m.status === 'pending' ? 'selected' : ''}>○ 未开始</option>
+            </select>
+          </div>
+          <div><input type="date" value="${m.actualDate || ''}" data-field="actualDate" /></div>
+          <div><input type="text" value="${escapeHtml(m.owner)}" data-field="owner" /></div>
+        `;
+        container.appendChild(row);
+      });
+
+      // Wire inputs
+      row: container.querySelectorAll('.ms-row.ms-editable').forEach(row => {
+        const proj = row.dataset.proj;
+        const idx = parseInt(row.dataset.idx);
+        row.querySelectorAll('input, select').forEach(el => {
+          const field = el.dataset.field;
+          const ev = (el.tagName === 'SELECT' || el.type === 'number' || el.type === 'date') ? 'change' : 'input';
+          el.addEventListener(ev, () => {
+            let val = el.value;
+            if (field === 'progress') val = parseInt(val) || 0;
+            data.milestones[proj][idx][field] = val;
+            if (field === 'status') {
+              el.className = 'status-select ' + val;
+              const fill = row.querySelector('.ms-prog-fill');
+              if (fill) fill.className = 'ms-prog-fill ' + val;
+            }
+            if (field === 'progress') {
+              const fill = row.querySelector('.ms-prog-fill');
+              if (fill) fill.style.width = val + '%';
+            }
+            recalcOverall(proj);
+            saveData();
+          });
+        });
+      });
+    });
+    animateProgressBars();
+  }
+
+  function recalcOverall(proj) {
+    const items = data.milestones[proj];
+    const avg = Math.round(items.reduce((s, m) => s + (m.progress || 0), 0) / items.length);
+    const opEl = document.getElementById('op-' + proj);
+    if (opEl) opEl.textContent = avg + '%';
+    const fill = document.querySelector(`.op-bar-fill[data-proj="${proj}"]`);
+    if (fill) fill.style.width = avg + '%';
+  }
+
+  function animateProgressBars() {
+    document.querySelectorAll('.ms-prog-fill, .op-bar-fill').forEach(b => {
+      const w = b.dataset.w || 0;
+      b.style.width = w + '%';
+    });
+  }
+
+  // ── Render items (risk/issue/help/sync) ──
+  function renderItems() {
+    const list = document.getElementById('items-list');
+    list.innerHTML = '';
+    const key = `${currentSubProj}:${currentSubType}`;
+    const items = data.items[key] || [];
+
+    if (items.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="es-icon">∅</div>
+          <div class="es-t">暂无${getTypeName(currentSubType)}记录</div>
+          <div class="es-d">点击右上角"+ 新增"添加第一条</div>
+        </div>
+      `;
+      return;
+    }
+
+    items.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'item-card ' + (item.level || 'low') + (item.status === 'resolved' ? ' resolved' : '');
+      card.dataset.idx = idx;
+      card.innerHTML = `
+        <div class="item-top">
+          <div class="item-title-row">
+            <span class="item-id">${item.id}</span>
+            <input type="text" class="item-title-input" value="${escapeHtml(item.title)}" data-field="title" />
+          </div>
+          <div class="item-controls">
+            ${levelSelect(item.level, currentSubType)}
+            ${statusSelect(item.status, currentSubType)}
+            <button class="btn danger" onclick="deleteItem(${idx})" style="padding: 6px 10px; font-size: 11px;">删除</button>
+          </div>
+        </div>
+        <textarea class="item-desc" data-field="desc" placeholder="详细描述...">${escapeHtml(item.desc)}</textarea>
+        <div class="item-meta">
+          <div class="im-item">
+            <div class="im-k">负责人</div>
+            <input type="text" value="${escapeHtml(item.owner)}" data-field="owner" />
+          </div>
+          <div class="im-item">
+            <div class="im-k">截止日期</div>
+            <input type="date" value="${item.due || ''}" data-field="due" />
+          </div>
+          <div class="im-item">
+            <div class="im-k">关联里程碑</div>
+            <input type="text" value="${escapeHtml(item.milestone || '')}" data-field="milestone" placeholder="如 M4" />
+          </div>
+        </div>
+      `;
+      list.appendChild(card);
+
+      // Wire inputs
+      card.querySelectorAll('input, textarea, select').forEach(el => {
+        const field = el.dataset.field;
+        if (!field) return;
+        const ev = el.tagName === 'SELECT' ? 'change' : 'input';
+        el.addEventListener(ev, () => {
+          data.items[key][idx][field] = el.value;
+          if (el.tagName === 'SELECT') {
+            el.className = el.className.split(' ')[0] + ' ' + el.value;
+            card.className = 'item-card ' + (field === 'level' ? el.value : (data.items[key][idx].level || 'low')) + (data.items[key][idx].status === 'resolved' ? ' resolved' : '');
+          }
+          saveData();
+        });
+      });
+    });
+  }
+
+  function levelSelect(val, type) {
+    // For sync/help, may use different levels; here keep consistent
+    const opts = [
+      { v: 'high', t: '高' },
+      { v: 'mid', t: '中' },
+      { v: 'low', t: '低' }
+    ];
+    return `<select class="item-select ${val}" data-field="level">
+      ${opts.map(o => `<option value="${o.v}" ${val === o.v ? 'selected' : ''}>${o.t}</option>`).join('')}
+    </select>`;
+  }
+
+  function statusSelect(val, type) {
+    const opts = [
+      { v: 'open', t: '未处理' },
+      { v: 'progress', t: '处理中' },
+      { v: 'resolved', t: '已解决' }
+    ];
+    return `<select class="item-select ${val}" data-field="status">
+      ${opts.map(o => `<option value="${o.v}" ${val === o.v ? 'selected' : ''}>${o.t}</option>`).join('')}
+    </select>`;
+  }
+
+  function getTypeName(type) {
+    return { risk: '风险', issue: '问题', help: '求助', sync: '信息同步' }[type] || '';
+  }
+
+  function addItem() {
+    const key = `${currentSubProj}:${currentSubType}`;
+    if (!data.items[key]) data.items[key] = [];
+    const prefix = { risk: 'R', issue: 'I', help: 'H', sync: 'S' }[currentSubType];
+    const nums = data.items[key].map(i => parseInt(i.id.replace(/\D/g, '')) || 0);
+    const nextN = (nums.length ? Math.max(...nums) : 0) + 1;
+    data.items[key].push({
+      id: prefix + nextN,
+      title: '新' + getTypeName(currentSubType) + '项',
+      desc: '',
+      level: 'mid',
+      status: 'open',
+      owner: '',
+      due: '',
+      milestone: ''
+    });
+    saveData();
+    renderItems();
+    updateCounts();
+  }
+
+  function deleteItem(idx) {
+    const key = `${currentSubProj}:${currentSubType}`;
+    data.items[key].splice(idx, 1);
+    saveData();
+    renderItems();
+    updateCounts();
+  }
+
+  function updateCounts() {
+    ['ye512', 'afd'].forEach(proj => {
+      ['risk', 'issue', 'help', 'sync'].forEach(type => {
+        const el = document.getElementById(`cnt-${proj}-${type}`);
+        if (el) el.textContent = (data.items[`${proj}:${type}`] || []).length;
+      });
+    });
+  }
+
+  function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ── Init ──
+  function init() {
+    renderMilestones();
+    updateCounts();
+    // Animate progress bars after a beat
+    setTimeout(animateProgressBars, 200);
+  }
+
+  init();
+
+  // Save on unload
+  window.addEventListener('beforeunload', saveData);
+</script>
+
+</body>
+</html>
