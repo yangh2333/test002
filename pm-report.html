@@ -215,32 +215,34 @@
   }
 
   .cover-meta {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    max-width: 880px;
-    margin: 40px auto 0;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin: 32px auto 0;
+    color: var(--ink-mute);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    flex-wrap: wrap;
   }
   .cover-meta .cm {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px;
-    text-align: left;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 0 14px;
+    border-right: 1px solid var(--border-soft);
   }
+  .cover-meta .cm:last-child { border-right: none; }
   .cover-meta .cm .k {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-mute);
-    margin-bottom: 6px;
+    letter-spacing: 0.12em;
+    font-size: 10px;
   }
   .cover-meta .cm .v {
-    font-family: 'Fraunces', serif;
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--ink);
+    color: var(--ink-soft);
+    font-weight: 600;
+    font-size: 12px;
   }
 
   .cover-nav {
@@ -996,7 +998,7 @@
 
   /* Responsive */
   @media (max-width: 980px) {
-    .cover-meta, .cover-nav { grid-template-columns: repeat(2, 1fr); }
+    .cover-nav { grid-template-columns: repeat(2, 1fr); }
     .proj-header { grid-template-columns: 1fr; }
     .action-grid { grid-template-columns: repeat(2, 1fr); }
     .ms-row { grid-template-columns: 50px 1fr 80px 100px; gap: 8px; font-size: 12px; }
@@ -1007,7 +1009,8 @@
     .top-inner { padding: 12px 20px; }
   }
   @media (max-width: 640px) {
-    .cover-meta, .cover-nav, .action-grid { grid-template-columns: 1fr; }
+    .cover-nav, .action-grid { grid-template-columns: 1fr; }
+    .cover-meta .cm { padding: 0 10px; }
     .item-meta { grid-template-columns: 1fr; }
     .lc-row-wrap { flex-direction: column; }
     .lc-row-wrap .lc-label { width: 100%; }
@@ -1046,10 +1049,10 @@
       <p class="lede">本汇报系统梳理公司芯片产品全生命周期进度、当前重点专项里程碑达成情况，以及过程中的风险、问题、求助与信息同步事项。</p>
 
       <div class="cover-meta">
-        <div class="cm"><div class="k">汇报周期</div><div class="v">2024 全年</div></div>
-        <div class="cm"><div class="k">汇报人</div><div class="v">林清越</div></div>
-        <div class="cm"><div class="k">产品线</div><div class="v">SDC100/200/300</div></div>
-        <div class="cm"><div class="k">重点专项</div><div class="v">512 卡 / AFD</div></div>
+        <span class="cm"><span class="k">汇报周期</span><span class="v">2024 全年</span></span>
+        <span class="cm"><span class="k">汇报人</span><span class="v">林清越</span></span>
+        <span class="cm"><span class="k">产品线</span><span class="v">SDC100 / 200 / 300</span></span>
+        <span class="cm"><span class="k">重点专项</span><span class="v">512 卡 / AFD</span></span>
       </div>
 
       <div class="cover-nav">
