@@ -1890,66 +1890,6 @@
   .ms-chart-legend .msl-swatch.pending  { background: var(--pending); opacity: 0.7; }
 
   /* Compact editable detail table (below the chart) */
-  .ms-gantt-edit {
-    display: none; /* hidden by default, toggle with button */
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px dashed var(--border-soft);
-    flex-direction: column;
-    gap: 4px;
-  }
-  .ms-gantt-edit.show { display: flex; }
-  .ms-gantt-edit-hint {
-    display: none;
-    margin: 6px 0 2px;
-    padding: 6px 10px;
-    background: var(--progress-bg);
-    border: 1px solid rgba(37,99,235,0.25);
-    border-radius: 6px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--info);
-    letter-spacing: 0.02em;
-  }
-  .ms-gantt-edit.show ~ .ms-gantt-edit-hint,
-  .ms-gantt-edit-hint.show { display: block; }
-  .ms-gantt-edit-row {
-    display: grid;
-    grid-template-columns: 40px 50px 1fr 110px 110px 70px 110px 100px;
-    gap: 6px;
-    align-items: center;
-    padding: 4px 8px;
-    border-radius: 6px;
-    background: var(--bg-input);
-    font-size: 11px;
-  }
-  .ms-gantt-edit-row:hover { background: var(--bg-elev); }
-  .ms-gantt-edit-row .ms-er-id {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--ink-mute);
-  }
-  .ms-gantt-edit-row input,
-  .ms-gantt-edit-row select {
-    width: 100%;
-    background: var(--bg-card);
-    border: 1px solid var(--border-soft);
-    border-radius: 4px;
-    color: var(--ink);
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 12px;
-    padding: 3px 6px;
-  }
-  .ms-gantt-edit-row input:focus,
-  .ms-gantt-edit-row select:focus { outline: none; border-color: var(--info); }
-  .ms-gantt-edit-row input[type="date"],
-  .ms-gantt-edit-row input[type="number"],
-  .ms-gantt-edit-row .ms-er-id { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
-  .ms-gantt-edit-row .ms-er-status { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; cursor: pointer; }
-  .ms-gantt-edit-row .ms-er-status.achieved { color: var(--achieved); }
-  .ms-gantt-edit-row .ms-er-status.progress { color: var(--progress); }
-  .ms-gantt-edit-row .ms-er-status.delayed  { color: var(--delayed); }
-  .ms-gantt-edit-row .ms-er-status.pending  { color: var(--pending); }
   .ms-gantt-edit-toggle {
     margin-top: 14px;
     padding: 6px 14px;
@@ -3218,17 +3158,6 @@
     renderItems();
   }
 
-  // ── Toggle compact edit panel in gantt chart ──
-  function toggleGanttEdit(btn) {
-    const parent = btn.parentElement;
-    const panel = parent.querySelector('.ms-gantt-edit');
-    const hint = parent.querySelector('.ms-gantt-edit-hint');
-    if (!panel) return;
-    const showing = panel.classList.toggle('show');
-    if (hint) hint.classList.toggle('show', showing);
-    btn.textContent = showing ? '▾ 收起编辑明细' : '✎ 展开编辑明细';
-  }
-
   // ── Edit milestones modal (stage + name) ──
   let editMsProj = '';
   function openEditMsModal(projId) {
@@ -3435,51 +3364,9 @@
           <div class="msl-item" style="margin-left:8px"><span style="display:inline-block;width:18px;height:2px;background:var(--ink-mute);vertical-align:middle;margin-right:4px;position:relative"><span style="position:absolute;right:-2px;top:-3px;width:0;height:0;border-left:6px solid var(--ink-mute);border-top:4px solid transparent;border-bottom:4px solid transparent"></span></span>前后依赖</div>
         </div>
         <div style="display:flex; gap:8px; margin-top:14px; margin-left:220px;">
-          <button class="ms-gantt-edit-toggle" onclick="toggleGanttEdit(this)" style="margin:0;">✎ 展开编辑明细</button>
           <button class="ms-gantt-edit-toggle" onclick="openEditMsModal('${proj}')" style="margin:0;">✎ 编辑阶段/名称/启动/结束</button>
         </div>
-        <div class="ms-gantt-edit-hint">提示：把多个里程碑的「行」设为同一数字，即可合并到同一行展示前后依赖箭头。</div>
-        <!-- Editable detail inputs (compact). "行" column merges milestones into one row to show front-back dependency. -->
-        <div class="ms-gantt-edit">
-          ${items.map((m, idx) => `
-            <div class="ms-gantt-edit-row" data-idx="${idx}">
-              <span class="ms-er-id">${m.id}</span>
-              <input type="number" class="ms-er-group" min="1" value="${m.group != null && m.group !== '' ? m.group : (idx + 1)}" data-field="group" title="所在行号（同号合并到一行，显示前后依赖）" />
-              <input type="text" class="ms-er-desc" value="${escapeHtml(m.desc)}" data-field="desc" placeholder="描述..." />
-              <input type="date" class="ms-er-plan" value="${m.planDate}" data-field="planDate" title="开始日期" />
-              <input type="date" class="ms-er-actual" value="${m.actualDate || ''}" data-field="actualDate" title="结束日期" />
-              <input type="number" class="ms-er-prog" min="0" max="100" value="${m.progress}" data-field="progress" title="进度%" />
-              <input type="text" class="ms-er-owner" value="${escapeHtml(m.owner)}" data-field="owner" title="负责人" />
-              <select class="ms-er-status ${m.status}" data-field="status">
-                <option value="achieved" ${m.status === 'achieved' ? 'selected' : ''}>达成</option>
-                <option value="progress" ${m.status === 'progress' ? 'selected' : ''}>进行中</option>
-                <option value="delayed"  ${m.status === 'delayed' ? 'selected' : ''}>延期</option>
-                <option value="pending"  ${m.status === 'pending' ? 'selected' : ''}>未开始</option>
-              </select>
-            </div>
-          `).join('')}
-        </div>
       `;
-
-      // Wire editable inputs (including the new "行"/group field)
-      container.querySelectorAll('.ms-gantt-edit-row').forEach(row => {
-        const idx = parseInt(row.dataset.idx);
-        row.querySelectorAll('input, select').forEach(el => {
-          const field = el.dataset.field;
-          const ev = (el.tagName === 'SELECT' || el.type === 'number' || el.type === 'date') ? 'change' : 'input';
-          el.addEventListener(ev, () => {
-            let val = el.value;
-            if (field === 'progress') val = parseInt(val) || 0;
-            if (field === 'group') val = parseInt(val) || 1;
-            data.milestones[proj][idx][field] = val;
-            if (field === 'status') el.className = 'ms-er-status ' + val;
-            // Re-render to recompute date axis & bars
-            saveData();
-            renderMilestones();
-            recalcOverall(proj);
-          });
-        });
-      });
 
       // Wire name inputs (top of each gantt row) — use data-idx attr on the input itself
       container.querySelectorAll('.ms-gantt-name input[data-field="name"]').forEach(inp => {
