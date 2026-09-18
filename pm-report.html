@@ -1588,6 +1588,7 @@
 
   /* Unified Gantt-style milestone chart */
   .ms-chart {
+    position: relative;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 14px;
@@ -1775,6 +1776,75 @@
   }
   .ms-gantt-row.multi .ms-gantt-track { height: 36px; }
   .ms-gantt-row.multi .ms-gantt-bar { top: 6px; bottom: 6px; }
+
+  /* Cross-row dependency arrow overlay (SVG) drawn on top of the chart */
+  .ms-gantt-deps-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 4;
+    overflow: visible;
+  }
+  .ms-gantt-deps-overlay .dep-path {
+    fill: none;
+    stroke: var(--info, #2563eb);
+    stroke-width: 1.4;
+    stroke-dasharray: 4 3;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+  }
+  .ms-gantt-deps-overlay .dep-path:hover { opacity: 1; stroke-width: 2; }
+  .ms-gantt-deps-overlay .dep-dot {
+    fill: var(--info, #2563eb);
+    opacity: 0.7;
+  }
+
+  /* Dependency multi-select dropdown inside the milestone edit modal */
+  .em-deps-cell { position: relative; }
+  .em-deps-trigger {
+    width: 100%;
+    padding: 4px 8px;
+    background: #fff;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    color: var(--ink-mute);
+    cursor: pointer;
+    text-align: left;
+  }
+  .em-deps-trigger:hover { border-color: var(--info); color: var(--info); border-style: solid; }
+  .em-deps-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 80;
+    min-width: 200px;
+    max-height: 240px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.14);
+    padding: 6px;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .em-deps-panel.open { display: flex; }
+  .em-deps-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .em-deps-item:hover { background: var(--bg-elev); }
+  .em-deps-item input { margin: 0; }
 
   /* Start/end date labels flanking the bar */
   .ms-gantt-date {
@@ -2660,11 +2730,11 @@
     </div>
   </div>
 
-  <!-- Edit milestones modal (stage + name) -->
+  <!-- Edit milestones modal (stage + name + dates + deps) -->
   <div class="modal-overlay" id="modal-editms" onclick="if(event.target===this)closeEditMsModal()">
-    <div class="modal-card" style="max-width: 920px;">
+    <div class="modal-card" style="max-width: 1080px;">
       <div class="modal-header">
-        <h3>编辑里程碑 · 阶段 / 名称 / 启动 / 结束</h3>
+        <h3>编辑里程碑 · 阶段 / 名称 / 启动 / 结束 / 依赖</h3>
         <button class="modal-close" onclick="closeEditMsModal()">×</button>
       </div>
       <div class="modal-body" style="padding: 0;">
@@ -2807,29 +2877,29 @@
     ],
     milestones: {
       ye512: [
-        { id: 'M1', name: '仪电512卡启动', desc: '仪电512卡项目正式启动，立项决策完成', planDate: '2024-03-10', progress: 100, status: 'achieved', actualDate: '2024-03-10', owner: '林清越' },
-        { id: 'M2', name: '128 卡发货（50pcs）', desc: '首批 128 卡 50 片发货，小批量验证', planDate: '2024-05-29', progress: 100, status: 'achieved', actualDate: '2024-05-29', owner: '陆景明' },
-        { id: 'M3', name: '128 卡发货（200pcs）', desc: '第二批 128 卡 200 片发货', planDate: '2024-06-14', progress: 100, status: 'achieved', actualDate: '2024-06-14', owner: '陆景明' },
-        { id: 'M4', name: '128 卡发货（150pcs）', desc: '第三批 128 卡 150 片发货', planDate: '2024-06-16', progress: 100, status: 'achieved', actualDate: '2024-06-16', owner: '陆景明' },
-        { id: 'M5', name: '仪电512卡首次发货', desc: '首台仪电512卡发货（历时 162 天）— 红框风险点', planDate: '2024-07-03', progress: 80, status: 'delayed', actualDate: '2024-07-24', owner: '林清越' },
-        { id: 'M6', name: '关键里程碑评审', desc: '仪电512卡阶段评审，确认备货与产测流程就绪', planDate: '2024-07-26', progress: 100, status: 'achieved', actualDate: '2024-07-26', owner: '林清越' },
-        { id: 'M7', name: '128 卡发货（175pcs）', desc: '第四批 128 卡 175 片发货', planDate: '2024-08-14', progress: 100, status: 'achieved', actualDate: '2024-08-14', owner: '陆景明' },
-        { id: 'M8', name: '128 卡发货（125pcs）', desc: '第五批 128 卡 125 片发货', planDate: '2024-09-21', progress: 100, status: 'achieved', actualDate: '2024-09-21', owner: '陆景明' },
-        { id: 'M9', name: '512 DF1000 OAM（300pcs）', desc: '仪电512卡 DF1000 OAM 形态 300 片交付', planDate: '2024-11-05', progress: 45, status: 'progress', actualDate: '2024-11-10', owner: '陆景明' },
-        { id: 'M10', name: '仪电512卡交付目标（收入确认）', desc: '仪电512卡 DF1000X 12/15 前交付，收入确认', planDate: '2024-12-15', progress: 30, status: 'progress', actualDate: '2024-12-15', owner: '林清越' },
-        { id: 'M11', name: '2025 年度交付目标', desc: '2025 年度仪电512卡持续交付与扩容计划', planDate: '2025-06-30', progress: 0, status: 'pending', actualDate: '', owner: '林清越' }
+        { id: 'M1', name: '仪电512卡启动', desc: '仪电512卡项目正式启动，立项决策完成', planDate: '2024-03-10', progress: 100, status: 'achieved', actualDate: '2024-03-10', owner: '林清越', deps: [] },
+        { id: 'M2', name: '128 卡发货（50pcs）', desc: '首批 128 卡 50 片发货，小批量验证', planDate: '2024-05-29', progress: 100, status: 'achieved', actualDate: '2024-05-29', owner: '陆景明', deps: ['M1'] },
+        { id: 'M3', name: '128 卡发货（200pcs）', desc: '第二批 128 卡 200 片发货', planDate: '2024-06-14', progress: 100, status: 'achieved', actualDate: '2024-06-14', owner: '陆景明', deps: ['M2'] },
+        { id: 'M4', name: '128 卡发货（150pcs）', desc: '第三批 128 卡 150 片发货', planDate: '2024-06-16', progress: 100, status: 'achieved', actualDate: '2024-06-16', owner: '陆景明', deps: ['M3'] },
+        { id: 'M5', name: '仪电512卡首次发货', desc: '首台仪电512卡发货（历时 162 天）— 红框风险点', planDate: '2024-07-03', progress: 80, status: 'delayed', actualDate: '2024-07-24', owner: '林清越', deps: ['M4'] },
+        { id: 'M6', name: '关键里程碑评审', desc: '仪电512卡阶段评审，确认备货与产测流程就绪', planDate: '2024-07-26', progress: 100, status: 'achieved', actualDate: '2024-07-26', owner: '林清越', deps: ['M5'] },
+        { id: 'M7', name: '128 卡发货（175pcs）', desc: '第四批 128 卡 175 片发货', planDate: '2024-08-14', progress: 100, status: 'achieved', actualDate: '2024-08-14', owner: '陆景明', deps: ['M6'] },
+        { id: 'M8', name: '128 卡发货（125pcs）', desc: '第五批 128 卡 125 片发货', planDate: '2024-09-21', progress: 100, status: 'achieved', actualDate: '2024-09-21', owner: '陆景明', deps: ['M7'] },
+        { id: 'M9', name: '512 DF1000 OAM（300pcs）', desc: '仪电512卡 DF1000 OAM 形态 300 片交付', planDate: '2024-11-05', progress: 45, status: 'progress', actualDate: '2024-11-10', owner: '陆景明', deps: ['M8'] },
+        { id: 'M10', name: '仪电512卡交付目标（收入确认）', desc: '仪电512卡 DF1000X 12/15 前交付，收入确认', planDate: '2024-12-15', progress: 30, status: 'progress', actualDate: '2024-12-15', owner: '林清越', deps: ['M9'] },
+        { id: 'M11', name: '2025 年度交付目标', desc: '2025 年度仪电512卡持续交付与扩容计划', planDate: '2025-06-30', progress: 0, status: 'pending', actualDate: '', owner: '林清越', deps: ['M10'] }
       ],
       afd: [
-        { id: 'M1', name: '产品规划', desc: 'AFD 专项产品规划启动，路线图制定', planDate: '2024-05-27', progress: 100, status: 'achieved', actualDate: '2024-05-27', owner: '周砚之' },
-        { id: 'M2', name: '56 138 OAM DF1000P', desc: '56 卡 138 节点 OAM 形态 DF1000P 验证', planDate: '2024-07-19', progress: 100, status: 'achieved', actualDate: '2024-07-19', owner: '陆景明' },
-        { id: 'M3', name: 'PG1 产测阶段', desc: 'PG1 产测发现问题，完整出货延期三周，1 机仍有出错', planDate: '2024-08-15', progress: 70, status: 'delayed', actualDate: '2024-09-05', owner: '陆景明' },
-        { id: 'M4', name: 'POC 修正', desc: 'PG1 转片与产测流程完善，POC 修正迭代', planDate: '2024-09-20', progress: 60, status: 'progress', actualDate: '2024-09-25', owner: '周砚之' },
-        { id: 'M5', name: '200 OAM DF1000P POC 送测', desc: '200 卡 OAM 形态 DF1000P POC 送测', planDate: '2024-11-05', progress: 30, status: 'progress', actualDate: '2024-11-10', owner: '周砚之' },
-        { id: 'M6', name: '400 OAM DF1000P', desc: '400 卡 OAM 形态 DF1000P 交付', planDate: '2024-11-25', progress: 15, status: 'progress', actualDate: '2024-11-30', owner: '陆景明' },
-        { id: 'M7', name: '730 OAM DF1000P', desc: '730 卡 OAM 形态 DF1000P 规模交付', planDate: '2024-12-05', progress: 0, status: 'pending', actualDate: '', owner: '陆景明' },
-        { id: 'M8', name: '5120AM 风冷交付', desc: '5120 AM 风冷形态批量交付', planDate: '2027-01-15', progress: 0, status: 'pending', actualDate: '', owner: '陆景明' },
-        { id: 'M9', name: 'POC 修正（2027）', desc: 'PCIe 形态 POC 修正迭代', planDate: '2027-02-15', progress: 0, status: 'pending', actualDate: '', owner: '周砚之' },
-        { id: 'M10', name: 'PCIe 形态量产', desc: 'PCIe 形态产品进入规模化量产', planDate: '2027-03-31', progress: 0, status: 'pending', actualDate: '', owner: '秦若笙' }
+        { id: 'M1', name: '产品规划', desc: 'AFD 专项产品规划启动，路线图制定', planDate: '2024-05-27', progress: 100, status: 'achieved', actualDate: '2024-05-27', owner: '周砚之', deps: [] },
+        { id: 'M2', name: '56 138 OAM DF1000P', desc: '56 卡 138 节点 OAM 形态 DF1000P 验证', planDate: '2024-07-19', progress: 100, status: 'achieved', actualDate: '2024-07-19', owner: '陆景明', deps: ['M1'] },
+        { id: 'M3', name: 'PG1 产测阶段', desc: 'PG1 产测发现问题，完整出货延期三周，1 机仍有出错', planDate: '2024-08-15', progress: 70, status: 'delayed', actualDate: '2024-09-05', owner: '陆景明', deps: ['M2'] },
+        { id: 'M4', name: 'POC 修正', desc: 'PG1 转片与产测流程完善，POC 修正迭代', planDate: '2024-09-20', progress: 60, status: 'progress', actualDate: '2024-09-25', owner: '周砚之', deps: ['M3'] },
+        { id: 'M5', name: '200 OAM DF1000P POC 送测', desc: '200 卡 OAM 形态 DF1000P POC 送测', planDate: '2024-11-05', progress: 30, status: 'progress', actualDate: '2024-11-10', owner: '周砚之', deps: ['M4'] },
+        { id: 'M6', name: '400 OAM DF1000P', desc: '400 卡 OAM 形态 DF1000P 交付', planDate: '2024-11-25', progress: 15, status: 'progress', actualDate: '2024-11-30', owner: '陆景明', deps: ['M5'] },
+        { id: 'M7', name: '730 OAM DF1000P', desc: '730 卡 OAM 形态 DF1000P 规模交付', planDate: '2024-12-05', progress: 0, status: 'pending', actualDate: '', owner: '陆景明', deps: ['M6'] },
+        { id: 'M8', name: '5120AM 风冷交付', desc: '5120 AM 风冷形态批量交付', planDate: '2027-01-15', progress: 0, status: 'pending', actualDate: '', owner: '陆景明', deps: ['M7'] },
+        { id: 'M9', name: 'POC 修正（2027）', desc: 'PCIe 形态 POC 修正迭代', planDate: '2027-02-15', progress: 0, status: 'pending', actualDate: '', owner: '周砚之', deps: ['M8'] },
+        { id: 'M10', name: 'PCIe 形态量产', desc: 'PCIe 形态产品进入规模化量产', planDate: '2027-03-31', progress: 0, status: 'pending', actualDate: '', owner: '秦若笙', deps: ['M9'] }
       ]
     },
     // 子项：按 `${proj}:${type}` 索引；type: risk | issue | help | sync
@@ -2899,6 +2969,7 @@
       if (Array.isArray(arr)) arr.forEach((m, i) => {
         if (m.group == null || m.group === '') m.group = i + 1;
         if (m.stage == null) m.stage = '';
+        if (!Array.isArray(m.deps)) m.deps = [];
       });
     });
   }
@@ -2962,7 +3033,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
     updateBrandIndex();
     if (view === 'projects') {
-      setTimeout(() => animateProgressBars(), 100);
+      setTimeout(() => { animateProgressBars(); redrawAllMsDepArrows(); }, 100);
     }
   }
 
@@ -2972,7 +3043,17 @@
     document.querySelectorAll('.project-panel').forEach(p => p.classList.remove('active'));
     const panel = document.getElementById('proj-' + proj);
     if (panel) panel.classList.add('active');
-    setTimeout(() => animateProgressBars(), 100);
+    setTimeout(() => { animateProgressBars(); redrawAllMsDepArrows(); }, 100);
+  }
+
+  // Redraw cross-row dependency arrows for every project's milestone chart.
+  // Called after view becomes visible (so getBoundingClientRect returns real values).
+  function redrawAllMsDepArrows() {
+    if (!data.projects) return;
+    data.projects.forEach(p => {
+      const container = document.getElementById('ms-table-' + p.id);
+      if (container) drawMsDepArrows(container, p.id);
+    });
   }
 
   // ── Render projects (tabs + panels) dynamically ──
@@ -3158,7 +3239,7 @@
     renderItems();
   }
 
-  // ── Edit milestones modal (stage + name) ──
+  // ── Edit milestones modal (stage + name + dates + deps) ──
   let editMsProj = '';
   function openEditMsModal(projId) {
     editMsProj = projId;
@@ -3168,22 +3249,72 @@
       listEl.innerHTML = '<div style="padding:24px; text-align:center; color:var(--ink-mute);">暂无里程碑</div>';
     } else {
       listEl.innerHTML = `
-        <div style="display:grid; grid-template-columns:50px 1fr 1fr 130px 130px; gap:8px; padding:8px 16px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-mute); border-bottom:1px solid var(--border-soft); text-transform:uppercase; letter-spacing:0.05em;">
-          <div>ID</div><div>阶段</div><div>里程碑名称</div><div>启动时间</div><div>结束时间</div>
+        <div style="display:grid; grid-template-columns:50px 1fr 1fr 130px 130px 180px; gap:8px; padding:8px 16px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-mute); border-bottom:1px solid var(--border-soft); text-transform:uppercase; letter-spacing:0.05em;">
+          <div>ID</div><div>阶段</div><div>里程碑名称</div><div>启动时间</div><div>结束时间</div><div>依赖（多选）</div>
         </div>
-        ${items.map((m, idx) => `
-          <div class="editms-row" data-idx="${idx}" style="display:grid; grid-template-columns:50px 1fr 1fr 130px 130px; gap:8px; padding:8px 16px; border-bottom:1px solid var(--border-soft); align-items:center;">
+        ${items.map((m, idx) => {
+          const sel = Array.isArray(m.deps) ? m.deps : [];
+          const others = items.filter(o => o.id !== m.id);
+          const triggerLabel = sel.length > 0 ? ('依赖 (' + sel.length + ') ' + sel.join(',')) : '+ 选择依赖';
+          return `
+          <div class="editms-row" data-idx="${idx}" style="display:grid; grid-template-columns:50px 1fr 1fr 130px 130px 180px; gap:8px; padding:8px 16px; border-bottom:1px solid var(--border-soft); align-items:center;">
             <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-mute);">${m.id}</span>
             <input type="text" class="em-stage" value="${escapeHtml(m.stage || '')}" placeholder="如：规划/研发/量产..." style="width:100%; border:1px solid var(--border-soft); border-radius:4px; padding:4px 8px; font-size:12px;" />
             <input type="text" class="em-name" value="${escapeHtml(m.name || '')}" placeholder="里程碑名称..." style="width:100%; border:1px solid var(--border-soft); border-radius:4px; padding:4px 8px; font-size:12px;" />
             <input type="date" class="em-plan" value="${m.planDate || ''}" title="启动（计划）日期" style="width:100%; border:1px solid var(--border-soft); border-radius:4px; padding:4px 6px; font-size:12px;" />
             <input type="date" class="em-actual" value="${m.actualDate || ''}" title="结束（实际/预计）日期" style="width:100%; border:1px solid var(--border-soft); border-radius:4px; padding:4px 6px; font-size:12px;" />
+            <div class="em-deps-cell">
+              <button type="button" class="em-deps-trigger" onclick="toggleDepsPanel(${idx});return false;" title="点击选择依赖里程碑">${escapeHtml(triggerLabel)}</button>
+              <div class="em-deps-panel" id="em-deps-panel-${idx}">
+                ${others.map(o => {
+                  const checked = sel.indexOf(o.id) >= 0 ? ' checked' : '';
+                  return '<label class="em-deps-item"><input type="checkbox" value="' + escapeAttr(o.id) + '"' + checked + ' onchange="updateDepsTrigger(' + idx + ')" /> ' + escapeHtml(o.id + ' · ' + (o.name || '')) + '</label>';
+                }).join('')}
+              </div>
+            </div>
           </div>
-        `).join('')}
+          `;
+        }).join('')}
       `;
     }
     document.getElementById('modal-editms').classList.add('show');
   }
+  // Currently open dependency dropdown row index (for outside-click close)
+  let depsDropdownOpen = null;
+  // Toggle a dependency multi-select panel open/closed; close others first
+  function toggleDepsPanel(idx) {
+    const panel = document.getElementById('em-deps-panel-' + idx);
+    if (!panel) return;
+    const isOpen = panel.classList.contains('open');
+    document.querySelectorAll('.em-deps-panel.open').forEach(p => p.classList.remove('open'));
+    if (!isOpen) {
+      panel.classList.add('open');
+      depsDropdownOpen = idx;
+    } else {
+      depsDropdownOpen = null;
+    }
+  }
+  // Update the trigger button label/counter after toggling a checkbox
+  function updateDepsTrigger(idx) {
+    const panel = document.getElementById('em-deps-panel-' + idx);
+    if (!panel) return;
+    const checked = Array.from(panel.querySelectorAll('input[type="checkbox"]:checked')).map(c => c.value);
+    const trigger = panel.parentElement.querySelector('.em-deps-trigger');
+    if (trigger) {
+      trigger.textContent = checked.length > 0 ? ('依赖 (' + checked.length + ') ' + checked.join(',')) : '+ 选择依赖';
+    }
+  }
+  // Close any open dependency dropdown when clicking outside it
+  document.addEventListener('click', function (e) {
+    if (depsDropdownOpen === null) return;
+    const panel = document.getElementById('em-deps-panel-' + depsDropdownOpen);
+    if (!panel) { depsDropdownOpen = null; return; }
+    if (panel.contains(e.target)) return;
+    const trigger = panel.parentElement.querySelector('.em-deps-trigger');
+    if (trigger && trigger.contains(e.target)) return;
+    panel.classList.remove('open');
+    depsDropdownOpen = null;
+  });
   function closeEditMsModal() {
     document.getElementById('modal-editms').classList.remove('show');
     editMsProj = '';
@@ -3197,11 +3328,15 @@
       const nameInp = row.querySelector('.em-name');
       const planInp = row.querySelector('.em-plan');
       const actualInp = row.querySelector('.em-actual');
+      // Read checked dependency IDs from this row's dropdown panel
+      const depsCheckboxes = row.querySelectorAll('.em-deps-panel input[type="checkbox"]:checked');
+      const newDeps = Array.from(depsCheckboxes).map(c => c.value);
       if (items[idx]) {
         if (stageInp) items[idx].stage = stageInp.value;
         if (nameInp) items[idx].name = nameInp.value;
         if (planInp) items[idx].planDate = planInp.value;
         if (actualInp) items[idx].actualDate = actualInp.value;
+        items[idx].deps = newDeps;
       }
     });
     saveData();
@@ -3319,7 +3454,7 @@
           const tip = escapeHtml(b.m.id + ': ' + b.m.name + ' | ' + (b.m.planDate || '?') + ' → ' + (b.m.actualDate || (b.m.status === 'progress' || b.m.status === 'delayed' ? '至今' : '?')) + ' | ' + b.m.progress + '%');
           return `
             ${b.showLabels ? `<div class="ms-gantt-date start" style="left:${b.startPct}%">${b.startLabel}</div>` : ''}
-            <div class="ms-gantt-bar ${b.m.status}" style="left:${b.startPct}%; width:${b.barWidth}%" title="${tip}">
+            <div class="ms-gantt-bar ${b.m.status}" data-mid="${escapeAttr(b.m.id)}" data-g="${escapeAttr(g)}" style="left:${b.startPct}%; width:${b.barWidth}%" title="${tip}">
               ${b.statusIcon} ${b.m.id} ${b.m.progress}%
             </div>
             ${b.showLabels ? `<div class="ms-gantt-date end" style="left:${b.endPct}%">${b.endLabel}</div>` : ''}
@@ -3383,8 +3518,94 @@
           }
         });
       });
+
+      // Draw cross-row dependency arrows in an SVG overlay (deferred until layout is flushed)
+      requestAnimationFrame(() => drawMsDepArrows(container, proj));
     });
     animateProgressBars();
+  }
+
+  // Draw cross-milestone dependency arrows (m.deps) on top of the rendered gantt chart.
+  // Measures each bar's DOM position relative to the chart container and connects them
+  // with a smooth bezier path + arrow tip.
+  function drawMsDepArrows(container, projId) {
+    if (!container) return;
+    // Remove any previous overlay (e.g. from a prior render)
+    const old = container.querySelector('.ms-gantt-deps-overlay');
+    if (old) old.remove();
+
+    const items = data.milestones[projId] || [];
+    const containerRect = container.getBoundingClientRect();
+    // Skip if container is hidden (display:none on parent view) — re-draw will happen on view show
+    if (containerRect.width === 0 || containerRect.height === 0) return;
+
+    // Map milestone id -> first bar element found in the chart
+    const barsByMid = new Map();
+    container.querySelectorAll('.ms-gantt-bar[data-mid]').forEach(bar => {
+      const mid = bar.dataset.mid;
+      if (!barsByMid.has(mid)) barsByMid.set(mid, bar);
+    });
+
+    // Collect arrow segments
+    const segments = [];
+    items.forEach(m => {
+      if (!Array.isArray(m.deps) || m.deps.length === 0) return;
+      const targetBar = barsByMid.get(m.id);
+      if (!targetBar) return;
+      const tr = targetBar.getBoundingClientRect();
+      const tx = tr.left - containerRect.left;
+      const ty = tr.top + tr.height / 2 - containerRect.top;
+      if (tr.width === 0) return;
+      m.deps.forEach(depId => {
+        const sourceBar = barsByMid.get(depId);
+        if (!sourceBar) return;
+        const sr = sourceBar.getBoundingClientRect();
+        if (sr.width === 0) return;
+        const sx = sr.right - containerRect.left;
+        const sy = sr.top + sr.height / 2 - containerRect.top;
+        segments.push({ sx, sy, tx, ty, from: depId, to: m.id });
+      });
+    });
+    if (segments.length === 0) return;
+
+    const w = container.scrollWidth || container.clientWidth;
+    const h = container.scrollHeight || container.clientHeight;
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('class', 'ms-gantt-deps-overlay');
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', h);
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('preserveAspectRatio', 'none');
+
+    // Arrowhead marker (fixed color matching --info)
+    const defs = document.createElementNS(ns, 'defs');
+    const markerId = 'dep-arrow-' + projId;
+    defs.innerHTML = `<marker id="${markerId}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2563EB"/></marker>`;
+    svg.appendChild(defs);
+
+    segments.forEach(s => {
+      // Smooth horizontal-ish S-curve from source right edge to target left edge
+      const dx = Math.max(16, Math.abs(s.tx - s.sx) * 0.4);
+      const d = `M ${s.sx.toFixed(1)} ${s.sy.toFixed(1)} C ${(s.sx + dx).toFixed(1)} ${s.sy.toFixed(1)}, ${(s.tx - dx).toFixed(1)} ${s.ty.toFixed(1)}, ${s.tx.toFixed(1)} ${s.ty.toFixed(1)}`;
+      const p = document.createElementNS(ns, 'path');
+      p.setAttribute('class', 'dep-path');
+      p.setAttribute('d', d);
+      p.setAttribute('marker-end', `url(#${markerId})`);
+      const title = document.createElementNS(ns, 'title');
+      title.textContent = s.from + ' → ' + s.to + ' · 依赖';
+      p.appendChild(title);
+      svg.appendChild(p);
+      // Source anchor dot
+      const dot = document.createElementNS(ns, 'circle');
+      dot.setAttribute('class', 'dep-dot');
+      dot.setAttribute('cx', s.sx.toFixed(1));
+      dot.setAttribute('cy', s.sy.toFixed(1));
+      dot.setAttribute('r', 2.5);
+      svg.appendChild(dot);
+    });
+
+    container.appendChild(svg);
   }
 
   function recalcOverall(proj) {
