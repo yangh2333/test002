@@ -2722,9 +2722,9 @@
 
   <!-- Edit milestones modal (stage + name) -->
   <div class="modal-overlay" id="modal-editms" onclick="if(event.target===this)closeEditMsModal()">
-    <div class="modal-card" style="max-width: 680px;">
+    <div class="modal-card" style="max-width: 920px;">
       <div class="modal-header">
-        <h3>编辑里程碑 · 阶段与名称</h3>
+        <h3>编辑里程碑 · 阶段 / 名称 / 启动 / 结束</h3>
         <button class="modal-close" onclick="closeEditMsModal()">×</button>
       </div>
       <div class="modal-body" style="padding: 0;">
@@ -3239,14 +3239,16 @@
       listEl.innerHTML = '<div style="padding:24px; text-align:center; color:var(--ink-mute);">暂无里程碑</div>';
     } else {
       listEl.innerHTML = `
-        <div style="display:grid; grid-template-columns:50px 1fr 1fr; gap:8px; padding:8px 16px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-mute); border-bottom:1px solid var(--border-soft); text-transform:uppercase; letter-spacing:0.05em;">
-          <div>ID</div><div>阶段</div><div>里程碑名称</div>
+        <div style="display:grid; grid-template-columns:50px 1fr 1fr 130px 130px; gap:8px; padding:8px 16px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-mute); border-bottom:1px solid var(--border-soft); text-transform:uppercase; letter-spacing:0.05em;">
+          <div>ID</div><div>阶段</div><div>里程碑名称</div><div>启动时间</div><div>结束时间</div>
         </div>
         ${items.map((m, idx) => `
-          <div class="editms-row" data-idx="${idx}" style="display:grid; grid-template-columns:50px 1fr 1fr; gap:8px; padding:8px 16px; border-bottom:1px solid var(--border-soft); align-items:center;">
+          <div class="editms-row" data-idx="${idx}" style="display:grid; grid-template-columns:50px 1fr 1fr 130px 130px; gap:8px; padding:8px 16px; border-bottom:1px solid var(--border-soft); align-items:center;">
             <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-mute);">${m.id}</span>
             <input type="text" class="em-stage" value="${escapeHtml(m.stage || '')}" placeholder="如：规划/研发/量产..." style="width:100%; border:1px solid var(--border-soft); border-radius:4px; padding:4px 8px; font-size:12px;" />
             <input type="text" class="em-name" value="${escapeHtml(m.name || '')}" placeholder="里程碑名称..." style="width:100%; border:1px solid var(--border-soft); border-radius:4px; padding:4px 8px; font-size:12px;" />
+            <input type="date" class="em-plan" value="${m.planDate || ''}" title="启动（计划）日期" style="width:100%; border:1px solid var(--border-soft); border-radius:4px; padding:4px 6px; font-size:12px;" />
+            <input type="date" class="em-actual" value="${m.actualDate || ''}" title="结束（实际/预计）日期" style="width:100%; border:1px solid var(--border-soft); border-radius:4px; padding:4px 6px; font-size:12px;" />
           </div>
         `).join('')}
       `;
@@ -3264,9 +3266,13 @@
       const idx = parseInt(row.dataset.idx);
       const stageInp = row.querySelector('.em-stage');
       const nameInp = row.querySelector('.em-name');
+      const planInp = row.querySelector('.em-plan');
+      const actualInp = row.querySelector('.em-actual');
       if (items[idx]) {
         if (stageInp) items[idx].stage = stageInp.value;
         if (nameInp) items[idx].name = nameInp.value;
+        if (planInp) items[idx].planDate = planInp.value;
+        if (actualInp) items[idx].actualDate = actualInp.value;
       }
     });
     saveData();
@@ -3430,7 +3436,7 @@
         </div>
         <div style="display:flex; gap:8px; margin-top:14px; margin-left:220px;">
           <button class="ms-gantt-edit-toggle" onclick="toggleGanttEdit(this)" style="margin:0;">✎ 展开编辑明细</button>
-          <button class="ms-gantt-edit-toggle" onclick="openEditMsModal('${proj}')" style="margin:0;">✎ 编辑阶段与名称</button>
+          <button class="ms-gantt-edit-toggle" onclick="openEditMsModal('${proj}')" style="margin:0;">✎ 编辑阶段/名称/启动/结束</button>
         </div>
         <div class="ms-gantt-edit-hint">提示：把多个里程碑的「行」设为同一数字，即可合并到同一行展示前后依赖箭头。</div>
         <!-- Editable detail inputs (compact). "行" column merges milestones into one row to show front-back dependency. -->
