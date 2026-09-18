@@ -710,11 +710,173 @@
     cursor: text;
     transition: background 0.15s, box-shadow 0.15s;
   }
-  .chip-card .cc-actions {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+  .chip-card .cc-icons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .chip-card .cc-ic {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    outline: none;
+  }
+  .chip-card .cc-ic .cc-ic-glyph {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1;
+    color: var(--ink-soft);
+    transition: color 0.18s ease;
+  }
+  .chip-card .cc-ic .cc-ic-cnt {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--delayed);
+    color: #fff;
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    line-height: 16px;
+    padding: 0 4px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    border: 1.5px solid var(--bg-elev);
+  }
+  .chip-card .cc-ic .cc-ic-tip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: var(--bg-elev);
+    color: var(--ink);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 20;
+  }
+  .chip-card .cc-ic .cc-ic-tip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--border);
+  }
+  /* Hover: zoom icon + show name tip */
+  .chip-card .cc-ic:hover {
+    transform: scale(1.45);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.16);
+    z-index: 25;
+  }
+  .chip-card .cc-ic:hover .cc-ic-tip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .chip-card .cc-ic.risk:hover   { border-color: var(--delayed);  background: var(--delayed-bg); }
+  .chip-card .cc-ic.risk:hover .cc-ic-glyph { color: var(--delayed); }
+  .chip-card .cc-ic.issue:hover  { border-color: var(--warn);     background: var(--warn-bg, #fff7e6); }
+  .chip-card .cc-ic.issue:hover .cc-ic-glyph { color: var(--warn); }
+  .chip-card .cc-ic.help:hover   { border-color: var(--info);     background: var(--progress-bg); }
+  .chip-card .cc-ic.help:hover .cc-ic-glyph { color: var(--info); }
+  .chip-card .cc-ic.sync:hover   { border-color: var(--achieved); background: var(--achieved-bg); }
+  .chip-card .cc-ic.sync:hover .cc-ic-glyph { color: var(--achieved); }
+  .chip-card .cc-ic.active {
+    border-color: var(--info);
+    background: var(--progress-bg);
+    box-shadow: 0 0 0 2px var(--info);
+  }
+
+  /* Inline expanded panel for a chip's process-management items */
+  .chip-card .cc-panel {
+    display: none;
     margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border-soft);
+    flex-direction: column;
+    gap: 6px;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+  .chip-card .cc-panel.show { display: flex; }
+  .chip-card .cc-panel .ccp-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .chip-card .cc-panel .ccp-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .chip-card .cc-panel .ccp-add {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 16px;
+    background: var(--progress-bg);
+    color: var(--info);
+    border: 1px solid rgba(37,99,235,0.3);
+    cursor: pointer;
+  }
+  .chip-card .cc-panel .ccp-row {
+    display: grid;
+    grid-template-columns: 1fr 110px 110px 90px 90px;
+    gap: 8px;
+    align-items: center;
+    padding: 6px 8px;
+    background: var(--bg-input);
+    border-radius: 6px;
+    font-size: 11px;
+  }
+  .chip-card .cc-panel .ccp-row input,
+  .chip-card .cc-panel .ccp-row select {
+    width: 100%;
+    border: 1px solid var(--border-soft);
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 11px;
+    background: var(--bg-card);
+    color: var(--ink);
+  }
+  .chip-card .cc-panel .ccp-row .ccp-del {
+    background: transparent;
+    border: none;
+    color: var(--ink-mute);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+  }
+  .chip-card .cc-panel .ccp-row .ccp-del:hover { color: var(--delayed); }
+  .chip-card .cc-panel .ccp-empty {
+    text-align: center;
+    padding: 14px;
+    color: var(--ink-mute);
+    font-size: 12px;
   }
   .lc-add-chip-row {
     text-align: center;
@@ -2829,29 +2991,37 @@
       html += `</div></div>`;
 
       // Detail card
-      html += `<div class="chip-card">
+      html += `<div class="chip-card" data-chip="${escapeAttr(c.id)}">
         <div class="cc-head">
           <div>
             <h4>${escapeHtml(c.name)}</h4><span class="cc-sub">${escapeHtml(c.gen || '')} · 当前阶段 ${String(cur).padStart(2,'0')} · ${escapeHtml(stages[cur - 1] || '')}</span>
           </div>
-          <button class="btn danger" style="font-size: 11px; padding: 4px 10px;" onclick="deleteChip('${escapeAttr(c.id)}')">删除产品</button>
+          <div class="cc-icons">
+            <button class="cc-ic risk" data-type="risk" title="过程风险" onclick="toggleChipPanel(this,'${escapeAttr(c.id)}','risk')">
+              <span class="cc-ic-glyph">!</span>
+              <span class="cc-ic-cnt" id="lcc-${escapeAttr(c.id)}-risk">0</span>
+              <span class="cc-ic-tip">过程风险</span>
+            </button>
+            <button class="cc-ic issue" data-type="issue" title="过程问题" onclick="toggleChipPanel(this,'${escapeAttr(c.id)}','issue')">
+              <span class="cc-ic-glyph">?</span>
+              <span class="cc-ic-cnt" id="lcc-${escapeAttr(c.id)}-issue">0</span>
+              <span class="cc-ic-tip">过程问题</span>
+            </button>
+            <button class="cc-ic help" data-type="help" title="求助" onclick="toggleChipPanel(this,'${escapeAttr(c.id)}','help')">
+              <span class="cc-ic-glyph">SOS</span>
+              <span class="cc-ic-cnt" id="lcc-${escapeAttr(c.id)}-help">0</span>
+              <span class="cc-ic-tip">求助</span>
+            </button>
+            <button class="cc-ic sync" data-type="sync" title="信息同步" onclick="toggleChipPanel(this,'${escapeAttr(c.id)}','sync')">
+              <span class="cc-ic-glyph">∞</span>
+              <span class="cc-ic-cnt" id="lcc-${escapeAttr(c.id)}-sync">0</span>
+              <span class="cc-ic-tip">信息同步</span>
+            </button>
+          </div>
         </div>
         <div class="cc-title" contenteditable="true" data-chip="${escapeAttr(c.id)}" data-field="title" oninput="updateChipField('${escapeAttr(c.id)}','title',this.textContent)">${escapeHtml(c.title || '')}</div>
         <div class="cc-desc" contenteditable="true" data-chip="${escapeAttr(c.id)}" data-field="desc" oninput="updateChipField('${escapeAttr(c.id)}','desc',this.textContent)">${escapeHtml(c.desc || '')}</div>
-        <div class="cc-actions">
-          <button class="lc-act risk" onclick="goLCSub('${escapeAttr(c.id)}','risk')">
-            <span class="la-icon">!</span><span class="la-t">过程风险</span><span class="la-cnt" id="lcc-${escapeAttr(c.id)}-risk">0</span>
-          </button>
-          <button class="lc-act issue" onclick="goLCSub('${escapeAttr(c.id)}','issue')">
-            <span class="la-icon">?</span><span class="la-t">过程问题</span><span class="la-cnt" id="lcc-${escapeAttr(c.id)}-issue">0</span>
-          </button>
-          <button class="lc-act help" onclick="goLCSub('${escapeAttr(c.id)}','help')">
-            <span class="la-icon">SOS</span><span class="la-t">求助</span><span class="la-cnt" id="lcc-${escapeAttr(c.id)}-help">0</span>
-          </button>
-          <button class="lc-act sync" onclick="goLCSub('${escapeAttr(c.id)}','sync')">
-            <span class="la-icon">∞</span><span class="la-t">信息同步</span><span class="la-cnt" id="lcc-${escapeAttr(c.id)}-sync">0</span>
-          </button>
-        </div>
+        <div class="cc-panel" id="cc-panel-${escapeAttr(c.id)}"></div>
       </div>`;
     });
 
@@ -2946,6 +3116,107 @@
     saveData();
     renderLifecycle();
     showToast();
+  }
+
+  // ── Inline chip panel: expand/collapse a chip's process-management items ──
+  let ccPanelOpen = null; // {chip, type}
+  function toggleChipPanel(btn, chipId, type) {
+    const panel = document.getElementById('cc-panel-' + chipId);
+    if (!panel) return;
+    // If clicking the same icon again, collapse
+    if (ccPanelOpen && ccPanelOpen.chip === chipId && ccPanelOpen.type === type) {
+      panel.classList.remove('show');
+      btn.classList.remove('active');
+      ccPanelOpen = null;
+      return;
+    }
+    // Otherwise close any prior open panel (in another chip card)
+    document.querySelectorAll('.cc-panel.show').forEach(p => p.classList.remove('show'));
+    document.querySelectorAll('.cc-ic.active').forEach(b => b.classList.remove('active'));
+    // Render this chip's items for this type
+    renderChipPanel(chipId, type);
+    panel.classList.add('show');
+    btn.classList.add('active');
+    ccPanelOpen = { chip: chipId, type: type };
+  }
+
+  function renderChipPanel(chipId, type) {
+    const panel = document.getElementById('cc-panel-' + chipId);
+    if (!panel) return;
+    const arr = (data.lcSub && data.lcSub[chipId] && data.lcSub[chipId][type]) || [];
+    const typeLabels = { risk: '过程风险', issue: '过程问题', help: '求助', sync: '信息同步' };
+    const statuses = ['待处理','进行中','已闭环','已延期'];
+    let html = `
+      <div class="ccp-head">
+        <div class="ccp-title">${escapeHtml(typeLabels[type] || type)} · ${arr.length} 项</div>
+        <button class="ccp-add" onclick="addChipPanelItem('${escapeAttr(chipId)}','${escapeAttr(type)}')">+ 新增</button>
+      </div>
+    `;
+    if (arr.length === 0) {
+      html += `<div class="ccp-empty">暂无记录，点击 + 新增</div>`;
+    } else {
+      arr.forEach((it, i) => {
+        html += `
+          <div class="ccp-row" data-idx="${i}">
+            <input type="text" class="ccp-content" value="${escapeAttr(it.content || '')}" placeholder="内容..." />
+            <input type="text" class="ccp-stake" value="${escapeAttr(it.stakeholder || '')}" placeholder="干系人..." />
+            <input type="text" class="ccp-scope" value="${escapeAttr(it.scope || '')}" placeholder="影响范围..." />
+            <select class="ccp-status">
+              ${statuses.map(st => `<option value="${st}" ${it.status === st ? 'selected' : ''}>${st}</option>`).join('')}
+            </select>
+            <button class="ccp-del" title="删除" onclick="delChipPanelItem('${escapeAttr(chipId)}','${escapeAttr(type)}',${i})">×</button>
+          </div>
+        `;
+      });
+    }
+    panel.innerHTML = html;
+    // Wire inputs (content/stakeholder/scope/status) to save on change
+    panel.querySelectorAll('.ccp-row').forEach(row => {
+      const idx = parseInt(row.dataset.idx);
+      ['content','stakeholder','scope'].forEach(f => {
+        const inp = row.querySelector('.ccp-' + f);
+        if (inp) inp.addEventListener('input', () => {
+          if (!data.lcSub[chipId] || !data.lcSub[chipId][type]) return;
+          data.lcSub[chipId][type][idx][f] = inp.value;
+          saveData();
+        });
+      });
+      const sel = row.querySelector('.ccp-status');
+      if (sel) sel.addEventListener('change', () => {
+        if (!data.lcSub[chipId] || !data.lcSub[chipId][type]) return;
+        data.lcSub[chipId][type][idx].status = sel.value;
+        saveData();
+      });
+    });
+    // Update count badge
+    const cnt = document.getElementById('lcc-' + chipId + '-' + type);
+    if (cnt) cnt.textContent = arr.length;
+  }
+
+  function addChipPanelItem(chipId, type) {
+    if (!data.lcSub) data.lcSub = {};
+    if (!data.lcSub[chipId]) data.lcSub[chipId] = { risk: [], issue: [], help: [], sync: [] };
+    if (!data.lcSub[chipId][type]) data.lcSub[chipId][type] = [];
+    data.lcSub[chipId][type].push({ content: '', stakeholder: '', scope: '', status: '待处理', time: new Date().toISOString().slice(0,10) });
+    saveData();
+    renderChipPanel(chipId, type);
+    updateLCSCounts();
+  }
+
+  function delChipPanelItem(chipId, type, idx) {
+    if (!data.lcSub || !data.lcSub[chipId] || !data.lcSub[chipId][type]) return;
+    data.lcSub[chipId][type].splice(idx, 1);
+    saveData();
+    renderChipPanel(chipId, type);
+    updateLCSCounts();
+    // If icon's active state remains, re-mark active
+    const btn = document.querySelector('.cc-ic[data-type="' + type + '"]');
+    // Actually need the right chip's button — find by chip card
+    const card = document.querySelector('.chip-card[data-chip="' + chipId + '"]');
+    if (card) {
+      const b = card.querySelector('.cc-ic[data-type="' + type + '"]');
+      if (b) b.classList.add('active');
+    }
   }
 
   // ── New chip modal ──
