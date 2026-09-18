@@ -2379,7 +2379,7 @@
   <div class="top-inner">
     <div class="brand" onclick="go('home')">
       <div class="logo">PM</div>
-      <span>产品专项汇报</span>
+      <span id="brand-index">首页</span>
       <span class="sub">/ FY26 Q3</span>
     </div>
     <nav class="nav-tabs">
@@ -2833,6 +2833,33 @@
   let currentDeptCtx = null; // {chip, chipName, dept, stageIdx, stageName}
   let deptEditIdx = null; // index of the row currently in edit mode (null = all view)
 
+  // Map current view → breadcrumb label shown in the top brand area
+  const VIEW_INDEX_LABELS = {
+    home: '首页',
+    lifecycle: '产品生命周期',
+    projects: '重点专项',
+    lcsub: '生命周期 · 过程管理',
+    dept: '部门汇报'
+  };
+  function updateBrandIndex() {
+    const el = document.getElementById('brand-index');
+    if (!el) return;
+    let label = VIEW_INDEX_LABELS[currentView] || '产品专项汇报';
+    // For the department report view, append chip + dept for context
+    if (currentView === 'dept' && currentDeptCtx) {
+      const c = (data.chips || []).find(x => x.id === currentDeptCtx.chip);
+      const chipName = c ? c.name : (currentDeptCtx.chipName || '');
+      label = '部门汇报 · ' + chipName + ' · ' + (currentDeptCtx.dept || '');
+    }
+    // For the LCS sub-page, append the chip name
+    if (currentView === 'lcsub' && currentLCSChip) {
+      const c = (data.chips || []).find(x => x.id === currentLCSChip);
+      const chipName = c ? c.name : currentLCSChip;
+      label = '过程管理 · ' + chipName;
+    }
+    el.textContent = label;
+  }
+
   function go(view) {
     currentView = view;
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -2841,6 +2868,7 @@
       t.classList.toggle('active', t.dataset.view === view);
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateBrandIndex();
     if (view === 'projects') {
       setTimeout(() => animateProgressBars(), 100);
     }
@@ -3552,6 +3580,7 @@
     if (!target) return;
     target.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateBrandIndex();
 
     // Header text
     const eyebrow = document.getElementById('dept-eyebrow');
@@ -4404,6 +4433,7 @@
     renderLifecycle();
     initLCEdits();
     updateLCSCounts();
+    updateBrandIndex();
     // Animate progress bars after a beat
     setTimeout(animateProgressBars, 200);
     // Keep stage-header and ✓ chip-cell widths in sync when window/container resizes
