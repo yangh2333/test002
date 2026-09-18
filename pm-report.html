@@ -1001,7 +1001,7 @@
     border: 1px dashed var(--border-soft);
     border-radius: 10px;
   }
-  /* Editable department report rows */
+  /* Department report rows (view + edit modes) */
   .dept-edit-list { display: flex; flex-direction: column; gap: 8px; }
   .dept-edit-row {
     display: grid;
@@ -1048,18 +1048,6 @@
     color: var(--ink-soft);
     cursor: pointer;
   }
-  .dept-edit-row .der-del {
-    width: 26px; height: 26px;
-    line-height: 1;
-    border: 1px solid rgba(220,38,38,0.4);
-    background: var(--bg-card);
-    color: var(--delayed);
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .dept-edit-row .der-del:hover { background: var(--delayed-bg); }
   .dept-edit-row .der-content {
     width: 100%;
     min-height: 50px;
@@ -1097,6 +1085,95 @@
     display: flex;
     justify-content: center;
     padding: 10px;
+  }
+  /* Row action buttons (编辑/删除/保存/取消) */
+  .der-actions { display: flex; gap: 6px; margin-left: auto; }
+  .der-btn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: 1px solid var(--border-soft);
+    background: var(--bg-card);
+    color: var(--ink-soft);
+    line-height: 1.2;
+  }
+  .der-btn:hover { transform: translateY(-1px); }
+  .der-btn.edit { color: var(--info); border-color: rgba(37,99,235,0.35); }
+  .der-btn.edit:hover { background: var(--progress-bg); border-color: var(--info); }
+  .der-btn.del { color: var(--delayed); border-color: rgba(220,38,38,0.35); }
+  .der-btn.del:hover { background: var(--delayed-bg); border-color: var(--delayed); }
+  .der-btn.save { color: #fff; background: var(--info); border-color: var(--info); }
+  .der-btn.save:hover { background: #1d4ed8; box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
+  .der-btn.cancel { color: var(--ink-mute); }
+  .der-btn.cancel:hover { background: var(--bg-input); color: var(--ink); }
+  /* View-mode (read-only) row */
+  .dept-view-row {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--ink-mute);
+    border-radius: 8px;
+    padding: 10px 12px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .dept-view-row:hover { border-color: var(--info); box-shadow: 0 2px 8px rgba(37,99,235,0.08); }
+  .dept-view-row .dvr-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .dept-view-row .dvr-idx {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    min-width: 26px;
+  }
+  .dept-view-row .dvr-title {
+    flex: 1;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .dept-view-row .dvr-title.empty { color: var(--ink-mute); font-style: italic; font-weight: 500; }
+  .dept-view-row .dvr-status {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--bg-input);
+    color: var(--ink-soft);
+    border: 1px solid var(--border-soft);
+  }
+  .dept-view-row .dvr-status.s-done { background: var(--achieved-bg); color: var(--achieved); border-color: transparent; }
+  .dept-view-row .dvr-status.s-delay { background: var(--delayed-bg); color: var(--delayed); border-color: transparent; }
+  .dept-view-row .dvr-content {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 4px 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .dept-view-row .dvr-content.empty { color: var(--ink-mute); font-style: italic; }
+  .dept-view-row .dvr-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-top: 6px;
   }
 
   /* Inline expanded panel for a chip's process-management items */
@@ -2754,6 +2831,7 @@
   let currentSubProj = 'ye512';
   let currentSubType = 'risk';
   let currentDeptCtx = null; // {chip, chipName, dept, stageIdx, stageName}
+  let deptEditIdx = null; // index of the row currently in edit mode (null = all view)
 
   function go(view) {
     currentView = view;
@@ -3468,6 +3546,7 @@
     // Switch active view (mirrors go() but without nav-tab highlight)
     currentView = 'dept';
     currentDeptCtx = ctx; // remember for add/del/update handlers
+    deptEditIdx = null; // start with all rows in view mode
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     const target = document.getElementById('view-dept');
     if (!target) return;
@@ -3538,7 +3617,7 @@
       html += '<div class="dept-empty">暂无部门汇报条目，点击下方 + 新增汇报。</div>';
     } else {
       reports.forEach((r, i) => {
-        html += deptEditRowHtml(r, i);
+        html += deptRowHtml(r, i);
       });
     }
     html += '</div>';
@@ -3560,8 +3639,6 @@
     html += '</div>';
 
     body.innerHTML = html;
-    // Wire up input handlers for editable rows
-    wireDeptEditInputs();
   }
 
   // Department report entries storage helper.
@@ -3588,29 +3665,161 @@
       time: new Date().toISOString().slice(0,10)
     });
     saveData();
-    showDeptView(currentDeptCtx);
+    // Enter edit mode for the newly added row
+    deptEditIdx = data.deptReports[currentDeptCtx.chip][currentDeptCtx.dept].length - 1;
+    renderDeptList();
     updateLCSCounts();
+    // Focus the title input of the new row
+    setTimeout(() => {
+      const list = document.getElementById('dept-edit-list');
+      if (list) {
+        const row = list.querySelector('.dept-edit-row[data-idx="' + deptEditIdx + '"] .der-title');
+        if (row) { row.focus(); row.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      }
+    }, 30);
   }
 
   function delDeptReport(idx) {
     if (!currentDeptCtx) return;
     const arr = getDeptReports(currentDeptCtx.chip, currentDeptCtx.dept);
     if (idx < 0 || idx >= arr.length) return;
+    const r = arr[idx];
+    const label = (r.title || '').trim() || '该条目';
+    if (!confirm('确定删除「' + label + '」？此操作不可撤销。')) return;
     arr.splice(idx, 1);
+    if (deptEditIdx === idx) deptEditIdx = null;
+    else if (deptEditIdx !== null && deptEditIdx > idx) deptEditIdx -= 1;
     saveData();
-    showDeptView(currentDeptCtx);
+    renderDeptList();
     updateLCSCounts();
   }
 
-  // Live-update a field without re-rendering the whole view (keeps focus)
-  function updateDeptReportField(idx, field, value) {
+  // Enter edit mode for a single row (re-renders only the list)
+  function editDeptReport(idx) {
+    if (!currentDeptCtx) return;
+    deptEditIdx = idx;
+    renderDeptList();
+    setTimeout(() => {
+      const list = document.getElementById('dept-edit-list');
+      if (list) {
+        const row = list.querySelector('.dept-edit-row[data-idx="' + idx + '"] .der-title');
+        if (row) row.focus();
+      }
+    }, 30);
+  }
+
+  // Save the edited row from its input values, then return to view mode
+  function saveDeptReportEdit(idx) {
     if (!currentDeptCtx) return;
     const arr = getDeptReports(currentDeptCtx.chip, currentDeptCtx.dept);
     if (idx < 0 || idx >= arr.length) return;
-    arr[idx][field] = value;
+    const list = document.getElementById('dept-edit-list');
+    if (!list) return;
+    const row = list.querySelector('.dept-edit-row[data-idx="' + idx + '"]');
+    if (!row) return;
+    const get = (field) => { const el = row.querySelector('[data-field="' + field + '"]'); return el ? el.value : ''; };
+    arr[idx].title = get('title');
+    arr[idx].content = get('content');
+    arr[idx].owner = get('owner');
+    arr[idx].status = get('status');
+    // Stamp update time on save
+    arr[idx].time = new Date().toISOString().slice(0,10);
     saveData();
+    deptEditIdx = null;
+    renderDeptList();
+    updateLCSCounts();
   }
 
+  // Discard edits and return to view mode
+  function cancelDeptReportEdit(idx) {
+    if (!currentDeptCtx) return;
+    const arr = getDeptReports(currentDeptCtx.chip, currentDeptCtx.dept);
+    // If this was a brand-new empty row with no content, remove it on cancel
+    if (idx >= 0 && idx < arr.length) {
+      const r = arr[idx];
+      const isEmpty = !(r.title || '').trim() && !(r.content || '').trim() && !(r.owner || '').trim();
+      if (isEmpty) {
+        arr.splice(idx, 1);
+        saveData();
+        updateLCSCounts();
+      }
+    }
+    deptEditIdx = null;
+    renderDeptList();
+  }
+
+  // Re-render only the department report list section (preserves the rest of the view)
+  function renderDeptList() {
+    const list = document.getElementById('dept-edit-list');
+    if (!list || !currentDeptCtx) return;
+    const reports = getDeptReports(currentDeptCtx.chip, currentDeptCtx.dept);
+    // Update the section header count
+    const head = list.parentElement.querySelector('.dsh-count');
+    if (head) head.textContent = reports.length + ' 条';
+    let html = '';
+    if (reports.length === 0) {
+      html = '<div class="dept-empty">暂无部门汇报条目，点击下方 + 新增汇报。</div>';
+    } else {
+      reports.forEach((r, i) => { html += deptRowHtml(r, i); });
+    }
+    list.innerHTML = html;
+    // Also refresh summary stats + meta tags without full re-render
+    refreshDeptSummary(reports);
+  }
+
+  // Refresh the summary stat cards (department report counts)
+  function refreshDeptSummary(reports) {
+    const c = (data.chips || []).find(x => x.id === currentDeptCtx.chip);
+    const sub = (data.lcSub && data.lcSub[currentDeptCtx.chip]) || {};
+    const types = ['risk', 'issue', 'help', 'sync'];
+    let deptItemCount = 0;
+    types.forEach(t => {
+      (sub[t] || []).forEach(it => {
+        const s = (it.stakeholder || '').trim();
+        if (s && s.indexOf(currentDeptCtx.dept) >= 0) deptItemCount++;
+      });
+    });
+    const rOpen = reports.filter(r => r.status !== '已闭环').length;
+    const rClosed = reports.length - rOpen;
+    const sum = document.querySelector('#dept-report-body .dept-summary');
+    if (!sum) return;
+    sum.innerHTML = statCard('部门汇报', reports.length, '条')
+      + statCard('待处理', rOpen, '条')
+      + statCard('已闭环', rClosed, '条')
+      + statCard('相关过程项', deptItemCount, '项');
+  }
+
+  // Pick row mode: edit mode for deptEditIdx, otherwise view mode
+  function deptRowHtml(r, i) {
+    if (deptEditIdx === i) return deptEditRowHtml(r, i);
+    return deptViewRowHtml(r, i);
+  }
+
+  // Read-only view mode row with 编辑 / 删除 buttons
+  function deptViewRowHtml(r, i) {
+    const titleText = (r.title || '').trim();
+    const contentText = (r.content || '').trim();
+    const statusCls = r.status === '已闭环' ? 's-done' : (r.status === '已延期' ? 's-delay' : '');
+    const ownerText = (r.owner || '').trim();
+    return '<div class="dept-view-row" data-idx="' + i + '">'
+      + '<div class="dvr-top">'
+      + '<span class="dvr-idx">#' + String(i + 1).padStart(2,'0') + '</span>'
+      + '<div class="dvr-title' + (titleText ? '' : ' empty') + '">' + escapeHtml(titleText || '未填写标题') + '</div>'
+      + '<span class="dvr-status ' + statusCls + '">' + escapeHtml(r.status || '待处理') + '</span>'
+      + '<div class="der-actions">'
+      + '<button class="der-btn edit" onclick="editDeptReport(' + i + ')">编辑</button>'
+      + '<button class="der-btn del" onclick="delDeptReport(' + i + ')">删除</button>'
+      + '</div>'
+      + '</div>'
+      + '<div class="dvr-content' + (contentText ? '' : ' empty') + '">' + escapeHtml(contentText || '（暂无内容）') + '</div>'
+      + '<div class="dvr-meta">'
+      + '<span>汇报人：' + escapeHtml(ownerText || '—') + '</span>'
+      + '<span>' + escapeHtml(r.time || '') + '</span>'
+      + '</div>'
+      + '</div>';
+  }
+
+  // Edit-mode row with 保存 / 取消 buttons
   function deptEditRowHtml(r, i) {
     const statuses = ['待处理','进行中','已闭环','已延期'];
     return '<div class="dept-edit-row" data-idx="' + i + '">'
@@ -3620,7 +3829,10 @@
       + '<select class="der-status" data-field="status">'
         + statuses.map(st => '<option value="' + st + '"' + (r.status === st ? ' selected' : '') + '>' + st + '</option>').join('')
       + '</select>'
-      + '<button class="der-del" title="删除" onclick="delDeptReport(' + i + ')">×</button>'
+      + '<div class="der-actions">'
+      + '<button class="der-btn save" onclick="saveDeptReportEdit(' + i + ')">保存</button>'
+      + '<button class="der-btn cancel" onclick="cancelDeptReportEdit(' + i + ')">取消</button>'
+      + '</div>'
       + '</div>'
       + '<textarea class="der-content" data-field="content" placeholder="汇报内容...">' + escapeHtml(r.content || '') + '</textarea>'
       + '<div class="der-meta">'
@@ -3628,20 +3840,6 @@
       + '<span>' + escapeHtml(r.time || '') + '</span>'
       + '</div>'
       + '</div>';
-  }
-
-  // Wire input/change handlers on editable rows; save on every keystroke
-  function wireDeptEditInputs() {
-    const list = document.getElementById('dept-edit-list');
-    if (!list) return;
-    list.querySelectorAll('.dept-edit-row').forEach(row => {
-      const idx = parseInt(row.dataset.idx, 10);
-      row.querySelectorAll('[data-field]').forEach(el => {
-        const field = el.dataset.field;
-        const evt = (el.tagName === 'SELECT') ? 'change' : 'input';
-        el.addEventListener(evt, () => updateDeptReportField(idx, field, el.value));
-      });
-    });
   }
 
   function statCard(label, value, unit) {
