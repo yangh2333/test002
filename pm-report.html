@@ -2753,6 +2753,7 @@
   let currentProj = 'ye512';
   let currentSubProj = 'ye512';
   let currentSubType = 'risk';
+  let currentDeptCtx = null; // {chip, chipName, dept, stageIdx, stageName}
 
   function go(view) {
     currentView = view;
@@ -3466,6 +3467,7 @@
   function showDeptView(ctx) {
     // Switch active view (mirrors go() but without nav-tab highlight)
     currentView = 'dept';
+    currentDeptCtx = ctx; // remember for add/del/update handlers
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     const target = document.getElementById('view-dept');
     if (!target) return;
@@ -3489,6 +3491,11 @@
     const focusStages = DEPT_STAGE_FOCUS[ctx.dept] || [];
     const stageInFocus = focusStages.includes(stageName);
 
+    // Department report entries (editable, owned by this chip+dept)
+    const reports = getDeptReports(ctx.chip, ctx.dept);
+    const rOpen = reports.filter(r => r.status !== '已闭环').length;
+    const rClosed = reports.length - rOpen;
+
     // Gather all process items for this chip
     const sub = (data.lcSub && data.lcSub[ctx.chip]) || {};
     const types = ['risk', 'issue', 'help', 'sync'];
@@ -3502,8 +3509,6 @@
       const s = (it.stakeholder || '').trim();
       return s && s.indexOf(ctx.dept) >= 0;
     });
-    const deptOpen = deptItems.filter(it => it.status !== '已闭环').length;
-    const deptClosed = deptItems.length - deptOpen;
 
     // Build HTML
     let html = '';
@@ -3519,15 +3524,30 @@
 
     // 2. Summary stats
     html += '<div class="dept-summary">';
-    html += statCard('本部门负责', deptItems.length, '项');
-    html += statCard('待处理', deptOpen, '项');
-    html += statCard('已闭环', deptClosed, '项');
-    html += statCard('全芯片过程项', allItems.length, '项');
+    html += statCard('部门汇报', reports.length, '条');
+    html += statCard('待处理', rOpen, '条');
+    html += statCard('已闭环', rClosed, '条');
+    html += statCard('相关过程项', deptItems.length, '项');
     html += '</div>';
 
-    // 3. Department-owned items
+    // 3. Editable department report items (top: management area)
     html += '<div class="dept-section">';
-    html += '<div class="dept-section-head"><h3>本部门负责项</h3><span class="dsh-count">' + deptItems.length + ' 项</span></div>';
+    html += '<div class="dept-section-head"><h3>部门汇报条目</h3><span class="dsh-count">' + reports.length + ' 条</span></div>';
+    html += '<div class="dept-edit-list" id="dept-edit-list">';
+    if (reports.length === 0) {
+      html += '<div class="dept-empty">暂无部门汇报条目，点击下方 + 新增汇报。</div>';
+    } else {
+      reports.forEach((r, i) => {
+        html += deptEditRowHtml(r, i);
+      });
+    }
+    html += '</div>';
+    html += '<div class="dept-add-row"><button class="btn primary" onclick="addDeptReport()">+ 新增汇报</button></div>';
+    html += '</div>';
+
+    // 4. Department-owned process items
+    html += '<div class="dept-section">';
+    html += '<div class="dept-section-head"><h3>相关过程项（干系人含本部门）</h3><span class="dsh-count">' + deptItems.length + ' 项</span></div>';
     if (deptItems.length === 0) {
       html += '<div class="dept-empty">暂无干系人包含「' + escapeHtml(ctx.dept) + '」的过程项。可在生命周期卡片中为过程项填写干系人。</div>';
     } else {
@@ -3539,24 +3559,89 @@
     }
     html += '</div>';
 
-    // 4. Full chip process items (visibility for this department)
-    html += '<div class="dept-section">';
-    html += '<div class="dept-section-head"><h3>全芯片过程项（可见性）</h3><span class="dsh-count">' + allItems.length + ' 项</span></div>';
-    if (allItems.length === 0) {
-      html += '<div class="dept-empty">该芯片暂无任何过程项记录。</div>';
-    } else {
-      html += '<div class="dept-items">';
-      types.forEach(t => {
-        const arr = (sub[t] || []);
-        arr.forEach(it => {
-          html += deptItemHtml(Object.assign({}, it, { _type: t }));
-        });
-      });
-      html += '</div>';
-    }
-    html += '</div>';
-
     body.innerHTML = html;
+    // Wire up input handlers for editable rows
+    wireDeptEditInputs();
+  }
+
+  // Department report entries storage helper.
+  // Shape: data.deptReports[chipId][dept] = [{title, content, owner, status, time}]
+  function getDeptReports(chipId, dept) {
+    if (!data.deptReports) return [];
+    if (!data.deptReports[chipId]) return [];
+    return data.deptReports[chipId][dept] || [];
+  }
+  function ensureDeptReportsPath(chipId, dept) {
+    if (!data.deptReports) data.deptReports = {};
+    if (!data.deptReports[chipId]) data.deptReports[chipId] = {};
+    if (!data.deptReports[chipId][dept]) data.deptReports[chipId][dept] = [];
+  }
+
+  function addDeptReport() {
+    if (!currentDeptCtx) return;
+    ensureDeptReportsPath(currentDeptCtx.chip, currentDeptCtx.dept);
+    data.deptReports[currentDeptCtx.chip][currentDeptCtx.dept].push({
+      title: '',
+      content: '',
+      owner: '',
+      status: '待处理',
+      time: new Date().toISOString().slice(0,10)
+    });
+    saveData();
+    showDeptView(currentDeptCtx);
+    updateLCSCounts();
+  }
+
+  function delDeptReport(idx) {
+    if (!currentDeptCtx) return;
+    const arr = getDeptReports(currentDeptCtx.chip, currentDeptCtx.dept);
+    if (idx < 0 || idx >= arr.length) return;
+    arr.splice(idx, 1);
+    saveData();
+    showDeptView(currentDeptCtx);
+    updateLCSCounts();
+  }
+
+  // Live-update a field without re-rendering the whole view (keeps focus)
+  function updateDeptReportField(idx, field, value) {
+    if (!currentDeptCtx) return;
+    const arr = getDeptReports(currentDeptCtx.chip, currentDeptCtx.dept);
+    if (idx < 0 || idx >= arr.length) return;
+    arr[idx][field] = value;
+    saveData();
+  }
+
+  function deptEditRowHtml(r, i) {
+    const statuses = ['待处理','进行中','已闭环','已延期'];
+    return '<div class="dept-edit-row" data-idx="' + i + '">'
+      + '<div class="der-top">'
+      + '<span class="der-idx">#' + String(i + 1).padStart(2,'0') + '</span>'
+      + '<input type="text" class="der-title" data-field="title" value="' + escapeAttr(r.title || '') + '" placeholder="汇报标题..." />'
+      + '<select class="der-status" data-field="status">'
+        + statuses.map(st => '<option value="' + st + '"' + (r.status === st ? ' selected' : '') + '>' + st + '</option>').join('')
+      + '</select>'
+      + '<button class="der-del" title="删除" onclick="delDeptReport(' + i + ')">×</button>'
+      + '</div>'
+      + '<textarea class="der-content" data-field="content" placeholder="汇报内容...">' + escapeHtml(r.content || '') + '</textarea>'
+      + '<div class="der-meta">'
+      + '<input type="text" class="der-owner" data-field="owner" value="' + escapeAttr(r.owner || '') + '" placeholder="汇报人..." />'
+      + '<span>' + escapeHtml(r.time || '') + '</span>'
+      + '</div>'
+      + '</div>';
+  }
+
+  // Wire input/change handlers on editable rows; save on every keystroke
+  function wireDeptEditInputs() {
+    const list = document.getElementById('dept-edit-list');
+    if (!list) return;
+    list.querySelectorAll('.dept-edit-row').forEach(row => {
+      const idx = parseInt(row.dataset.idx, 10);
+      row.querySelectorAll('[data-field]').forEach(el => {
+        const field = el.dataset.field;
+        const evt = (el.tagName === 'SELECT') ? 'change' : 'input';
+        el.addEventListener(evt, () => updateDeptReportField(idx, field, el.value));
+      });
+    });
   }
 
   function statCard(label, value, unit) {
@@ -4093,25 +4178,16 @@
   function updateLCSCounts() {
     const all = loadLCSItems();
     const chips = data.chips || [];
-    // Department count badges: count items whose stakeholder mentions the dept.
-    // Reads from data.lcSub (inline chip panel store) to match showDeptView.
+    // Department count badges: number of dept report entries for this chip+dept.
     const DEPTS = ['研发', '工程制造', '供应链', '采购', 'IT'];
     chips.forEach(c => {
       ['risk', 'issue', 'help', 'sync'].forEach(type => {
         const el = document.getElementById(`lcc-${c.id}-${type}`);
         if (el) el.textContent = (all[`${c.id}:${type}`] || []).length;
       });
-      // Department-specific counts (owned = stakeholder references the dept)
-      const sub = (data.lcSub && data.lcSub[c.id]) || {};
+      // Department-specific counts = number of department report entries
       DEPTS.forEach(dept => {
-        let cnt = 0;
-        ['risk', 'issue', 'help', 'sync'].forEach(type => {
-          const arr = sub[type] || [];
-          cnt += arr.filter(it => {
-            const s = (it.stakeholder || '').trim();
-            return s && s.indexOf(dept) >= 0;
-          }).length;
-        });
+        const cnt = getDeptReports(c.id, dept).length;
         const badge = document.getElementById('deptcnt-' + c.id + '-' + dept);
         if (badge) {
           badge.textContent = cnt;
