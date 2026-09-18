@@ -1175,6 +1175,114 @@
     color: var(--ink-mute);
     margin-top: 6px;
   }
+  /* Stakeholder multi-select (edit mode) */
+  .der-stakeholders {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+  }
+  .der-stake-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    min-height: 22px;
+  }
+  .der-stake-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--progress-bg);
+    color: var(--info);
+    border: 1px solid rgba(37,99,235,0.25);
+    border-radius: 10px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .der-stake-tag .x {
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    opacity: 0.55;
+    border: none;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+  .der-stake-tag .x:hover { opacity: 1; }
+  .der-stake-empty { font-size: 11px; color: var(--ink-mute); font-style: italic; }
+  .der-stake-dropdown { position: relative; display: inline-block; }
+  .der-stake-trigger {
+    padding: 4px 10px;
+    background: #fff;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    color: var(--ink-mute);
+    cursor: pointer;
+  }
+  .der-stake-trigger:hover { border-color: var(--info); color: var(--info); border-style: solid; }
+  .der-stake-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 60;
+    min-width: 140px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.14);
+    padding: 6px;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .der-stake-panel.open { display: flex; }
+  .der-stake-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .der-stake-item:hover { background: var(--bg-input); }
+  .der-stake-item input { margin: 0; cursor: pointer; }
+  /* Stakeholder tags (view mode) */
+  .dvr-stake {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .dvr-stake-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-right: 2px;
+  }
+  .dvr-stake-tag {
+    padding: 1px 8px;
+    background: var(--progress-bg);
+    color: var(--info);
+    border: 1px solid rgba(37,99,235,0.2);
+    border-radius: 10px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+  }
 
   /* Inline expanded panel for a chip's process-management items */
   .chip-card .cc-panel {
@@ -3671,7 +3779,12 @@
   }
 
   // Department report entries storage helper.
-  // Shape: data.deptReports[chipId][dept] = [{title, content, owner, status, time}]
+  // Shape: data.deptReports[chipId][dept] = [{title, content, owner, status, time, stakeholders:[]}]
+  // All known departments — used for the stakeholder multi-select.
+  const DEPT_NAMES = ['研发', '工程制造', '供应链', '采购', 'IT'];
+  // Currently open stakeholder dropdown row index (for outside-click close)
+  let stakeDropdownOpen = null;
+
   function getDeptReports(chipId, dept) {
     if (!data.deptReports) return [];
     if (!data.deptReports[chipId]) return [];
@@ -3691,7 +3804,8 @@
       content: '',
       owner: '',
       status: '待处理',
-      time: new Date().toISOString().slice(0,10)
+      time: new Date().toISOString().slice(0,10),
+      stakeholders: []
     });
     saveData();
     // Enter edit mode for the newly added row
@@ -3705,6 +3819,8 @@
         const row = list.querySelector('.dept-edit-row[data-idx="' + deptEditIdx + '"] .der-title');
         if (row) { row.focus(); row.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
       }
+      // Initialize stakeholder tags display
+      renderStakeTags(deptEditIdx);
     }, 30);
   }
 
@@ -3734,6 +3850,8 @@
         const row = list.querySelector('.dept-edit-row[data-idx="' + idx + '"] .der-title');
         if (row) row.focus();
       }
+      // Initialize stakeholder tags display
+      renderStakeTags(idx);
     }, 30);
   }
 
@@ -3751,6 +3869,9 @@
     arr[idx].content = get('content');
     arr[idx].owner = get('owner');
     arr[idx].status = get('status');
+    // Collect checked stakeholders (checkboxes with data-stake)
+    const stakeBoxes = row.querySelectorAll('input[data-stake]');
+    arr[idx].stakeholders = Array.from(stakeBoxes).filter(cb => cb.checked).map(cb => cb.value);
     // Stamp update time on save
     arr[idx].time = new Date().toISOString().slice(0,10);
     saveData();
@@ -3830,6 +3951,13 @@
     const contentText = (r.content || '').trim();
     const statusCls = r.status === '已闭环' ? 's-done' : (r.status === '已延期' ? 's-delay' : '');
     const ownerText = (r.owner || '').trim();
+    const stakes = r.stakeholders || [];
+    let stakeHtml = '';
+    if (stakes.length > 0) {
+      stakeHtml = '<div class="dvr-stake"><span class="dvr-stake-label">干系人：</span>'
+        + stakes.map(d => '<span class="dvr-stake-tag">' + escapeHtml(d) + '</span>').join('')
+        + '</div>';
+    }
     return '<div class="dept-view-row" data-idx="' + i + '">'
       + '<div class="dvr-top">'
       + '<span class="dvr-idx">#' + String(i + 1).padStart(2,'0') + '</span>'
@@ -3841,6 +3969,7 @@
       + '</div>'
       + '</div>'
       + '<div class="dvr-content' + (contentText ? '' : ' empty') + '">' + escapeHtml(contentText || '（暂无内容）') + '</div>'
+      + stakeHtml
       + '<div class="dvr-meta">'
       + '<span>汇报人：' + escapeHtml(ownerText || '—') + '</span>'
       + '<span>' + escapeHtml(r.time || '') + '</span>'
@@ -3848,9 +3977,12 @@
       + '</div>';
   }
 
-  // Edit-mode row with 保存 / 取消 buttons
+  // Edit-mode row with 保存 / 取消 buttons + stakeholder multi-select
   function deptEditRowHtml(r, i) {
     const statuses = ['待处理','进行中','已闭环','已延期'];
+    // Other departments (exclude the current reporting dept itself)
+    const otherDepts = DEPT_NAMES.filter(d => !currentDeptCtx || d !== currentDeptCtx.dept);
+    const sel = r.stakeholders || [];
     return '<div class="dept-edit-row" data-idx="' + i + '">'
       + '<div class="der-top">'
       + '<span class="der-idx">#' + String(i + 1).padStart(2,'0') + '</span>'
@@ -3864,6 +3996,18 @@
       + '</div>'
       + '</div>'
       + '<textarea class="der-content" data-field="content" placeholder="汇报内容...">' + escapeHtml(r.content || '') + '</textarea>'
+      + '<div class="der-stakeholders">'
+      + '<div class="der-stake-tags" id="der-stake-tags-' + i + '"></div>'
+      + '<div class="der-stake-dropdown">'
+      + '<button type="button" class="der-stake-trigger" onclick="toggleStakeDropdown(' + i + ');return false;">+ 干系人维护</button>'
+      + '<div class="der-stake-panel" id="der-stake-panel-' + i + '">'
+        + otherDepts.map(d => {
+            const checked = sel.indexOf(d) >= 0 ? ' checked' : '';
+            return '<label class="der-stake-item"><input type="checkbox" value="' + escapeAttr(d) + '" data-stake' + checked + ' onchange="renderStakeTags(' + i + ')" /> ' + escapeHtml(d) + '</label>';
+          }).join('')
+      + '</div>'
+      + '</div>'
+      + '</div>'
       + '<div class="der-meta">'
       + '<input type="text" class="der-owner" data-field="owner" value="' + escapeAttr(r.owner || '') + '" placeholder="汇报人..." />'
       + '<span>' + escapeHtml(r.time || '') + '</span>'
@@ -3874,6 +4018,64 @@
   function statCard(label, value, unit) {
     return '<div class="dept-stat"><div class="ds-label">' + escapeHtml(label) + '</div><div class="ds-value">' + value + '<em>' + escapeHtml(unit || '') + '</em></div></div>';
   }
+
+  // ── Stakeholder multi-select helpers ──
+  // Toggle the stakeholder dropdown for a given row
+  function toggleStakeDropdown(i) {
+    const panel = document.getElementById('der-stake-panel-' + i);
+    if (!panel) return;
+    const willOpen = !panel.classList.contains('open');
+    // Close any other open dropdown first
+    document.querySelectorAll('.der-stake-panel.open').forEach(p => p.classList.remove('open'));
+    if (willOpen) {
+      panel.classList.add('open');
+      stakeDropdownOpen = i;
+      renderStakeTags(i);
+    } else {
+      stakeDropdownOpen = null;
+    }
+  }
+
+  // Render the inline selected-stakeholder tags for a row (reads checkbox states)
+  function renderStakeTags(i) {
+    const row = document.querySelector('.dept-edit-row[data-idx="' + i + '"]');
+    if (!row) return;
+    const tagsEl = document.getElementById('der-stake-tags-' + i);
+    if (!tagsEl) return;
+    const boxes = row.querySelectorAll('input[data-stake]');
+    const selected = Array.from(boxes).filter(cb => cb.checked).map(cb => cb.value);
+    if (selected.length === 0) {
+      tagsEl.innerHTML = '<span class="der-stake-empty">未选择干系人</span>';
+      return;
+    }
+    tagsEl.innerHTML = selected.map(d =>
+      '<span class="der-stake-tag">' + escapeHtml(d)
+      + '<button type="button" class="x" title="移除" onclick="removeStake(' + i + ',\'' + escapeAttr(d) + '\');return false;">×</button>'
+      + '</span>'
+    ).join('');
+  }
+
+  // Remove a stakeholder tag (unchecks the matching checkbox and re-renders tags)
+  function removeStake(i, dept) {
+    const row = document.querySelector('.dept-edit-row[data-idx="' + i + '"]');
+    if (!row) return;
+    const box = row.querySelector('input[data-stake][value="' + dept + '"]');
+    if (box) box.checked = false;
+    renderStakeTags(i);
+  }
+
+  // Close any open stakeholder dropdown when clicking outside it
+  document.addEventListener('click', function (e) {
+    if (stakeDropdownOpen === null) return;
+    const panel = document.getElementById('der-stake-panel-' + stakeDropdownOpen);
+    if (!panel) { stakeDropdownOpen = null; return; }
+    // If the click target is inside the dropdown or its trigger, leave it open
+    if (panel.contains(e.target)) return;
+    const trigger = panel.parentElement.querySelector('.der-stake-trigger');
+    if (trigger && trigger.contains(e.target)) return;
+    panel.classList.remove('open');
+    stakeDropdownOpen = null;
+  });
 
   function deptItemHtml(it) {
     const t = it._type || 'sync';
