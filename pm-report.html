@@ -809,6 +809,155 @@
     box-shadow: 0 0 0 2px var(--info);
   }
 
+  /* Department report jump buttons (研发/工程制造/供应链/采购/IT) */
+  .chip-card .cc-depts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .chip-card .cc-dept {
+    flex: 1 1 auto;
+    min-width: 76px;
+    padding: 8px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+    position: relative;
+  }
+  .chip-card .cc-dept::before {
+    content: '▸';
+    margin-right: 4px;
+    color: var(--ink-mute);
+    font-size: 10px;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+  .chip-card .cc-dept:hover {
+    border-color: var(--info);
+    background: var(--progress-bg);
+    color: var(--info);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(37,99,235,0.15);
+  }
+  .chip-card .cc-dept:hover::before {
+    color: var(--info);
+    transform: translateX(2px);
+  }
+
+  /* ── Department report view ── */
+  .dept-report { display: flex; flex-direction: column; gap: 20px; }
+  .dept-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .dept-meta .dm-chip {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .dept-meta .dm-tag {
+    padding: 4px 12px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .dept-meta .dm-tag.dm-dept {
+    background: var(--info);
+    color: var(--bg);
+    border-color: var(--info);
+  }
+  .dept-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .dept-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .dept-stat .ds-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 6px;
+  }
+  .dept-stat .ds-value {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .dept-stat .ds-value em { font-style: normal; font-size: 13px; color: var(--ink-mute); margin-left: 4px; }
+  .dept-section { display: flex; flex-direction: column; gap: 10px; }
+  .dept-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .dept-section-head h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .dept-section-head .dsh-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+  }
+  .dept-items { display: flex; flex-direction: column; gap: 8px; }
+  .dept-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .dept-item.di-risk { border-left-color: var(--delayed); }
+  .dept-item.di-issue { border-left-color: var(--warn); }
+  .dept-item.di-help { border-left-color: var(--info); }
+  .dept-item.di-sync { border-left-color: var(--ink-mute); }
+  .dept-item .di-content { font-size: 13px; color: var(--ink); }
+  .dept-item .di-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .dept-empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--ink-mute);
+    font-size: 13px;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-soft);
+    border-radius: 10px;
+  }
+
   /* Inline expanded panel for a chip's process-management items */
   .chip-card .cc-panel {
     display: none;
@@ -2257,6 +2406,20 @@
     <div class="items-list" id="lcs-items-list"></div>
   </section>
 
+  <!-- ════════════ DEPT REPORT PAGE (各部门汇报) ════════════ -->
+  <section class="view" id="view-dept">
+    <div class="subpage-header">
+      <div class="sp-left">
+        <div class="sp-eyebrow" id="dept-eyebrow">Department Report · 部门汇报</div>
+        <h2 id="dept-title">部门<em>汇报</em></h2>
+      </div>
+      <div class="sp-right">
+        <button class="btn" onclick="go('lifecycle')">← 返回生命周期</button>
+      </div>
+    </div>
+    <div class="dept-report" id="dept-report-body"></div>
+  </section>
+
 </div>
 
 <footer>
@@ -3021,6 +3184,13 @@
         </div>
         <div class="cc-title" contenteditable="true" data-chip="${escapeAttr(c.id)}" data-field="title" oninput="updateChipField('${escapeAttr(c.id)}','title',this.textContent)">${escapeHtml(c.title || '')}</div>
         <div class="cc-desc" contenteditable="true" data-chip="${escapeAttr(c.id)}" data-field="desc" oninput="updateChipField('${escapeAttr(c.id)}','desc',this.textContent)">${escapeHtml(c.desc || '')}</div>
+        <div class="cc-depts">
+          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','研发')">研发</button>
+          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','工程制造')">工程制造</button>
+          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','供应链')">供应链</button>
+          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','采购')">采购</button>
+          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','IT')">IT</button>
+        </div>
         <div class="cc-panel" id="cc-panel-${escapeAttr(c.id)}"></div>
       </div>`;
     });
@@ -3116,6 +3286,149 @@
     saveData();
     renderLifecycle();
     showToast();
+  }
+
+  // ── Department report jump: store chip+dept context and open a placeholder URL ──
+  // Stores context in localStorage so the target report page can pick it up.
+  function goDeptReport(chipId, dept) {
+    const c = (data.chips || []).find(x => x.id === chipId);
+    const chipName = c ? c.name : chipId;
+    const stageIdx = c ? (c.currentStage || 1) : 1;
+    const stageName = (data.lcStages || [])[stageIdx - 1] || '';
+    const ctx = { chip: chipId, chipName, dept, stageIdx, stageName, t: Date.now() };
+    try { localStorage.setItem('pm-dept-ctx', JSON.stringify(ctx)); } catch (e) {}
+    // Open a dedicated department report view (single-page anchor).
+    // Falls back to a simple alert if the target view can't be reached.
+    const target = document.getElementById('view-dept');
+    if (target) {
+      // In-app view switch
+      showDeptView(ctx);
+    } else {
+      // No in-app view — open a new tab to a dept report page (placeholder)
+      const url = 'dept-report.html?chip=' + encodeURIComponent(chipId) + '&dept=' + encodeURIComponent(dept);
+      window.open(url, '_blank');
+    }
+  }
+
+  // ── Render the in-app department report view for a given chip + dept ──
+  // Pulls the chip's process items (risk/issue/help/sync) and surfaces the
+  // ones whose stakeholder references the selected department.
+  const DEPT_TYPE_LABELS = { risk: '过程风险', issue: '过程问题', help: '求助', sync: '信息同步' };
+  const DEPT_STAGE_FOCUS = {
+    '研发': ['概念阶段','产品立项','产品研发','产品验证'],
+    '工程制造': ['产品验证','小量试制','产品量产'],
+    '供应链': ['产品研发','产品验证','小量试制','产品量产','产品退市'],
+    '采购': ['产品立项','产品研发','产品验证','小量试制','产品量产'],
+    'IT': ['概念阶段','产品立项','产品研发','产品验证','小量试制','产品量产','产品退市']
+  };
+  function showDeptView(ctx) {
+    // Switch active view (mirrors go() but without nav-tab highlight)
+    currentView = 'dept';
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const target = document.getElementById('view-dept');
+    if (!target) return;
+    target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Header text
+    const eyebrow = document.getElementById('dept-eyebrow');
+    const title = document.getElementById('dept-title');
+    if (eyebrow) eyebrow.textContent = 'Department Report · ' + (ctx.dept || '') + ' 汇报';
+    if (title) title.innerHTML = escapeHtml(ctx.dept || '部门') + '<em>汇报</em>';
+
+    const body = document.getElementById('dept-report-body');
+    if (!body) return;
+
+    const c = (data.chips || []).find(x => x.id === ctx.chip);
+    const chipName = c ? c.name : ctx.chipName;
+    const gen = c ? (c.gen || '') : '';
+    const stageIdx = c ? (c.currentStage || 1) : (ctx.stageIdx || 1);
+    const stageName = (data.lcStages || [])[stageIdx - 1] || ctx.stageName || '';
+    const focusStages = DEPT_STAGE_FOCUS[ctx.dept] || [];
+    const stageInFocus = focusStages.includes(stageName);
+
+    // Gather all process items for this chip
+    const sub = (data.lcSub && data.lcSub[ctx.chip]) || {};
+    const types = ['risk', 'issue', 'help', 'sync'];
+    const allItems = [];
+    types.forEach(t => {
+      (sub[t] || []).forEach(it => allItems.push(Object.assign({}, it, { _type: t })));
+    });
+
+    // Items directly owned by this department (stakeholder mentions the dept)
+    const deptItems = allItems.filter(it => {
+      const s = (it.stakeholder || '').trim();
+      return s && s.indexOf(ctx.dept) >= 0;
+    });
+    const deptOpen = deptItems.filter(it => it.status !== '已闭环').length;
+    const deptClosed = deptItems.length - deptOpen;
+
+    // Build HTML
+    let html = '';
+
+    // 1. Meta row
+    html += '<div class="dept-meta">';
+    html += '<span class="dm-chip">' + escapeHtml(chipName) + '</span>';
+    if (gen) html += '<span class="dm-tag">' + escapeHtml(gen) + '</span>';
+    html += '<span class="dm-tag">当前阶段 ' + String(stageIdx).padStart(2,'0') + ' · ' + escapeHtml(stageName) + '</span>';
+    html += '<span class="dm-tag dm-dept">' + escapeHtml(ctx.dept) + '</span>';
+    if (stageInFocus) html += '<span class="dm-tag" style="background:var(--achieved-bg);color:var(--achieved);border-color:transparent;">本部门主责阶段</span>';
+    html += '</div>';
+
+    // 2. Summary stats
+    html += '<div class="dept-summary">';
+    html += statCard('本部门负责', deptItems.length, '项');
+    html += statCard('待处理', deptOpen, '项');
+    html += statCard('已闭环', deptClosed, '项');
+    html += statCard('全芯片过程项', allItems.length, '项');
+    html += '</div>';
+
+    // 3. Department-owned items
+    html += '<div class="dept-section">';
+    html += '<div class="dept-section-head"><h3>本部门负责项</h3><span class="dsh-count">' + deptItems.length + ' 项</span></div>';
+    if (deptItems.length === 0) {
+      html += '<div class="dept-empty">暂无干系人包含「' + escapeHtml(ctx.dept) + '」的过程项。可在生命周期卡片中为过程项填写干系人。</div>';
+    } else {
+      html += '<div class="dept-items">';
+      deptItems.forEach(it => {
+        html += deptItemHtml(it);
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+
+    // 4. Full chip process items (visibility for this department)
+    html += '<div class="dept-section">';
+    html += '<div class="dept-section-head"><h3>全芯片过程项（可见性）</h3><span class="dsh-count">' + allItems.length + ' 项</span></div>';
+    if (allItems.length === 0) {
+      html += '<div class="dept-empty">该芯片暂无任何过程项记录。</div>';
+    } else {
+      html += '<div class="dept-items">';
+      types.forEach(t => {
+        const arr = (sub[t] || []);
+        arr.forEach(it => {
+          html += deptItemHtml(Object.assign({}, it, { _type: t }));
+        });
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+
+    body.innerHTML = html;
+  }
+
+  function statCard(label, value, unit) {
+    return '<div class="dept-stat"><div class="ds-label">' + escapeHtml(label) + '</div><div class="ds-value">' + value + '<em>' + escapeHtml(unit || '') + '</em></div></div>';
+  }
+
+  function deptItemHtml(it) {
+    const t = it._type || 'sync';
+    const cls = 'di-' + t;
+    const meta = [DEPT_TYPE_LABELS[t] || t, it.status || '', it.time || ''].filter(Boolean).join(' · ');
+    return '<div class="dept-item ' + cls + '">'
+      + '<div class="di-content">' + escapeHtml(it.content || '（未填写内容）') + '</div>'
+      + '<div class="di-meta">' + escapeHtml(meta) + '</div>'
+      + '</div>';
   }
 
   // ── Inline chip panel: expand/collapse a chip's process-management items ──
