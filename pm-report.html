@@ -992,6 +992,50 @@
     text-align: right;
     white-space: nowrap;
   }
+  /* Auto-picked incoming stakeholder item (from another department) */
+  .dept-item.di-incoming {
+    grid-template-columns: 1fr;
+    border-left-color: var(--info);
+    background: linear-gradient(90deg, var(--progress-bg) 0%, var(--bg-card) 40%);
+  }
+  .dept-item.di-incoming .di-src {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-bottom: 2px;
+  }
+  .dept-item.di-incoming .di-src strong {
+    color: var(--info);
+    font-weight: 700;
+  }
+  .dept-item.di-incoming .di-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+  .dept-item.di-incoming .di-meta {
+    text-align: left;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    white-space: normal;
+  }
+  .dept-item .di-status {
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--bg-input);
+    color: var(--ink-soft);
+    border: 1px solid var(--border-soft);
+  }
+  .dept-item .di-status.s-done { background: var(--achieved-bg); color: var(--achieved); border-color: transparent; }
+  .dept-item .di-status.s-delay { background: var(--delayed-bg); color: var(--delayed); border-color: transparent; }
   .dept-empty {
     padding: 24px;
     text-align: center;
@@ -3726,6 +3770,22 @@
       return s && s.indexOf(ctx.dept) >= 0;
     });
 
+    // Auto-pick: entries from OTHER departments' deptReports (same chip) whose
+    // stakeholders list includes the current department. These are "incoming"
+    // stakeholder references — other depts marked this dept as a stakeholder.
+    const incomingReports = [];
+    DEPT_NAMES.forEach(d => {
+      if (d === ctx.dept) return; // skip self
+      const others = getDeptReports(ctx.chip, d);
+      others.forEach((r, idx) => {
+        const stakes = r.stakeholders || [];
+        if (stakes.indexOf(ctx.dept) >= 0) {
+          incomingReports.push(Object.assign({}, r, { _srcDept: d, _srcIdx: idx }));
+        }
+      });
+    });
+    const incomingOpen = incomingReports.filter(r => r.status !== '已闭环').length;
+
     // Build HTML
     let html = '';
 
@@ -3743,7 +3803,7 @@
     html += statCard('部门汇报', reports.length, '条');
     html += statCard('待处理', rOpen, '条');
     html += statCard('已闭环', rClosed, '条');
-    html += statCard('相关过程项', deptItems.length, '项');
+    html += statCard('被其他部门提及', incomingReports.length, '条');
     html += '</div>';
 
     // 3. Editable department report items (top: management area)
@@ -3761,7 +3821,21 @@
     html += '<div class="dept-add-row"><button class="btn primary" onclick="addDeptReport()">+ 新增汇报</button></div>';
     html += '</div>';
 
-    // 4. Department-owned process items
+    // 4. Auto-picked items: other departments' reports that mark this dept as stakeholder
+    html += '<div class="dept-section">';
+    html += '<div class="dept-section-head"><h3>其他部门对本部门的干系人条目</h3><span class="dsh-count">' + incomingReports.length + ' 条 · 自动拾取</span></div>';
+    if (incomingReports.length === 0) {
+      html += '<div class="dept-empty">暂无其他部门将「' + escapeHtml(ctx.dept) + '」标记为干系人的汇报条目。当其他部门在汇报中勾选本部门作为干系人时，将自动显示在此处。</div>';
+    } else {
+      html += '<div class="dept-items">';
+      incomingReports.forEach(it => {
+        html += incomingReportItemHtml(it);
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+
+    // 5. Department-owned process items (from lifecycle LCS store)
     html += '<div class="dept-section">';
     html += '<div class="dept-section-head"><h3>相关过程项（干系人含本部门）</h3><span class="dsh-count">' + deptItems.length + ' 项</span></div>';
     if (deptItems.length === 0) {
@@ -3919,14 +3993,16 @@
 
   // Refresh the summary stat cards (department report counts)
   function refreshDeptSummary(reports) {
-    const c = (data.chips || []).find(x => x.id === currentDeptCtx.chip);
-    const sub = (data.lcSub && data.lcSub[currentDeptCtx.chip]) || {};
-    const types = ['risk', 'issue', 'help', 'sync'];
-    let deptItemCount = 0;
-    types.forEach(t => {
-      (sub[t] || []).forEach(it => {
-        const s = (it.stakeholder || '').trim();
-        if (s && s.indexOf(currentDeptCtx.dept) >= 0) deptItemCount++;
+    if (!currentDeptCtx) return;
+    // Recompute incoming count: entries from OTHER departments' reports (same chip)
+    // whose stakeholders list includes the current department.
+    let incomingCount = 0;
+    DEPT_NAMES.forEach(d => {
+      if (d === currentDeptCtx.dept) return;
+      const others = getDeptReports(currentDeptCtx.chip, d);
+      others.forEach(r => {
+        const stakes = r.stakeholders || [];
+        if (stakes.indexOf(currentDeptCtx.dept) >= 0) incomingCount++;
       });
     });
     const rOpen = reports.filter(r => r.status !== '已闭环').length;
@@ -3936,7 +4012,49 @@
     sum.innerHTML = statCard('部门汇报', reports.length, '条')
       + statCard('待处理', rOpen, '条')
       + statCard('已闭环', rClosed, '条')
-      + statCard('相关过程项', deptItemCount, '项');
+      + statCard('被其他部门提及', incomingCount, '条');
+    // Also refresh the auto-pick section count + list without full re-render
+    refreshIncomingSection();
+  }
+
+  // Re-render only the "其他部门对本部门的干系人条目" section
+  function refreshIncomingSection() {
+    if (!currentDeptCtx) return;
+    const sections = document.querySelectorAll('#dept-report-body .dept-section');
+    if (sections.length < 2) return;
+    // The incoming section is the 2nd .dept-section (after editable items)
+    const sec = sections[1];
+    if (!sec) return;
+    const incomingReports = [];
+    DEPT_NAMES.forEach(d => {
+      if (d === currentDeptCtx.dept) return;
+      const others = getDeptReports(currentDeptCtx.chip, d);
+      others.forEach((r, idx) => {
+        const stakes = r.stakeholders || [];
+        if (stakes.indexOf(currentDeptCtx.dept) >= 0) {
+          incomingReports.push(Object.assign({}, r, { _srcDept: d, _srcIdx: idx }));
+        }
+      });
+    });
+    const head = sec.querySelector('.dsh-count');
+    if (head) head.textContent = incomingReports.length + ' 条 · 自动拾取';
+    let body = '';
+    if (incomingReports.length === 0) {
+      body = '<div class="dept-empty">暂无其他部门将「' + escapeHtml(currentDeptCtx.dept) + '」标记为干系人的汇报条目。当其他部门在汇报中勾选本部门作为干系人时，将自动显示在此处。</div>';
+    } else {
+      body = '<div class="dept-items">';
+      incomingReports.forEach(it => { body += incomingReportItemHtml(it); });
+      body += '</div>';
+    }
+    // Replace the section body (everything after the head)
+    const itemsWrap = sec.querySelector('.dept-items') || sec.querySelector('.dept-empty');
+    if (itemsWrap) {
+      itemsWrap.outerHTML = body;
+    } else {
+      // No existing body node — append after head
+      const head2 = sec.querySelector('.dept-section-head');
+      if (head2) head2.insertAdjacentHTML('afterend', body);
+    }
   }
 
   // Pick row mode: edit mode for deptEditIdx, otherwise view mode
@@ -4084,6 +4202,25 @@
     return '<div class="dept-item ' + cls + '">'
       + '<div class="di-content">' + escapeHtml(it.content || '（未填写内容）') + '</div>'
       + '<div class="di-meta">' + escapeHtml(meta) + '</div>'
+      + '</div>';
+  }
+
+  // Render an auto-picked incoming stakeholder item (from another dept's report).
+  // Shows source department tag + title + content + status/time meta.
+  function incomingReportItemHtml(it) {
+    const srcDept = it._srcDept || '';
+    const titleText = (it.title || '').trim();
+    const contentText = (it.content || '').trim();
+    const statusCls = it.status === '已闭环' ? 's-done' : (it.status === '已延期' ? 's-delay' : '');
+    const meta = ['来源：' + srcDept, it.owner || '', it.status || '', it.time || ''].filter(Boolean).join(' · ');
+    return '<div class="dept-item di-incoming">'
+      + '<div class="di-src">来自 <strong>' + escapeHtml(srcDept) + '</strong></div>'
+      + '<div class="di-title">' + escapeHtml(titleText || '未填写标题') + '</div>'
+      + '<div class="di-content">' + escapeHtml(contentText || '（暂无内容）') + '</div>'
+      + '<div class="di-meta">'
+      + '<span class="di-status ' + statusCls + '">' + escapeHtml(it.status || '待处理') + '</span>'
+      + '<span>' + escapeHtml(meta) + '</span>'
+      + '</div>'
       + '</div>';
   }
 
