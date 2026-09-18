@@ -3714,7 +3714,6 @@
   // ── Render the in-app department report view for a given chip + dept ──
   // Pulls the chip's process items (risk/issue/help/sync) and surfaces the
   // ones whose stakeholder references the selected department.
-  const DEPT_TYPE_LABELS = { risk: '过程风险', issue: '过程问题', help: '求助', sync: '信息同步' };
   const DEPT_STAGE_FOCUS = {
     '研发': ['概念阶段','产品立项','产品研发','产品验证'],
     '工程制造': ['产品验证','小量试制','产品量产'],
@@ -3756,20 +3755,6 @@
     const rOpen = reports.filter(r => r.status !== '已闭环').length;
     const rClosed = reports.length - rOpen;
 
-    // Gather all process items for this chip
-    const sub = (data.lcSub && data.lcSub[ctx.chip]) || {};
-    const types = ['risk', 'issue', 'help', 'sync'];
-    const allItems = [];
-    types.forEach(t => {
-      (sub[t] || []).forEach(it => allItems.push(Object.assign({}, it, { _type: t })));
-    });
-
-    // Items directly owned by this department (stakeholder mentions the dept)
-    const deptItems = allItems.filter(it => {
-      const s = (it.stakeholder || '').trim();
-      return s && s.indexOf(ctx.dept) >= 0;
-    });
-
     // Auto-pick: entries from OTHER departments' deptReports (same chip) whose
     // stakeholders list includes the current department. These are "incoming"
     // stakeholder references — other depts marked this dept as a stakeholder.
@@ -3784,7 +3769,6 @@
         }
       });
     });
-    const incomingOpen = incomingReports.filter(r => r.status !== '已闭环').length;
 
     // Build HTML
     let html = '';
@@ -3830,20 +3814,6 @@
       html += '<div class="dept-items">';
       incomingReports.forEach(it => {
         html += incomingReportItemHtml(it);
-      });
-      html += '</div>';
-    }
-    html += '</div>';
-
-    // 5. Department-owned process items (from lifecycle LCS store)
-    html += '<div class="dept-section">';
-    html += '<div class="dept-section-head"><h3>相关过程项（干系人含本部门）</h3><span class="dsh-count">' + deptItems.length + ' 项</span></div>';
-    if (deptItems.length === 0) {
-      html += '<div class="dept-empty">暂无干系人包含「' + escapeHtml(ctx.dept) + '」的过程项。可在生命周期卡片中为过程项填写干系人。</div>';
-    } else {
-      html += '<div class="dept-items">';
-      deptItems.forEach(it => {
-        html += deptItemHtml(it);
       });
       html += '</div>';
     }
@@ -4194,16 +4164,6 @@
     panel.classList.remove('open');
     stakeDropdownOpen = null;
   });
-
-  function deptItemHtml(it) {
-    const t = it._type || 'sync';
-    const cls = 'di-' + t;
-    const meta = [DEPT_TYPE_LABELS[t] || t, it.status || '', it.time || ''].filter(Boolean).join(' · ');
-    return '<div class="dept-item ' + cls + '">'
-      + '<div class="di-content">' + escapeHtml(it.content || '（未填写内容）') + '</div>'
-      + '<div class="di-meta">' + escapeHtml(meta) + '</div>'
-      + '</div>';
-  }
 
   // Render an auto-picked incoming stakeholder item (from another dept's report).
   // Shows source department tag + title + content + status/time meta.
