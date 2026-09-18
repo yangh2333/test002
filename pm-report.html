@@ -1001,6 +1001,103 @@
     border: 1px dashed var(--border-soft);
     border-radius: 10px;
   }
+  /* Editable department report rows */
+  .dept-edit-list { display: flex; flex-direction: column; gap: 8px; }
+  .dept-edit-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--info);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .dept-edit-row .der-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .dept-edit-row .der-idx {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    min-width: 26px;
+  }
+  .dept-edit-row .der-title {
+    flex: 1;
+    min-width: 180px;
+    padding: 6px 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .dept-edit-row .der-title:focus { border-color: var(--info); outline: none; background: #fff; }
+  .dept-edit-row .der-status {
+    padding: 5px 8px;
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    background: var(--bg-input);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .dept-edit-row .der-del {
+    width: 26px; height: 26px;
+    line-height: 1;
+    border: 1px solid rgba(220,38,38,0.4);
+    background: var(--bg-card);
+    color: var(--delayed);
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .dept-edit-row .der-del:hover { background: var(--delayed-bg); }
+  .dept-edit-row .der-content {
+    width: 100%;
+    min-height: 50px;
+    padding: 8px 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    resize: vertical;
+    line-height: 1.5;
+  }
+  .dept-edit-row .der-content:focus { border-color: var(--info); outline: none; background: #fff; }
+  .dept-edit-row .der-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+  }
+  .dept-edit-row .der-owner {
+    padding: 3px 8px;
+    border: 1px solid var(--border-soft);
+    border-radius: 4px;
+    background: var(--bg-input);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    color: var(--ink-soft);
+    width: 140px;
+  }
+  .dept-edit-row .der-owner:focus { border-color: var(--info); outline: none; background: #fff; }
+  .dept-add-row {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+  }
 
   /* Inline expanded panel for a chip's process-management items */
   .chip-card .cc-panel {
