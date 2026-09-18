@@ -1813,15 +1813,18 @@
     color: var(--ink-mute);
     cursor: pointer;
     text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .em-deps-trigger:hover { border-color: var(--info); color: var(--info); border-style: solid; }
   .em-deps-panel {
     display: none;
     position: absolute;
     top: calc(100% + 4px);
-    right: 0;
     z-index: 80;
-    min-width: 200px;
+    min-width: 240px;
+    max-width: 320px;
     max-height: 240px;
     overflow-y: auto;
     background: #fff;
@@ -1842,9 +1845,12 @@
     cursor: pointer;
     font-size: 11px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .em-deps-item:hover { background: var(--bg-elev); }
-  .em-deps-item input { margin: 0; }
+  .em-deps-item input { margin: 0; flex-shrink: 0; }
+  .em-deps-item span { overflow: hidden; text-overflow: ellipsis; }
 
   /* Start/end date labels flanking the bar */
   .ms-gantt-date {
@@ -3268,7 +3274,7 @@
               <div class="em-deps-panel" id="em-deps-panel-${idx}">
                 ${others.map(o => {
                   const checked = sel.indexOf(o.id) >= 0 ? ' checked' : '';
-                  return '<label class="em-deps-item"><input type="checkbox" value="' + escapeAttr(o.id) + '"' + checked + ' onchange="updateDepsTrigger(' + idx + ')" /> ' + escapeHtml(o.id + ' · ' + (o.name || '')) + '</label>';
+                  return '<label class="em-deps-item" title="' + escapeAttr(o.id + ' · ' + (o.name || '')) + '"><input type="checkbox" value="' + escapeAttr(o.id) + '"' + checked + ' onchange="updateDepsTrigger(' + idx + ')" /><span>' + escapeHtml(o.id + ' · ' + (o.name || '')) + '</span></label>';
                 }).join('')}
               </div>
             </div>
@@ -3286,8 +3292,28 @@
     const panel = document.getElementById('em-deps-panel-' + idx);
     if (!panel) return;
     const isOpen = panel.classList.contains('open');
-    document.querySelectorAll('.em-deps-panel.open').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.em-deps-panel.open').forEach(p => {
+      p.classList.remove('open');
+      p.style.left = '';
+      p.style.right = '';
+    });
     if (!isOpen) {
+      // Smart positioning: if opening the panel to the right would overflow the modal,
+      // anchor it to the right edge of the cell instead (opens leftwards).
+      const cell = panel.parentElement;
+      const modalCard = document.querySelector('#modal-editms .modal-card');
+      const cellRect = cell.getBoundingClientRect();
+      const modalRect = modalCard ? modalCard.getBoundingClientRect() : null;
+      const panelMinWidth = 240;
+      panel.style.left = '';
+      panel.style.right = '';
+      if (modalRect && (cellRect.left + panelMinWidth > modalRect.right - 8)) {
+        // Button is near the right edge — open leftwards
+        panel.style.right = '0';
+      } else {
+        // Default — open rightwards from the button's left edge
+        panel.style.left = '0';
+      }
       panel.classList.add('open');
       depsDropdownOpen = idx;
     } else {
