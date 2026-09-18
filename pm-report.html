@@ -843,12 +843,43 @@
     border-color: var(--info);
     background: var(--progress-bg);
     color: var(--info);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(37,99,235,0.15);
+    transform: translateY(-2px) scale(1.06);
+    box-shadow: 0 6px 18px rgba(37,99,235,0.22);
+    z-index: 10;
   }
   .chip-card .cc-dept:hover::before {
     color: var(--info);
     transform: translateX(2px);
+  }
+  /* Count badge on department buttons */
+  .chip-card .cc-dept .cc-dept-cnt {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    background: var(--info);
+    color: #fff;
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    line-height: 16px;
+    padding: 0 4px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    border: 1.5px solid var(--bg-elev);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .chip-card .cc-dept .cc-dept-cnt.has {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .chip-card .cc-dept:hover .cc-dept-cnt {
+    background: var(--delayed);
+    transform: scale(1.15);
   }
 
   /* ── Department report view ── */
@@ -3185,11 +3216,11 @@
         <div class="cc-title" contenteditable="true" data-chip="${escapeAttr(c.id)}" data-field="title" oninput="updateChipField('${escapeAttr(c.id)}','title',this.textContent)">${escapeHtml(c.title || '')}</div>
         <div class="cc-desc" contenteditable="true" data-chip="${escapeAttr(c.id)}" data-field="desc" oninput="updateChipField('${escapeAttr(c.id)}','desc',this.textContent)">${escapeHtml(c.desc || '')}</div>
         <div class="cc-depts">
-          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','研发')">研发</button>
-          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','工程制造')">工程制造</button>
-          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','供应链')">供应链</button>
-          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','采购')">采购</button>
-          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','IT')">IT</button>
+          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','研发')">研发<span class="cc-dept-cnt" id="deptcnt-${escapeAttr(c.id)}-研发">0</span></button>
+          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','工程制造')">工程制造<span class="cc-dept-cnt" id="deptcnt-${escapeAttr(c.id)}-工程制造">0</span></button>
+          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','供应链')">供应链<span class="cc-dept-cnt" id="deptcnt-${escapeAttr(c.id)}-供应链">0</span></button>
+          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','采购')">采购<span class="cc-dept-cnt" id="deptcnt-${escapeAttr(c.id)}-采购">0</span></button>
+          <button class="cc-dept" onclick="goDeptReport('${escapeAttr(c.id)}','IT')">IT<span class="cc-dept-cnt" id="deptcnt-${escapeAttr(c.id)}-IT">0</span></button>
         </div>
         <div class="cc-panel" id="cc-panel-${escapeAttr(c.id)}"></div>
       </div>`;
@@ -3951,10 +3982,30 @@
   function updateLCSCounts() {
     const all = loadLCSItems();
     const chips = data.chips || [];
+    // Department count badges: count items whose stakeholder mentions the dept.
+    // Reads from data.lcSub (inline chip panel store) to match showDeptView.
+    const DEPTS = ['研发', '工程制造', '供应链', '采购', 'IT'];
     chips.forEach(c => {
       ['risk', 'issue', 'help', 'sync'].forEach(type => {
         const el = document.getElementById(`lcc-${c.id}-${type}`);
         if (el) el.textContent = (all[`${c.id}:${type}`] || []).length;
+      });
+      // Department-specific counts (owned = stakeholder references the dept)
+      const sub = (data.lcSub && data.lcSub[c.id]) || {};
+      DEPTS.forEach(dept => {
+        let cnt = 0;
+        ['risk', 'issue', 'help', 'sync'].forEach(type => {
+          const arr = sub[type] || [];
+          cnt += arr.filter(it => {
+            const s = (it.stakeholder || '').trim();
+            return s && s.indexOf(dept) >= 0;
+          }).length;
+        });
+        const badge = document.getElementById('deptcnt-' + c.id + '-' + dept);
+        if (badge) {
+          badge.textContent = cnt;
+          badge.classList.toggle('has', cnt > 0);
+        }
       });
     });
   }
