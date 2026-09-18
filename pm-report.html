@@ -173,6 +173,19 @@
     padding: 80px 0 60px;
     text-align: center;
     border-bottom: 1px solid var(--border-soft);
+    position: relative;
+  }
+  /* Company logo in top-left corner of the cover (first page) */
+  .cover .cover-logo {
+    position: absolute;
+    top: 28px;
+    left: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18);
+    border: 1px solid var(--border-soft);
   }
   .cover-eyebrow {
     font-family: 'JetBrains Mono', monospace;
@@ -2212,6 +2225,7 @@
   <!-- ════════════ PAGE 1: COVER ════════════ -->
   <section class="view active" id="view-home">
     <div class="cover">
+      <img class="cover-logo" src=".uploads/44f87736-39c9-47c1-8209-99a172fbe87f_公司.png" alt="东方资讯" />
       <div class="cover-eyebrow">Product Report · 专项汇报</div>
       <h1>产品<em>专项</em>汇报</h1>
       <p class="lede">本汇报系统梳理公司芯片产品全生命周期进度、当前重点专项里程碑达成情况，以及过程中的风险、问题、求助与信息同步事项。</p>
